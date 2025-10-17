@@ -12,3 +12,4 @@ Route::get('/layanan', [SiteController::class, 'layanan'])->name('layanan');
 Route::get('/struktur', [SiteController::class, 'struktur'])->name('struktur');
 Route::get('/kontak', [SiteController::class, 'kontak'])->name('kontak');
 Route::get('/login', [SiteController::class, 'login'])->name('login');
+Route::get('/login', [SiteController::class, 'process'])->name('login');
