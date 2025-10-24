@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Site;
 
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class SiteController extends Controller
 {
@@ -29,5 +32,15 @@ class SiteController extends Controller
 
     public function login() {
         return view('site.login');
+    }
+
+    public function cekKoneksi()
+    {
+        try {
+            DB::connection()->getPdo();
+            return 'Koneksi ke database berhasil!';
+        } catch (\Exception $e) {
+            return 'koneksi ke datasabe gagal:' . $e->getMessage();
+        }
     }
 }

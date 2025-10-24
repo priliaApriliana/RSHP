@@ -17,7 +17,6 @@
           <li><a href="{{ route('home') }}">Home</a></li>
           <li><a href="{{ route('struktur') }}">Struktur Organisasi</a></li>
           <li class="active"><a href="{{ route('layanan') }}">Layanan Umum</a></li>
-          <li><a href="{{ route('visi') }}">Visi Misi & Tujuan</a></li>
           <li><a href="{{ route('kontak') }}">Kontak</a></li>
           <li><a href="{{ route('login') }}">Login</a></li>
       </ul>

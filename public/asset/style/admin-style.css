@@ -1,0 +1,187 @@
+/* 🌈 Global Style untuk Halaman Admin RSHP */
+
+/* Background keseluruhan */
+body {
+  background: #f1f5f9;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Card utama */
+.card {
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(7, 32, 155, 0.15);
+  background-color: #fff;
+  padding: 24px;
+}
+
+/* Judul halaman */
+h2 {
+  color: #004aad;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Tombol utama */
+.btn-primary {
+  display: block;
+  width: 100%;
+  background-color: #004aad !important;
+  border: none;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 10px 0;
+  color: #fff;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+}
+.btn-primary:hover {
+  background-color: #003680 !important;
+  transition: 0.2s ease;
+}
+
+/* Tombol edit */
+.btn-warning {
+  background-color: #ffc107 !important;
+  border: none;
+  font-weight: 500;
+  color: #212529;
+}
+.btn-warning:hover {
+  background-color: #e0a800 !important;
+}
+
+/* Tombol hapus */
+.btn-danger {
+  background-color: #d90429 !important;
+  border: none;
+  font-weight: 500;
+  color: #fff;
+}
+.btn-danger:hover {
+  background-color: #b10320 !important;
+}
+
+/* Container responsif */
+.container {
+  max-width: 1000px;
+  margin-top: 40px;
+}
+
+/* 🌟 TABEL STYLING KHUSUS ADMIN */
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Header tabel */
+.table thead {
+  background: linear-gradient(90deg, #004aad, #007bff);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Header cell */
+.table th {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+}
+
+/* Isi tabel */
+.table td {
+  border: 1px solid #e2e8f0;
+  padding: 12px;
+  font-size: 14px;
+  color: #1e293b;
+  background-color: #fff;
+}
+
+/* Baris bergantian (zebra) */
+.table tbody tr:nth-child(odd) {
+  background-color: #f8fafc;
+}
+.table tbody tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+/* Hover row effect */
+.table-hover tbody tr:hover {
+  background-color: #eef2ff !important;
+  transition: 0.25s ease-in-out;
+}
+
+/* Card tambahan khusus tabel */
+.table-card {
+  border: 2px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 64, 128, 0.08);
+}
+
+/* Kolom aksi */
+.table td .btn {
+  margin: 0 2px;
+}
+
+/* Kolom pertama (No) lebih sempit */
+.table th:first-child,
+.table td:first-child {
+  width: 60px;
+}
+
+/* Animasi halus */
+.table,
+.table-card {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Efek hover pada card tabel */
+.table-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 74, 173, 0.15);
+  transform: translateY(-2px);
+}
+
+/* 🌟 Header tabel dengan gradasi biru elegan */
+.table thead tr {
+  background: linear-gradient(to right, #004aad, #2563eb);
+  color: white !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+}
+
+/* Tambahan bayangan di header */
+.table thead {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover tombol */
+.table td .btn {
+  transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+}
+
+.table td .btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* 🌟 Penambahan efek border bawah di header */
+.table thead th {
+  border-bottom: 3px solid #003680;
+}
+
+/* 🌟 Fokus tombol tambah data */
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.4);
+}

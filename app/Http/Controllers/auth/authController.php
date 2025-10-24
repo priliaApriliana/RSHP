@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Site;
+namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class LoginController extends Controller
+class authController extends Controller
 {
     public function login()
     {
         return view('site.login');
     }
 
-    public function process(Request $request)
+    public function process(request $request)
     {
         $username = $request->input('username');
         $password = $request->input('password');
 
-        //login sederhana
+        //login senderhana
         if ($username === 'admin' && $password === '123456') {
             session(['user' => $username]);
             return redirect()->route('home');
