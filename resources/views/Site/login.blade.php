@@ -1,57 +1,40 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login RSHP Universitas Airlangga</title>
-    <link rel="stylesheet" href="{{ asset('assets/style/style.css') }}">
-</head>
-<body>
+<!-- pakai template layouts -->
+@extends('layouts.app') 
 
-    <!-- Header -->
-    <header>
-        <img src="{{ asset('assets/img/LOGO_UNAIR-removebg-preview.png') }}" alt="Logo UNAIR">
-        <h1>Rumah Sakit Hewan Pendidikan - Universitas Airlangga</h1>
-    </header>
+@section('title', 'Login RSHP Universitas Airlangga')
 
-    <!-- Navigasi -->
-    <nav>
-        <ul>
-            <li><a href="{{ route('home') }}">Home</a></li>
-            <li><a href="{{ route('struktur') }}">Struktur Organisasi</a></li>
-            <li><a href="{{ route('layanan') }}">Layanan Umum</a></li>
-            <li><a href="{{ route('visi') }}">Visi Misi & Tujuan</a></li>
-            <li><a href="{{ route('kontak') }}">Kontak</a></li>
-            <li><a href="{{ route('login') }}">Login</a></li>
-        </ul>
-    </nav>
+<!-- Isi konten halaman ini akan dimasukkan ke dalam area @yield('content') yang ada di layout utama -->
+@section('content')
+<div class="container mt-5 d-flex justify-content-center align-items-center" style="min-height: 80vh ;">
+    <div class="card shadow-lg border-0 rounded-4 p-4" style="widht: 420px;">
+        <h2 class="text-center fw-bold mb-4 text-primary">Login RSHP</h2>
 
-    <!-- Form Login -->
-    <main>
-        <div class="login-box">
-            <h2>Login RSHP</h2>
+        @if(session('error'))
+            <p class="text-danger text-center fw-semibold">{{ session('error') }}</p>
+        @endif
 
-            @if(session('error'))
-                <p style="color:red; text-align:center;">{{ session('error') }}</p>
-            @endif
+        <form action="{{ route('login.process')}}" method="post">
+            @csrf
+            <div class="mb-3">
+                <label for="username" class="form-label fw-semibold">Username</label>
+                <input type="text" name="username" id="username" class="form-control rounded-3" 
+                       placeholder="Masukkan username" required>
+            </div>
 
-            <form action="{{ route('login.process') }}" method="POST">
-                @csrf
-                <label>Username</label>
-                <input type="text" name="username" placeholder="Masukkan username" required>
+            <div class="mb-3">
+                <label for="password" class="form-label fw-semibold">Password</label>
+                <input type="password" name="password" id="password" class="form-control rounded-3" 
+                       placeholder="Masukkan password" required>
+            </div>
 
-                <label>Password</label>
-                <input type="password" name="password" placeholder="Masukkan password" required>
+            <button type="submit" class="btn btn-primary w-100 fw-semibold py-2 mt-2">Login</button>
+        </form>
 
-                <button type="submit">Login</button>
-            </form>
+        <div class="text-center mt-4">
+            <small class="text-muted">
+                &copy; 2025 RSHP Universitas Airlangga. All rights reserved.
+            </small>
         </div>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        &copy; 2025 RSHP Universitas Airlangga. All rights reserved.
-    </footer>
-
-</body>
-</html>
+    </div>
+</div>
+@endsection

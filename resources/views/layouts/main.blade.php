@@ -21,6 +21,20 @@
             <li><a href="{{ route('layanan') }}">Layanan Umum</a></li>
             <li><a href="{{ route('visi') }}">Visi Misi & Tujuan</a></li>
             <li><a href="{{ route('kontak') }}">Kontak</a></li>
-            <li><a href="{{ route('login') }}">Login</a></li>
+
+            @guest
+                <li><a href="{{ route('login') }}">Login</a></li>
+            @else
+                <li>
+                    <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+                        @csrf
+                        <button type="submit" style="background:none; border:none; color:white; cursor:pointer;">
+                            Logout
+                        </button>
+                    </form>
+                </li>
+            @endguest
         </ul>
     </nav>
+</body>
+</html>

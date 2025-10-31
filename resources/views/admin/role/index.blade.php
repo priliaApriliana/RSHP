@@ -6,12 +6,12 @@
 <div class="container mt-5">
     <div class="card p-4 shadow-sm border-0 rounded-4">
         <!-- Judul Halaman -->
-        <h2 class="mb-4 fw-bold text-primary">Daftar User dan Role</h2>
+        <h2 class="mb-4 fw-bold text-primary">Daftar Role</h2>
 
         <!-- Tombol Tambah Data -->
         <a href="{{ route('user.create') }}" 
            class="btn btn-primary fw-semibold mb-4 w-100">
-           + Tambah User
+           + Tambah Role
         </a>
 
         <!-- Tabel Data -->

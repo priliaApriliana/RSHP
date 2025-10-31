@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Datamaster;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,13 +12,13 @@ class RoleController extends Controller
     public function index()
     {
         $role = Role::all();
-        return view('admin.datamaster.role.index', compact('role'));
+        return view('admin.role.index', compact('role'));
     }
     
     // menampilkan form tambah role
     public function create()
     {
-        return view('admin.datamaster.role.create');
+        return view('admin.role.create');
     }
 
     //menyimpan role baru ke database
@@ -39,7 +39,7 @@ class RoleController extends Controller
     public function edit($id)
     {
         $role = Role::findOrFail($id);
-        return view('admin.datamaster.role.edit', compact('role'));
+        return view('admin.role.edit', compact('role'));
     }
 
     //memperbarui data role

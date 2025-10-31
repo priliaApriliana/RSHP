@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Datamaster;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,13 +11,13 @@ class JenisHewanController extends Controller
     public function index()
     {
         $jenisHewan = JenisHewan::all();
-        return view('admin.datamaster.jenishewan.index', compact('jenisHewan'));
+        return view('admin.jenishewan.index', compact('jenisHewan'));
     }
 
     //form tambah data
     public function create()
     {
-        return view('admin.datamaster.jenishewan.create');
+        return view('admin.jenishewan.create');
     }
 
     // Simpan data baru
@@ -36,7 +36,7 @@ class JenisHewanController extends Controller
     public function edit($id)
     {
         $data = JenisHewan::findOrFail($id);
-        return view('admin.datamaster.jenishewan.edit', compact('data'));
+        return view('admin.jenishewan.edit', compact('data'));
     }
 
     // Update data

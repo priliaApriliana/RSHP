@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Datamaster;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,12 +11,12 @@ class KategoriController extends Controller
     public function index()
     {
         $kategori = Kategori::all();
-        return view('admin.datamaster.kategori.index', compact('kategori'));
+        return view('admin.kategori.index', compact('kategori'));
     }
 
     public function create()
     {
-        return view('admin.datamaster.kategori.create');
+        return view('admin.kategori.create');
     }
 
     public function store(Request $request)
@@ -32,7 +32,7 @@ class KategoriController extends Controller
     public function edit($id)
     {
         $kategori = Kategori::findOrFail($id);
-        return view('admin.datamaster.kategori.edit', compact('kategori'));
+        return view('admin.kategori.edit', compact('kategori'));
     }
 
     public function update(Request $request, $id)

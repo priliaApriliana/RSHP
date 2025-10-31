@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Datamaster;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -14,14 +14,14 @@ class UserController extends Controller
     {
         //ambil semua user beserta relai role-nya
         $users = User::with('roles')->get(); // ambil user + relasi role
-        return view('admin.datamaster.user.index', compact('users'));
+        return view('admin.user.index', compact('users'));
     }
 
     // Form tambah user
     public function create()
     {
         $roles = Role::all();
-        return view('admin.datamaster.user.create', compact('roles'));
+        return view('admin.user.create', compact('roles'));
     }
 
     // Simpan user baru
@@ -50,7 +50,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $roles = Role::all();
-            return view('admin.datamaster.user.edit', compact('user', 'roles'));
+            return view('admin.user.edit', compact('user', 'roles'));
     }
 
     // Update data user

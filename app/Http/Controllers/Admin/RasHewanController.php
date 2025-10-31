@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Datamaster;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,13 +12,13 @@ class RasHewanController extends Controller
     public function index()
     {
         $rasHewan = RasHewan::with('jenisHewan')->get();
-        return view('admin.datamaster.rashewan.index', compact('rasHewan'));
+        return view('admin.rashewan.index', compact('rasHewan'));
     }
 
     public function create()
     {
         $jenisHewan = JenisHewan::all();
-        return view('admin.datamaster.rashewan.create', compact('jenisHewan'));
+        return view('admin.rashewan.create', compact('jenisHewan'));
     }
 
     public function store(Request $request)
@@ -36,7 +36,7 @@ class RasHewanController extends Controller
     {
         $ras = RasHewan::findOrFail($id);
         $jenisHewan = JenisHewan::all();
-        return view('admin.datamaster.rashewan.edit', compact('ras', 'jenisHewan'));
+        return view('admin.rashewan.edit', compact('ras', 'jenisHewan'));
     }
 
     public function update(Request $request, $id)

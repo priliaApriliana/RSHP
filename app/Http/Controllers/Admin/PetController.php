@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Datamaster;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ class PetController extends Controller
      public function index()
      {
          $pet = Pet::with(['jenisHewan', 'pemilik'])->get();
-         return view('admin.datamaster.pet.index', compact('pet'));
+         return view('admin.pet.index', compact('pet'));
      }
  
      // Tampilkan form tambah data
@@ -22,7 +22,7 @@ class PetController extends Controller
      {
          $jenis = JenisHewan::all();
          $pemilik = Pemilik::all();
-         return view('admin.datamaster.pet.create', compact('jenis', 'pemilik'));
+         return view('admin.pet.create', compact('jenis', 'pemilik'));
      }
  
      // Simpan data baru
@@ -47,7 +47,7 @@ class PetController extends Controller
          $pet = Pet::findOrFail($id);
          $jenis = JenisHewan::all();
          $pemilik = Pemilik::all();
-         return view('admin.datamaster.pet.edit', compact('pet', 'jenis', 'pemilik'));
+         return view('admin.pet.edit', compact('pet', 'jenis', 'pemilik'));
      }
  
      // Update data

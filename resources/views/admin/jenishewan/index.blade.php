@@ -51,6 +51,11 @@
                             <td colspan="4" class="text-muted py-3">Belum ada data jenis hewan</td>
                         </tr>
                     @endforelse
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+
                 </tbody>
             </table>
         </div>

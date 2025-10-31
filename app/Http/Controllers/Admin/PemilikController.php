@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Datamaster;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -10,17 +10,17 @@ use App\Models\User;
 class PemilikController extends Controller
 {
     // Tampilkan data
-    public function pemilik()
+    public function index()
     {
         $pemilik = Pemilik::with('user')->get();
-        return view('admin.datamaster.pemilik.pemilik', compact('pemilik'));
+        return view('admin.pemilik.index', compact('pemilik'));
     }
 
     // Form tambah data
     public function create()
     {
         $users = User::all();
-        return view('admin.datamaster.pemilik.create', compact('users'));
+        return view('admin.pemilik.create', compact('users'));
     }
 
     // Simpan data
@@ -41,7 +41,7 @@ class PemilikController extends Controller
     {
         $data = Pemilik::findOrFail($id);
         $users = User::all();
-        return view('admin.datamaster.pemilik.edit', compact('data', 'users'));
+        return view('admin.pemilik.edit', compact('data', 'users'));
     }
 
     // Update data

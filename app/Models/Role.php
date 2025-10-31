@@ -30,4 +30,9 @@ class Role extends Model
                     ->withPivot('status');
     }
 
+    public function RoleUser()
+    {
+        return $this->hasMany(RoleUser::class, 'idrole', 'idrole');
+    }
+
 }

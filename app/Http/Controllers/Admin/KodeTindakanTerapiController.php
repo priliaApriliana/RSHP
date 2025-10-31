@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Datamaster;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -13,14 +13,14 @@ class KodeTindakanTerapiController extends Controller
     public function index()
     {
         $kode_tindakan = KodeTindakanTerapi::with(['kategori', 'kategoriKlinis'])->get();
-        return view('admin.datamaster.kodetindakanterapi.index', compact('kode_tindakan'));
+        return view('admin.kodetindakanterapi.index', compact('kode_tindakan'));
     }
 
     public function create()
     {
         $kategori = Kategori::all();
         $kategori_klinis = KategoriKlinis::all();
-        return view('admin.datamaster.kodetindakanterapi.create', compact('kategori', 'kategori_klinis'));
+        return view('admin.kodetindakanterapi.create', compact('kategori', 'kategori_klinis'));
     }
 
     public function store(Request $request)
@@ -41,7 +41,7 @@ class KodeTindakanTerapiController extends Controller
         $kode = KodeTindakanTerapi::findOrFail($id);
         $kategori = Kategori::all();
         $kategori_klinis = KategoriKlinis::all();
-        return view('admin.datamaster.kodetindakanterapi.edit', compact('kode', 'kategori', 'kategori_klinis'));
+        return view('admin.kodetindakanterapi.edit', compact('kode', 'kategori', 'kategori_klinis'));
     }
 
     public function update(Request $request, $id)
