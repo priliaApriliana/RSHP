@@ -22,6 +22,12 @@ class Pemilik extends Model
     // Relasi ke tabel user
     public function user()
     {
-        return $this->belongsTo(User::class, 'iduser');
+        return $this->belongsTo(User::class, 'iduser', 'iduser');
+    }
+
+    //relasi ke tabel pet
+    public function pet()
+    {
+        return $this->hasMany(Pet::class, 'idpemilik', 'idpemilik');
     }
 }

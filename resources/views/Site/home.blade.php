@@ -21,9 +21,21 @@
             <li><a href="{{ route('struktur') }}">Struktur Organisasi</a></li>
             <li><a href="{{ route('layanan') }}">Layanan Umum</a></li>
             <li><a href="{{ route('kontak') }}">Kontak</a></li>
-            <li><a href="{{ route('login') }}">Login</a></li>
+            @auth
+                <li>
+                    <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="logout-btn">
+                            Logout ({{ Auth::user()->nama }})
+                        </button>
+                    </form>
+                </li>
+            @else
+                <li><a href="{{ route('login') }}">Login</a></li>
+            @endauth
         </ul>
     </nav>
+
 
     <!-- Home -->
     <main>

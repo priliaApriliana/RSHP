@@ -21,6 +21,10 @@ class TemuDokter extends Model
         'idrole_user'
     ];
 
+    protected $casts = [
+        'waktu_daftar' => 'date',
+    ];
+
     // relasi ke tabel pet
     public function pet()
     {
@@ -28,8 +32,14 @@ class TemuDokter extends Model
     }
 
     // relasi ke tabel role_user
-    public function roleUser()
+    public function dokter()
     {
         return $this->belongsTo(RoleUser::class, 'idrole_user', 'idrole_user');
+    }
+
+    //relasi ke rekam medis 
+    public function rekamMedis()
+    {
+        return $this->hasMany(RekamMedis::class, 'idreservasi_dokter', 'idreservasi_dokter');
     }
 }
