@@ -8,7 +8,7 @@
         </div>
 
         <div class="card-body bg-light">
-            <a href="{{ route('kodetindakanterapi.create') }}" class="btn text-white mb-3 fw-medium" style="background-color: #198754;">
+            <a href="{{ route('admin.kodetindakanterapi.create') }}" class="btn text-white mb-3 fw-medium" style="background-color: #198754;">
                 + Tambah Data
             </a>
 
@@ -25,7 +25,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($kode_tindakan as $no => $k)
+                    @forelse ($kodeTindakan as $no => $k)
                         <tr>
                             <!-- Kolom nomor urut -->
                             <td>{{ $no + 1 }}</td>
@@ -59,9 +59,9 @@
 
                             <!-- Kolom aksi -->
                             <td>
-                                <a href="{{ route('kodetindakanterapi.edit', $k->idkode_tindakan_terapi) }}" 
+                                <a href="{{ route('admin.kodetindakanterapi.edit', $k->idkode_tindakan_terapi) }}" 
                                 class="btn btn-warning btn-sm fw-semibold text-dark shadow-sm">Edit</a>
-                                <form action="{{ route('kodetindakanterapi.destroy', $k->idkode_tindakan_terapi) }}" 
+                                <form action="{{ route('admin.kodetindakanterapi.destroy', $k->idkode_tindakan_terapi) }}" 
                                     method="POST" class="d-inline" 
                                     onsubmit="return confirm('Hapus data ini?')">
                                     @csrf

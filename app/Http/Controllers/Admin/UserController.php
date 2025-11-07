@@ -3,82 +3,100 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\Role;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // Tampilkan daftar user + role
+    // INDEX: tampilkan semua data user
     public function index()
     {
-        //ambil semua user beserta relai role-nya
-        $users = User::with('roles')->get(); // ambil user + relasi role
-        return view('admin.user.index', compact('users'));
+        $user = User::all();
+        return view('admin.user.index', compact('user'));
     }
 
-    // Form tambah user
+    // CREATE: tampilkan form tambah user
     public function create()
     {
-        $roles = Role::all();
-        return view('admin.user.create', compact('roles'));
+        return view('admin.user.create');
     }
 
-    // Simpan user baru
+    // STORE: simpan user baru
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required',
-            'email' => 'required|email|unique:user,email',
-            'password' => 'required|min:6',
-            'roles' => 'required|array'
+        // validasi input sesuai kolom tabel
+        $validatedData = $request->validate([
+            'nama'     => ['required', 'string', 'min:3', 'max:500'],
+            'email'    => ['required', 'email', 'unique:user,email'],
+            'password' => ['required', 'string', 'min:6'],
+        ], [
+            'nama.required' => 'Nama user wajib diisi.',
+            'nama.min'      => 'Nama minimal 3 karakter.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 6 karakter.',
         ]);
 
-        $user = User::create([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-        ]);
+        try {
+            // ambil id terakhir
+            $lastUser = User::orderBy('iduser', 'desc')->first();
+            $newId = $lastUser ? $lastUser->iduser + 1 : 1;
 
-        // simpan relasi ke tabel pivot
-        $user->roles()->sync($request->roles);
-            return redirect()->route('user.index')->with('success', 'User berhasil ditambahkan');
+            User::create([
+                'iduser'   => $newId,
+                'nama'     => trim(ucwords(strtolower($validatedData['nama']))),
+                'email'    => strtolower($validatedData['email']),
+                'password' => Hash::make($validatedData['password']),
+            ]);
+
+            return redirect()->route('admin.user.index')
+                ->with('success', 'User berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            throw new \Exception('Gagal menyimpan data User: ' . $e->getMessage());
+        }
     }
 
-    // Form edit user
+    // EDIT: form edit user
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        $roles = Role::all();
-            return view('admin.user.edit', compact('user', 'roles'));
+        return view('admin.user.edit', compact('user'));
     }
 
-    // Update data user
+    // UPDATE: simpan perubahan
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
-        $request->validate([
-            'nama' => 'required',
-            'email' => 'required|email|unique:user,email,' . $id . ',iduser',
-            'roles' => 'required|array'
+        $validatedData = $request->validate([
+            'nama'     => ['required', 'string', 'min:3', 'max:500'],
+            'email'    => ['required', 'email', 'unique:user,email,' . $id . ',iduser'],
+            'password' => ['nullable', 'string', 'min:6'],
         ]);
 
-        $user->update([
-            'nama' => $request->nama,
-            'email' => $request->email,
-        ]);
+        $updateData = [
+            'nama'  => trim(ucwords(strtolower($validatedData['nama']))),
+            'email' => strtolower($validatedData['email']),
+        ];
 
-        $user->roles()->sync($request->roles);
-        return redirect()->route('user.index')->with('success', 'Data user berhasil diperbarui');
+        if (!empty($validatedData['password'])) {
+            $updateData['password'] = Hash::make($validatedData['password']);
+        }
+
+        $user->update($updateData);
+
+        return redirect()->route('admin.user.index')
+            ->with('success', 'Data user berhasil diperbarui.');
     }
 
-    // Hapus user
+    // HAPUS
     public function destroy($id)
-    {   
-        $user = User::findOrFail($id);
-        $user->roles()->detech();
-        $user->delete();
-        return redirect()->route('user.index')->with('success', 'User berhasil dihapus');
+    {
+        User::findOrFail($id)->delete();
+        return redirect()->route('admin.user.index')
+            ->with('success', 'User berhasil dihapus.');
     }
 }

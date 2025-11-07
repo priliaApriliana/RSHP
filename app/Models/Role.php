@@ -18,8 +18,12 @@ class Role extends Model
     //Jika tidak ada created_at dan updated_at
     public $timestamps = false;
 
+    // karena idrole TIDAK auto_increment
+    public $incrementing = false; 
+
     //Kolom yang bisa diisi (mass assignment)
     protected $fillable = [
+        'idrole',
         'nama_role'
     ];
 

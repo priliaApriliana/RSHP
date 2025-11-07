@@ -10,7 +10,7 @@
 
         <!-- BODY -->
         <div class="card-body bg-light">
-            <a href="{{ route('kategoriklinis.create') }}" 
+            <a href="{{ route('admin.kategoriklinis.create') }}" 
                class="btn text-white mb-3 fw-medium" 
                style="background-color: #198754;">
                 + Tambah Data
@@ -30,11 +30,11 @@
                             <td>{{ $no + 1 }}</td>
                             <td>{{ $k->nama_kategori_klinis }}</td>
                             <td>
-                                <a href="{{ route('kategoriklinis.edit', $k->idkategori_klinis) }}" 
+                                <a href="{{ route('admin.kategoriklinis.edit', $k->idkategori_klinis) }}" 
                                    class="btn btn-warning btn-sm fw-semibold text-dark shadow-sm">
                                     Edit
                                 </a>
-                                <form action="{{ route('kategoriklinis.destroy', $k->idkategori_klinis) }}" 
+                                <form action="{{ route('admin.kategoriklinis.destroy', $k->idkategori_klinis) }}" 
                                       method="POST" class="d-inline"
                                       onsubmit="return confirm('Hapus data ini?')">
                                     @csrf

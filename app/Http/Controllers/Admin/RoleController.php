@@ -24,16 +24,61 @@ class RoleController extends Controller
     //menyimpan role baru ke database
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_role' => 'required|string|max:100',
-            'deskripsi' => 'nullable|string',
-        ]);
+        // validasi input
+        $validatedData = $this->validateRole($request);
 
-        Role::create($request->all());
+        // helper untuk menyimpan data
+        $this->createRole($validatedData);
 
-        return redirect()->route('role.index')
+        return redirect()->route('admin.role.index')
                          ->with('success', 'Role berhasil ditambahkan!');
     }
+
+    // validation
+    protected function validateRole(Request $request, $id = null)
+    {
+        // aturan unique tergantung apakah create atau update
+        $uniqueRule = $id
+            ? 'unique:role,nama_role,' . $id . ',idrole'
+            : 'unique:role,nama_role';
+
+        return $request->validate([
+            'nama_role' => ['required', 'string', 'min:3', 'max:100', $uniqueRule],
+            'deskripsi'     => ['nullable', 'string', 'max:255'],
+        ], [
+            'nama_role.required' => 'Nama role wajib diisi.',
+            'nama_role.string'   => 'Nama role harus berupa teks.',
+            'nama_role.min'      => 'Nama role minimal 3 karakter.',
+            'nama_role.max'      => 'Nama role maksimal 100 karakter.',
+            'nama_role.unique'   => 'Nama role sudah terdaftar.',
+        ]);
+    }
+
+        // HELPER: Simpan ke database
+    // -------------------------------
+    protected function createRole(array $data)
+    {
+        try {
+            // get last id
+            $lastRole = Role::orderBy('idrole', 'desc')->first();
+            $newId = $lastRole ? $lastRole->idrole + 1 : 1;
+
+            return Role::create([
+                'idrole'     => $newId,
+                'nama_role'  => $this->formatTitleCase($data['nama_role']),
+                'deskripsi'      => $data['deskripsi'] ?? null,
+            ]);
+        } catch (\Exception $e) {
+            throw new \Exception('Gagal menyimpan data Role: ' . $e->getMessage());
+        }
+    }
+
+    // HELPER: Format teks jadi Title Case
+    protected function formatTitleCase($string)
+    {
+        return trim(ucwords(strtolower($string)));
+    }
+
 
     //menampilkan form edit role
     public function edit($id)

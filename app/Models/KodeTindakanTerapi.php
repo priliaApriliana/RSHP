@@ -18,18 +18,18 @@ class KodeTindakanTerapi extends Model
         'kode',
         'deskripsi_tindakan_terapi',
         'idkategori',
-        'idkategori_klinis'
+        'idkategori_klinis',
     ];
 
-    // Relasi ke tabel kategori
+    // relasi ke kategori
     public function kategori()
     {
-        return $this->belongsTo(Kategori::class, 'idkategori');
+        return $this->belongsTo(Kategori::class, 'idkategori', 'idkategori');
     }
 
-    // Relasi ke tabel kategori klinis
+    // relasi ke kategori klinis
     public function kategoriKlinis()
     {
-        return $this->belongsTo(KategoriKlinis::class, 'idkategori_klinis');
+        return $this->belongsTo(KategoriKlinis::class, 'idkategori_klinis', 'idkategori_klinis');
     }
 }

@@ -7,7 +7,7 @@
             <h4 class="mb-0">Data Pemilik</h4>
         </div>
         <div class="card-body">
-            <a href="{{ route('pemilik.create') }}" class="btn btn-success mb-3">+ Tambah Pemilik</a>
+            <a href="{{ route('admin.pemilik.create') }}" class="btn btn-success mb-3">+ Tambah Pemilik</a>
 
             <table class="table table-bordered table-striped text-center align-middle">
                 <thead class="table-primary">
@@ -27,8 +27,8 @@
                             <td>{{ $p->no_wa }}</td>
                             <td>{{ $p->alamat }}</td>
                             <td>
-                                <a href="{{ route('pemilik.edit', $p->idpemilik) }}" class="btn btn-warning btn-sm text-white">Edit</a>
-                                <form action="{{ route('pemilik.destroy', $p->idpemilik) }}" method="POST" class="d-inline">
+                                <a href="{{ route('admin.pemilik.edit', $p->idpemilik) }}" class="btn btn-warning btn-sm text-white">Edit</a>
+                                <form action="{{ route('admin.pemilik.destroy', $p->idpemilik) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-danger btn-sm" onclick="return confirm('Hapus data ini?')">Hapus</button>

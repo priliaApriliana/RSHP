@@ -22,6 +22,12 @@
             </a>
         </li>
         <li class="menu-item">
+            <a href="{{ url('/admin/jenishewan') }}" class="menu-link">
+                <i class="fas fa-cat"></i>
+                <span>Jenis Hewan</span>
+            </a>
+        </li>
+        <li class="menu-item">
             <a href="{{ url('/admin/rashewan') }}" class="menu-link">
                 <i class="fas fa-dog"></i>
                 <span>Ras Hewan</span>

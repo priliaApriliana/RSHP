@@ -8,7 +8,7 @@
         <div class="card-header d-flex justify-content-between align-items-center text-white px-4 py-3"
              style="background-color: #004aad;">
             <h4 class="mb-0 fw-semibold">Data Pet</h4>
-            <a href="{{ route('pet.create') }}" 
+            <a href="{{ route('admin.pet.create') }}" 
                class="btn text-white fw-semibold shadow-sm"
                style="background-color: #004aad; border: 2px solid white; border-radius: 8px;">
                + Tambah Pet
@@ -34,19 +34,19 @@
                     @forelse ($pet as $p)
                     <tr class="{{ $loop->even ? 'bg-even' : 'bg-odd' }}">
                             <td class="fw-semibold text-primary">{{ $p->idpet }}</td>
-                            <td>{{ $p->nama_pet }}</td>
+                            <td>{{ $p->nama }}</td>
                             <td>{{ $p->tanggal_lahir }}</td>
                             <td>{{ $p->warna_tanda }}</td>
                             <td>{{ $p->jenis_kelamin }}</td>
                             <td>{{ $p->rasHewan->nama_ras ?? '-' }}</td>
                             <td>{{ $p->pemilik->nama ?? '-' }}</td>
                             <td>
-                                <a href="{{ route('pet.edit', $p->idpet) }}" 
+                                <a href="{{ route('admin.pet.edit', $p->idpet) }}" 
                                    class="btn fw-semibold btn-sm text-white shadow-sm me-1"
                                    style="background-color: #ffb703;">
                                    Edit
                                 </a>
-                                <form action="{{ route('pet.destroy', $p->idpet) }}" method="POST" class="d-inline"
+                                <form action="{{ route('admin.pet.destroy', $p->idpet) }}" method="POST" class="d-inline"
                                       onsubmit="return confirm('Hapus data ini?')">
                                     @csrf
                                     @method('DELETE')

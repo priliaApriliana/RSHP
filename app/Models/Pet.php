@@ -20,6 +20,7 @@ class Pet extends Model
 
     // Kolom yang bisa diisi
     protected $fillable = [
+        'idpet',
         'nama',
         'tanggal_lahir',
         'warna_tanda',

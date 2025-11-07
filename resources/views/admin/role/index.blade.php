@@ -9,7 +9,7 @@
         <h2 class="mb-4 fw-bold text-primary">Daftar Role</h2>
 
         <!-- Tombol Tambah Data -->
-        <a href="{{ route('user.create') }}" 
+        <a href="{{ route('admin.user.create') }}" 
            class="btn btn-primary fw-semibold mb-4 w-100">
            + Tambah Role
         </a>
@@ -30,11 +30,11 @@
                             <td>{{ $r->idrole }}</td>
                             <td>{{ $r->nama_role }}</td>
                             <td>
-                                <a href="{{ route('role.edit', $r->idrole) }}" 
+                                <a href="{{ route('admin.role.edit', $r->idrole) }}" 
                                    class="btn btn-sm btn-warning me-1">
                                    Edit
                                 </a>
-                                <form action="{{ route('role.destroy', $r->idrole) }}" 
+                                <form action="{{ route('admin.role.destroy', $r->idrole) }}" 
                                       method="POST" 
                                       class="d-inline"
                                       onsubmit="return confirm('Yakin hapus data ini?')">

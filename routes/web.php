@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Site\SiteController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Resepsionis\{
     DashboardResepsionisController, TemuDokterController, PetController as ResepsionisPetController, 
     PemilikController as ResepsionisPemilikController
@@ -44,16 +43,31 @@ Route::get('/kontak', [SiteController::class, 'kontak'])->name('kontak');
 Route::get('/cek-koneksi', [SiteController::class, 'cekKoneksi'])->name('site.cek-koneksi');
 
 // Admin Routes (hanya bisa diakses jika Administrator)
-Route::middleware('isAdministrator')->prefix('admin')->group(function () {
-    Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
-    Route::resource('jenishewan', JenisHewanController::class);
+Route::middleware('isAdministrator')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardAdminController::class, 'index'])->name('dashboard');
+    
+    // jenis hewan
+    Route::get('/jenishewan', [App\Http\Controllers\Admin\JenisHewanController::class, 'index'])->name('jenishewan.index');
+    Route::get('/jenishewan/create', [App\Http\Controllers\Admin\JenisHewanController::class, 'create'])->name('jenishewan.create');
+    Route::post('/jenishewan/store', [App\Http\Controllers\Admin\JenisHewanController::class, 'store'])->name('jenishewan.store');
+    Route::get('/jenishewan/{id}/edit', [App\Http\Controllers\Admin\JenisHewanController::class, 'edit'])->name('jenishewan.edit');
+    Route::put('/jenishewan/{id}', [App\Http\Controllers\Admin\JenisHewanController::class, 'update'])->name('jenishewan.update');    
+    Route::delete('/jenishewan/{id}', [App\Http\Controllers\Admin\JenisHewanController::class, 'destroy'])->name('jenishewan.destroy');
+
+    // pemilik
     Route::resource('pemilik', AdminPemilikController::class);
     Route::resource('rashewan', RasHewanController::class);
     Route::resource('kategori', KategoriController::class);
     Route::resource('kategoriklinis', KategoriKlinisController::class);
     Route::resource('kodetindakanterapi', KodeTindakanTerapiController::class);
+    
+    // pet
     Route::resource('pet', AdminPetController::class);
+
+    // role 
     Route::resource('role', RoleController::class);
+
+    // user
     Route::resource('user', UserController::class);
 });
 

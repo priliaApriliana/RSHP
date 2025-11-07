@@ -10,7 +10,7 @@
         <h2 class="mb-4 fw-bold">Data Ras Hewan</h2>
 
         <!-- Tombol Tambah Data -->
-        <a href="{{ route('rashewan.create') }}" 
+        <a href="{{ route('admin.rashewan.create') }}" 
            class="btn btn-primary fw-semibold mb-4">
            + Tambah Data
         </a>
@@ -33,10 +33,10 @@
                             <td>{{ $ras->nama_ras }}</td>
                             <td>{{ $ras->jenisHewan->nama_jenis_hewan ?? '-' }}</td>
                             <td>
-                                <a href="{{ route('rashewan.edit', $ras->idras_hewan) }}" 
+                                <a href="{{ route('admin.rashewan.edit', $ras->idras_hewan) }}" 
                                    class="btn btn-sm btn-warning me-1">Edit</a>
 
-                                <form action="{{ route('rashewan.destroy', $ras->idras_hewan) }}" 
+                                <form action="{{ route('admin.rashewan.destroy', $ras->idras_hewan) }}" 
                                       method="POST" 
                                       class="d-inline"
                                       onsubmit="return confirm('Yakin ingin menghapus data ini?')">

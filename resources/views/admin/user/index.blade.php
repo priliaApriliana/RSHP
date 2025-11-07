@@ -7,7 +7,7 @@
     <div class="card p-4 shadow-sm border-0 rounded-4">
         <h2 class="mb-4 fw-bold">Daftar User dan Role</h2>
 
-        <a href="{{ route('user.create') }}" 
+        <a href="{{ route('admin.user.create') }}" 
            class="btn btn-primary w-100 mb-3 fw-semibold">
            + Tambah User
         </a>
@@ -24,22 +24,22 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse ($users as $u)
+                @forelse ($user as $u)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $u->iduser }}</td>
                         <td>{{ $u->nama }}</td>
                         <td>{{ $u->email }}</td>
                         <td>
-                            @if($u->roles->isNotEmpty())
-                                {{ $u->roles->pluck('nama_role')->join(', ') }}
+                            @if($u->role->isNotEmpty())
+                                {{ $u->role->pluck('nama_role')->join(', ') }}
                             @else
                                 -
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('user.edit', $u->iduser) }}" class="btn btn-sm btn-warning">Edit</a>
-                            <form action="{{ route('user.destroy', $u->iduser) }}" method="POST" class="d-inline">
+                            <a href="{{ route('admin.user.edit', $u->iduser) }}" class="btn btn-sm btn-warning">Edit</a>
+                            <form action="{{ route('admin.user.destroy', $u->iduser) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger">Hapus</button>

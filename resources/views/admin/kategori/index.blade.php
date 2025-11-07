@@ -11,7 +11,7 @@
         <!-- BODY -->
         <div class="card-body bg-light">
             <!-- Tombol Tambah -->
-            <a href="{{ route('kategori.create') }}" 
+            <a href="{{ route('admin.kategori.create') }}" 
                class="btn text-white mb-3 fw-medium" 
                style="background-color: #198754;">
                 + Tambah Data
@@ -32,11 +32,11 @@
                             <td>{{ $no + 1 }}</td>
                             <td>{{ $k->nama_kategori }}</td>
                             <td>
-                                <a href="{{ route('kategori.edit', $k->idkategori) }}" 
+                                <a href="{{ route('admin.kategori.edit', $k->idkategori) }}" 
                                    class="btn btn-warning btn-sm fw-semibold text-dark shadow-sm">
                                     Edit
                                 </a>
-                                <form action="{{ route('kategori.destroy', $k->idkategori) }}" 
+                                <form action="{{ route('admin.kategori.destroy', $k->idkategori) }}" 
                                       method="POST" 
                                       class="d-inline"
                                       onsubmit="return confirm('Hapus data ini?')">

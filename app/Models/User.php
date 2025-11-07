@@ -14,10 +14,15 @@ class User extends Authenticatable
     protected $primaryKey = 'iduser';
     public $timestamps = false;
 
-    protected $fillable = ['nama', 'email', 'password'];
+    protected $fillable = [
+        'iduser',
+        'nama', 
+        'email', 
+        'password',
+    ];
 
     // Relasi many-to-many ke Role
-    public function roles()
+    public function role()
     {
         return $this->belongsToMany(Role::class, 'role_user', 'iduser', 'idrole')
                     ->withPivot('status'); // kalau kamu ingin akses kolom 'status'

@@ -15,11 +15,14 @@ class KategoriKlinis extends Model
     // Primary key
     protected $primaryKey = 'idkategori_klinis';
 
+    // Nonaktifkan timestamps (karena tabel tidak punya created_at & updated_at)
+    public $timestamps = false;
+
     // Kolom yang dapat diisi
     protected $fillable = [
+        'idkategori_klinis',
         'nama_kategori_klinis'
     ];
 
-    // Nonaktifkan timestamps (karena tabel tidak punya created_at & updated_at)
-    public $timestamps = false;
+
 }
