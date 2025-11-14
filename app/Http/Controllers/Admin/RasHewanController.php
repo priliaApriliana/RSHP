@@ -4,20 +4,29 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\RasHewan;
-use App\Models\JenisHewan;
+use Illuminate\Support\Facades\DB;
+// use App\Models\RasHewan;
+// use App\Models\JenisHewan;
 
 class RasHewanController extends Controller
 {
     public function index()
     {
-        $rasHewan = RasHewan::with('jenisHewan')->get();
+        $rasHewan = DB::table('ras_hewan')
+        ->leftJoin('jenis_hewan', 'ras_hewan.idjenis_hewan', '=', 'jenis_hewan.idjenis_hewan')
+        ->select(
+            'ras_hewan.*',
+            'jenis_hewan.nama_jenis_hewan'
+        )
+        ->orderBy('ras_hewan.idras_hewan')
+        ->get();
+
         return view('admin.rashewan.index', compact('rasHewan'));
     }
 
     public function create()
     {
-        $jenisHewan = JenisHewan::all();
+        $jenisHewan = DB::table('jenis_hewan')->get();
         return view('admin.rashewan.create', compact('jenisHewan'));
     }
 
@@ -25,10 +34,10 @@ class RasHewanController extends Controller
     public function store(Request $request)
     {
         // validasi input
-        $validatedData = $this->validateKategori($request);
+        $validatedData = $this->validateRasHewan($request);
 
         // helper untuk menyimpan data
-        $this->createKategori($validatedData);
+        $this->createRasHewan($validatedData);
 
         return redirect()->route('admin.rashewan.index')->with('success', 'Data berhasil ditambahkan!');
     }
@@ -58,19 +67,17 @@ class RasHewanController extends Controller
     // HELPER: Simpan ke database
     protected function createRasHewan(array $data)
     {
-        try {
-            // generate id baru
-            $lastRas = RasHewan::orderBy('idras_hewan', 'desc')->first();
-            $newId = $lastRas ? $lastRas->idras_hewan + 1 : 1;
+        $lastId = DB::table('ras_hewan')
+            ->orderBy('idras_hewan', 'desc')
+            ->first();
 
-            return RasHewan::create([
-                'idras_hewan'   => $newId,
-                'nama_ras'      => $this->formatTitleCase($data['nama_ras']),
-                'idjenis_hewan' => $data['idjenis_hewan'],
-            ]);
-        } catch (\Exception $e) {
-            throw new \Exception('Gagal menyimpan data Ras Hewan: ' . $e->getMessage());
-        }
+        $newId = $lastId ? $lastId->idras_hewan + 1 : 1;
+
+        DB::table('ras_hewan')->insert([
+            'idras_hewan'   => $newId,
+            'nama_ras'      => $this->formatTitleCase($data['nama_ras']),
+            'idjenis_hewan' => $data['idjenis_hewan'],
+        ]);
     }
 
     // HELPER: Format Title Case
@@ -80,26 +87,36 @@ class RasHewanController extends Controller
     }
 
 
-
-
-
     public function edit($id)
     {
-        $ras = RasHewan::findOrFail($id);
-        $jenisHewan = JenisHewan::all();
+        $ras = DB::table('ras_hewan')->where('idras_hewan', $id)->first();
+
+        if (!$ras) {
+            abort(404);
+        }
+
+        $jenisHewan = DB::table('jenis_hewan')->get();
         return view('admin.rashewan.edit', compact('ras', 'jenisHewan'));
     }
 
+
     public function update(Request $request, $id)
     {
-        $ras = RasHewan::findOrFail($id);
-        $ras->update($request->all());
-        return redirect()->route('rashewan.index')->with('success', 'Data berhasil diperbarui!');
+        $this->validateRasHewan($request, $id);
+
+        DB::table('ras_hewan')
+            ->where('idras_hewan', $id)
+            ->update([
+                'nama_ras'      => $this->formatTitleCase($request->nama_ras),
+                'idjenis_hewan' => $request->idjenis_hewan,
+            ]);
+
+        return redirect()->route('admin.rashewan.index')->with('success', 'Data berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        RasHewan::findOrFail($id)->delete();
-        return redirect()->route('rashewan.index')->with('success', 'Data berhasil dihapus!');
+        DB::table('ras_hewan')->where('idras_hewan', $id)->delete();
+        return redirect()->route('admin.rashewan.index')->with('success', 'Data berhasil dihapus!');
     }
 }

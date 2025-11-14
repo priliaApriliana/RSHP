@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Pemilik;
 use App\Models\User;
@@ -12,8 +13,17 @@ class PemilikController extends Controller
     // Tampilkan data
     public function index()
     {
-        $pemilik = Pemilik::with('user')->get();
-        return view('admin.pemilik.index', compact('pemilik'));
+        $pemilik = DB::table('pemilik')
+            ->join('user', 'pemilik.iduser', '=', 'user.iduser')
+            ->select(
+                'pemilik.*',
+                'user.nama as user_nama',
+                'user.email as user_email'
+            )
+            ->orderBy('idpemilik', 'ASC')
+            ->get();
+
+        return view('Admin.Pemilik.index', compact('pemilik'));
     }
 
     // Form tambah data
@@ -61,21 +71,20 @@ class PemilikController extends Controller
     // helper untuk membuat data baru (mengeksekusi data kedatabase)
     protected function createPemilik(array $data)
     {
-        try {
+            // get last ID, lalu +1
+            $lastId = DB::table('pemilik')->orderBy('idpemilik', 'desc')->first();
+            if ($lastId) {
+                $newId = $lastId->idpemilik +1;
+            } else {
+                $newId = 1;
+            }
 
-            // get last ID
-            $lastPemilik = Pemilik::orderBy('idpemilik', 'desc')->first();
-            $newId = $lastPemilik ? $lastPemilik->idpemilik + 1 : 1;
-
-            return Pemilik::create([
+            DB::table('pemilik')->insert([
                 'idpemilik' => $newId,
                 'no_wa'  => $this->formatNoWa($data['no_wa']),
                 'alamat' => trim(ucwords(strtolower($data['alamat']))),
                 'iduser' => $data['iduser'],
             ]);
-        } catch (\Exception $e) {
-            throw new \Exception('Gagal menyimpan data Pemilik: ' . $e->getMessage());
-        }
     }
 
     // format helper 

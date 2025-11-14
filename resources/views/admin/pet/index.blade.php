@@ -1,87 +1,91 @@
-@extends('layouts.app')
+@extends('layouts.lte.main')
+
+@section('page-title', 'Data Pet')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+    <li class="breadcrumb-item active">Data Pet</li>
+@endsection
 
 @section('content')
-<div class="container mt-5">
-    <div class="card shadow border-0 rounded-4 overflow-hidden">
 
-        <!-- HEADER -->
-        <div class="card-header d-flex justify-content-between align-items-center text-white px-4 py-3"
-             style="background-color: #004aad;">
-            <h4 class="mb-0 fw-semibold">Data Pet</h4>
-            <a href="{{ route('admin.pet.create') }}" 
-               class="btn text-white fw-semibold shadow-sm"
-               style="background-color: #004aad; border: 2px solid white; border-radius: 8px;">
-               + Tambah Pet
-            </a>
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+
+            {{-- Header Card --}}
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">Tabel Data Pet</h3>
+                    <a href="{{ route('admin.pet.create') }}" class="btn btn-success btn-sm">
+                        <i class="bi bi-plus-circle"></i> Tambah Pet
+                    </a>
+                </div>
+            </div>
+
+            {{-- Body Card --}}
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0 text-center align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 100px;">ID Pet</th>
+                                <th>Nama</th>
+                                <th>Tanggal Lahir</th>
+                                <th>Warna / Tanda</th>
+                                <th>Jenis Kelamin</th>
+                                <th>Ras</th>
+                                <th>Pemilik</th>
+                                <th style="width: 160px;">Aksi</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @forelse ($pet as $p)
+                            <tr>
+                                <td class="fw-semibold text-primary">{{ $p->idpet }}</td>
+                                <td>{{ $p->nama }}</td>
+                                <td>{{ $p->tanggal_lahir }}</td>
+                                <td>{{ $p->warna_tanda }}</td>
+                                <td>{{ $p->jenis_kelamin }}</td>
+                                <td>{{ $p->nama_ras ?? '-' }}</td>
+                                <td>{{ $p->nama_pemilik ?? '-' }}</td>
+
+                                <td class="text-center">
+                                    <a href="{{ route('admin.pet.edit', $p->idpet) }}" 
+                                       class="btn btn-primary btn-sm me-1">
+                                        Edit
+                                    </a>
+
+                                    <form action="{{ route('admin.pet.destroy', $p->idpet) }}"
+                                          method="POST" 
+                                          class="d-inline"
+                                          onsubmit="return confirm('Hapus data ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="8" class="text-center py-4">
+                                    <em class="text-muted">Belum ada data pet.</em>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
 
-        <!-- BODY -->
-        <div class="card-body bg-light p-4">
-            <table class="table table-hover text-center align-middle shadow-sm rounded-3 overflow-hidden">
-                <thead class="text-white" style="background-color: #004aad;">
-                    <tr>
-                        <th>ID Pet</th>
-                        <th>Nama</th>
-                        <th>Tanggal Lahir</th>
-                        <th>Warna/Tanda</th>
-                        <th>Jenis Kelamin</th>
-                        <th>Ras</th>
-                        <th>Pemilik</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($pet as $p)
-                    <tr class="{{ $loop->even ? 'bg-even' : 'bg-odd' }}">
-                            <td class="fw-semibold text-primary">{{ $p->idpet }}</td>
-                            <td>{{ $p->nama }}</td>
-                            <td>{{ $p->tanggal_lahir }}</td>
-                            <td>{{ $p->warna_tanda }}</td>
-                            <td>{{ $p->jenis_kelamin }}</td>
-                            <td>{{ $p->rasHewan->nama_ras ?? '-' }}</td>
-                            <td>{{ $p->pemilik->nama ?? '-' }}</td>
-                            <td>
-                                <a href="{{ route('admin.pet.edit', $p->idpet) }}" 
-                                   class="btn fw-semibold btn-sm text-white shadow-sm me-1"
-                                   style="background-color: #ffb703;">
-                                   Edit
-                                </a>
-                                <form action="{{ route('admin.pet.destroy', $p->idpet) }}" method="POST" class="d-inline"
-                                      onsubmit="return confirm('Hapus data ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" 
-                                            class="btn fw-semibold btn-sm text-white shadow-sm"
-                                            style="background-color: #d90429;">
-                                        Hapus
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="text-muted py-3">
-                                Belum ada data pet.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
     </div>
 </div>
 
-<style>
-/* Estetika tabel dan tombol */
-.table th, .table td {
-    vertical-align: middle !important;
-}
-.table-hover tbody tr:hover {
-    background-color: #e0ebff !important;
-    transition: 0.2s;
-}
-.card {
-    border-radius: 16px !important;
-}
-</style>
 @endsection

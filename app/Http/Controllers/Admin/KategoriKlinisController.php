@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\KategoriKlinis;
 
@@ -13,8 +14,14 @@ class KategoriKlinisController extends Controller
     // -------------------------------
     public function index()
     {
-        $kategori_klinis = KategoriKlinis::all();
-        return view('admin.kategoriklinis.index', compact('kategori_klinis'));
+        $kategoriKlinis = DB::table('kategori_klinis')
+            ->select('idkategori_klinis', 'nama_kategori_klinis')
+            ->get();
+
+            return view('admin.KategoriKlinis.index', compact('kategoriKlinis'));
+
+        // $kategori_klinis = KategoriKlinis::all();
+        // return view('admin.kategoriklinis.index', compact('kategori_klinis'));
     }
 
     // -------------------------------
@@ -67,14 +74,17 @@ class KategoriKlinisController extends Controller
     protected function createKategoriKlinis(array $data)
     {
         try {
-            // ambil id terakhir
-            $last = KategoriKlinis::orderBy('idkategori_klinis', 'desc')->first();
-            $newId = $last ? $last->idkategori_klinis + 1 : 1;
+            // ambil id terakhir, lalu +1
+            $lastId = DB::table('kategori_klinis')->max('idkategori_klinis');
+            $newId = $lastId ? $lastId + 1 : 1;
 
-            return KategoriKlinis::create([
-                'idkategori_klinis'     => $newId,
-                'nama_kategori_klinis'  => $this->formatTitleCase($data['nama_kategori_klinis']),
+            // quary builder (data diambil dari database)
+            $kategoriKlinis = DB::table('kategori_klinis')->insert([
+                'idkategori_klinis' => $newId,
+                'nama_kategori_klinis' => $this->formatNamaKategoriKlinis($data['nama_kategori_klinis']),
             ]);
+        
+            return $kategoriKlinis;
         } catch (\Exception $e) {
             throw new \Exception('Gagal menyimpan data Kategori Klinis: ' . $e->getMessage());
         }
@@ -83,7 +93,7 @@ class KategoriKlinisController extends Controller
     // -------------------------------
     // HELPER: Format Title Case
     // -------------------------------
-    protected function formatTitleCase($text)
+    protected function formatNamaKategoriKlinis($text)
     {
         return trim(ucwords(strtolower($text)));
     }

@@ -4,12 +4,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Site\SiteController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\RoleUserController;
 use App\Http\Controllers\Resepsionis\{
     DashboardResepsionisController, TemuDokterController, PetController as ResepsionisPetController, 
     PemilikController as ResepsionisPemilikController
 };
 use App\Http\Controllers\Admin\{
-    PetController as AdminPetController, RoleController, UserController, PemilikController as AdminPemilikController,
+    PetController as AdminPetController, RoleController, PemilikController as AdminPemilikController,
     KategoriController, RasHewanController, JenisHewanController,
     KategoriKlinisController, KodeTindakanTerapiController,
     DashboardAdminController
@@ -64,11 +65,25 @@ Route::middleware('isAdministrator')->prefix('admin')->name('admin.')->group(fun
     // pet
     Route::resource('pet', AdminPetController::class);
 
-    // role 
-    Route::resource('role', RoleController::class);
 
-    // user
-    Route::resource('user', UserController::class);
+    // role 
+    Route::get('/role', [RoleController::class, 'index'])->name('role.index');
+    Route::get('/role/create', [RoleController::class, 'create'])->name('role.create');
+    Route::post('/role', [RoleController::class, 'store'])->name('role.store');
+    Route::get('/role/{id}/edit', [RoleController::class, 'edit'])->name('role.edit');
+    Route::put('/role/{id}', [RoleController::class, 'update'])->name('role.update');
+    Route::delete('/role/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
+
+
+    // role_user
+    Route::get('/roleuser', [RoleUserController::class, 'index'])->name('roleuser.index');
+    Route::get('/roleuser/create', [RoleUserController::class, 'create'])->name('roleuser.create');
+    Route::post('/roleuser/store', [RoleUserController::class, 'store'])->name('roleuser.store');
+    Route::get('/roleuser/{id}/edit', [RoleUserController::class, 'edit'])->name('roleuser.edit');
+    Route::put('/roleuser/{id}', [RoleUserController::class, 'update'])->name('roleuser.update');
+    Route::delete('/roleuser/{id}', [RoleUserController::class, 'destroy'])->name('roleuser.destroy');
+
+    
 });
 
 // Resepsionis Routes

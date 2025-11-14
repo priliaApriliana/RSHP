@@ -3,25 +3,52 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use App\Models\Pet;
-use App\Models\RasHewan;
-use App\Models\Pemilik;
+// use App\Models\Pet;
+// use App\Models\RasHewan;
+// use App\Models\Pemilik;
 
 class PetController extends Controller
 {
      // index- Tampilkan semua data Pet
      public function index()
      {
-         $pet = Pet::with(['jenisHewan', 'pemilik'])->get();
+        $pet = DB::table('pet')
+        ->leftJoin('ras_hewan', 'pet.idras_hewan', '=', 'ras_hewan.idras_hewan')
+        ->leftJoin('jenis_hewan', 'ras_hewan.idjenis_hewan', '=', 'jenis_hewan.idjenis_hewan')
+        ->leftJoin('pemilik', 'pet.idpemilik', '=', 'pemilik.idpemilik')
+        ->leftJoin('user', 'pemilik.iduser', '=', 'user.iduser')
+        ->select(
+            'pet.*',
+            'ras_hewan.nama_ras',
+            'jenis_hewan.nama_jenis_hewan',
+            'user.nama as nama_pemilik'
+        )
+        ->orderBy('pet.idpet', 'ASC')
+        ->get();
+
          return view('admin.pet.index', compact('pet'));
      }
  
      // create- Tampilkan form tambah data
      public function create()
      {
-         $ras = RasHewan::all();
-         $pemilik = Pemilik::all();
+        // pake ini kalo kita gamau nampilin jenis hewannya
+        $ras = DB::table('ras_hewan')
+            ->join('jenis_hewan', 'ras_hewan.idjenis_hewan', '=', 'jenis_hewan.idjenis_hewan')
+            ->select('ras_hewan.*', 'jenis_hewan.nama_jenis_hewan')        
+            ->get();
+
+        $pemilik = DB::table('pemilik')
+            ->join('user', 'pemilik.iduser', '=', 'user.iduser')
+            ->select(
+                'pemilik.idpemilik',
+                'pemilik.no_wa',
+                'user.nama as nama_pemilik')
+            ->get();
+        
+
          return view('admin.pet.create', compact('ras', 'pemilik'));
      }
      
@@ -70,26 +97,24 @@ class PetController extends Controller
         ]);
     }
 
-    // helper - simpan ke database 
+    // helper - create data, simpan ke database 
     protected function createPet(array $data)
     {
-        try {
-            // get last ID
-            $lastPet = Pet::orderBy('idpet', 'desc')->first();
-            $newId = $lastPet ? $lastPet->idpet + 1 : 1;
+        // get last ID
+        $lastId =  DB::table('pet')->orderBy('idpet', 'desc')->first();
+        $newId = $lastId ? $lastId->idpet + 1 : 1;
 
-            return Pet::create([
-                'idpet'          => $newId,
-                'nama'           => $this->formatNamaPet($data['nama']),
-                'tanggal_lahir'  => $data['tanggal_lahir'] ?? null,
-                'warna_tanda'    => $this->formatNamaPet($data['warna_tanda'] ?? ''),
-                'jenis_kelamin'  => $data['jenis_kelamin'],
-                'idpemilik'      => $data['idpemilik'],
-                'idras_hewan'    => $data['idras_hewan'],
-            ]);
-        } catch (\Exception $e) {
-            throw new \Exception('Gagal menyimpan data Pet: ' . $e->getMessage());
-        }
+        DB::table('pet')->insert([
+            'idpet'         => $newId,
+            'nama'          => $this->formatNamaPet($data['nama']),
+            'tanggal_lahir' => $data['tanggal_lahir'],
+            'warna_tanda'   => $this->formatNamaPet($data['warna_tanda']),
+            'jenis_kelamin' => $data['jenis_kelamin'],
+            'idpemilik'     => $data['idpemilik'],
+            'idras_hewan'   => $data['idras_hewan'],                'idras_hewan'    => $data['idras_hewan'],
+        ]);
+
+        return $newId;
     }
 
     // Helper untuk format nama menjadi Title Case (merubah format hurufnya)
@@ -97,41 +122,59 @@ class PetController extends Controller
     {
         return trim(ucwords(strtolower($nama)));
     }
- 
 
-
-
-     // Tampilkan form edit data
+     // Tampilkan form edit/update data
      public function edit($id)
      {
-         $pet = Pet::findOrFail($id);
-         $jenis = RasHewan::all();
-         $pemilik = Pemilik::all();
+        $pet = DB::table('pet')->where('idpet', $id)->first();
+        $ras = DB::table('ras_hewan')
+            ->join('jenis_hewan', 'ras_hewan.idjenis_hewan', '=', 'jenis_hewan.idjenis_hewan')
+            ->select('ras_hewan.*', 'jenis_hewan.nama_jenis_hewan')        
+        ->get();
+        $pemilik = DB::table('pemilik')
+                ->join('user', 'pemilik.iduser', '=', 'user.iduser')
+                ->select(
+                    'pemilik.idpemilik',
+                    'pemilik.no_wa',
+                    'user.nama as nama_pemilik'
+        )
+        ->get();
+
          return view('admin.pet.edit', compact('pet', 'jenis', 'pemilik'));
      }
  
      // Update data
      public function update(Request $request, $id)
      {
-         $request->validate([
-             'nama_pet' => 'required',
-             'idjenishewan' => 'required',
-             'umur' => 'required|numeric',
-             'jenis_kelamin' => 'required',
-             'berat' => 'required|numeric',
-             'idpemilik' => 'required'
+        $validated = $this->validatePet($request, $id);
+
+        DB::table('pet')->where('idpet', $id)->update([
+            'nama'           => $this->formatTitleCase($validated['nama']),
+            'tanggal_lahir'  => $validated['tanggal_lahir'],
+            'warna_tanda'    => $this->formatTitleCase($validated['warna_tanda']),
+            'jenis_kelamin'  => $validated['jenis_kelamin'],
+            'idpemilik'      => $validated['idpemilik'],
+            'idras_hewan'    => $validated['idras_hewan'],
          ]);
  
-         $pet = Pet::findOrFail($id);
-         $pet->update($request->all());
- 
-         return redirect()->route('pet.index')->with('success', 'Data hewan berhasil diperbarui!');
+         return redirect()->route('admin.pet.index')->with('success', 'Data hewan berhasil diperbarui!');
      }
  
      // Hapus data
      public function destroy($id)
      {
-         Pet::findOrFail($id)->delete();
-         return redirect()->route('pet.index')->with('success', 'Data hewan berhasil dihapus!');
+        DB::table('pet')->where('idpet', $id)->delete();
+        return redirect()->route('admin.pet.index')->with('success', 'Data hewan berhasil dihapus!');
      }
+
+     // ajax buat nampilin idjenis hewan soalnya kan di tabel pemilik tidak ada kolom untuk jenis hewan
+    //  public function getRasByJenis($id)
+    // {
+    // $ras = DB::table('ras_hewan')
+    //     ->where('idjenis_hewan', $id)
+    //     ->get();
+
+    // return response()->json($ras);
+    // }
+
 }

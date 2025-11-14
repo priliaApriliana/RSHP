@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\JenisHewan;
 
@@ -10,7 +11,15 @@ class JenisHewanController extends Controller
 {
     public function index()
     {
-        $jenisHewan = JenisHewan::all();
+        // Eloquent
+        // $jenisHewan = JenisHewan::all();
+
+        // Query Builder
+        $jenisHewan = DB::table('jenis_hewan')
+            ->select('idjenis_hewan', 'nama_jenis_hewan')
+            ->orderBy('idjenis_hewan', 'ASC')
+            ->get();
+
         return view('admin.jenishewan.index', compact('jenisHewan'));
     }
 
@@ -63,9 +72,17 @@ class JenisHewanController extends Controller
     protected function createJenisHewan(array $data)
     {
         try {
-            return JenisHewan::create([
+            // Eloquent
+            // return JenisHewan::create([
+            //     'nama_jenis_hewan' => $this->formatNamaJenisHewan($data['nama_jenis_hewan']),
+            // ]);
+
+            // quary builder (data diambil dari database)
+            $jenisHewan = DB::table('jenis_hewan')->insert([
                 'nama_jenis_hewan' => $this->formatNamaJenisHewan($data['nama_jenis_hewan']),
-            ]);
+        ]);
+
+        return $jenisHewan;
         } catch (\Exception $e) {
             throw new \Exception('Gagal menyimpan data jenis hewan: ' . $e->getMessage());
         }
@@ -76,8 +93,6 @@ class JenisHewanController extends Controller
     {
         return trim(ucwords(strtolower($nama)));
     }
-
-
 
 
     // Form edit
