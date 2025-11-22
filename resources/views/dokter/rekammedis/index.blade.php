@@ -1,48 +1,49 @@
-@extends('layouts.admin')
+@extends('layouts.lte.main')
+
+@section('page-title', 'Daftar Pasien Dokter')
 
 @section('content')
-@include('layouts.sidebar')
 
-<div class="main-content" id="mainContent">
-    <div class="container mt-4">
-        <h3 class="fw-bold text-primary mb-4">
-            <i class="fas fa-notes-medical"></i> Daftar Rekam Medis (Dokter)
-        </h3>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Pasien Antrian</h3>
+    </div>
 
-        <a href="{{ route('dokter.rekammedis.create') }}" class="btn btn-success mb-3">
-            <i class="fas fa-plus-circle"></i> Tambah Rekam Medis
-        </a>
+    <div class="card-body">
 
-        <table class="table table-bordered table-hover">
+        <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>No</th>
+                    <th>No Urut</th>
                     <th>Nama Hewan</th>
                     <th>Pemilik</th>
-                    <th>Anamnesa</th>
-                    <th>Diagnosa</th>
-                    <th>Tanggal</th>
+                    <th>Waktu Daftar</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
+
             <tbody>
-                @forelse ($rekamMedis as $r)
+                @foreach($antrian as $a)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $r->temuDokter->pet->nama ?? '-' }}</td>
-                    <td>{{ $r->temuDokter->pet->pemilik->user->nama ?? '-' }}</td>
-                    <td>{{ Str::limit($r->anamnesa, 50) }}</td>
-                    <td>{{ Str::limit($r->diagnosa, 50) }}</td>
-                    <td>{{ $r->created_at }}</td>
+                    <td>{{ $a->pet->nama }}</td>
+                    <td>{{ $a->pet->pemilik->user->nama }}</td>
+                    <td>{{ $a->waktu_daftar }}</td>
+
+                    <td>
+                        <a href="{{ route('dokter.rekammedis.create', ['idreservasi_dokter' => $a->idreservasi_dokter]) }}"
+                           class="btn btn-primary btn-sm">
+                            Periksa
+                        </a>
+                    </td>
                 </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="text-center text-muted">Belum ada rekam medis.</td>
-                </tr>
-                @endforelse
+                @endforeach
             </tbody>
+
         </table>
 
-        {{ $rekamMedis->links() }}
     </div>
 </div>
+
 @endsection
+    

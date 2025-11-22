@@ -1,12 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.lte.main')
+
+@section('page-title', 'Form Registrasi Pet')
 
 @section('content')
-@include('layouts.sidebar')
-
 <div class="main-content">
     <div class="container mt-4">
-        <h3 class="mb-4 fw-bold text-primary">Form Registrasi Pet</h3>
-
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif

@@ -11,7 +11,8 @@ class Pemilik extends Model
 
     protected $table = 'pemilik';
     protected $primaryKey = 'idpemilik';
-    public $inscrementing = true;
+    public $inscrementing = false; // karena bukan auto increment
+    protected $keyType = 'int';
     public $timestamps = false;
 
     protected $fillable = [

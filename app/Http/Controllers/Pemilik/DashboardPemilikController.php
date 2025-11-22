@@ -3,67 +3,62 @@
 namespace App\Http\Controllers\Pemilik;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pet;
-use App\Models\Pemilik;
-use App\Models\TemuDokter;
-use App\Models\RekamMedis;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Pemilik;
+use App\Models\Pet;
+use App\Models\RekamMedis;
 
 class DashboardPemilikController extends Controller
 {
+    /**
+     * Dashboard pemilik
+     */
     public function index()
     {
-        // Ambil data pemilik dari user yang login
-        $user = Auth::user();
-        $pemilik = Pemilik::where('iduser', $user->iduser)->first();
-        
-        if (!$pemilik) {
-            return redirect()->route('login')->with('error', 'Data pemilik tidak ditemukan');
-        }
+        $userID = auth()->user()->iduser;
 
-        // Statistik
-        $totalPet = Pet::where('idpemilik', $pemilik->idpemilik)->count();
-        $totalTemuDokter = TemuDokter::whereHas('pet', function($q) use ($pemilik) {
-            $q->where('idpemilik', $pemilik->idpemilik);
-        })->count();
-        
-        $temuDokterPending = TemuDokter::whereHas('pet', function($q) use ($pemilik) {
-            $q->where('idpemilik', $pemilik->idpemilik);
-        })->where('status', 'P')->count();
+        $pemilik = Pemilik::where('iduser', $userID)->first();
 
-        return view('pemilik.dashboard-pemilik', compact(
-            'pemilik',
-            'totalPet',
-            'totalTemuDokter',
-            'temuDokterPending'
-        ));
+        return view('pemilik.dashboard', compact('pemilik'));
     }
 
+    /**
+     * Daftar hewan milik pemilik
+     */
     public function pet()
     {
-        $user = Auth::user();
-        $pemilik = Pemilik::where('iduser', $user->iduser)->first();
-        
-        $pets = Pet::with('rasHewan.jenisHewan')
-            ->where('idpemilik', $pemilik->idpemilik)
-            ->get();
+        $userID = auth()->user()->iduser;
 
-        return view('pemilik.pet', compact('pets'));
+        $pemilik = Pemilik::where('iduser', $userID)->first();
+
+        $pet = Pet::where('idpemilik', $pemilik->idpemilik)->get();
+
+        return view('pemilik.pet.index', compact('pet'));
     }
 
+    /**
+     * Riwayat rekam medis hewan milik pemilik
+     */
     public function riwayat()
     {
-        $user = Auth::user();
-        $pemilik = Pemilik::where('iduser', $user->iduser)->first();
-        
-        $riwayat = TemuDokter::with(['pet', 'dokter.user'])
-            ->whereHas('pet', function($q) use ($pemilik) {
-                $q->where('idpemilik', $pemilik->idpemilik);
-            })
-            ->orderBy('waktu_daftar', 'desc')
-            ->paginate(10);
+        $userID = auth()->user()->iduser;
 
-        return view('pemilik.riwayat', compact('riwayat'));
+        $pemilik = Pemilik::where('iduser', $userID)->first();
+
+        $pet = Pet::where('idpemilik', $pemilik->idpemilik)->get();
+
+        // Ambil semua rekam medis via temu_dokter
+        $rekam = RekamMedis::with(['temu.pet'])
+                ->whereIn(
+                    'idreservasi_dokter',
+                    function($q) use ($pet) {
+                        $q->select('idreservasi_dokter')
+                          ->from('temu_dokter')
+                          ->whereIn('idpet', $pet->pluck('idpet'));
+                    }
+                )
+                ->get();
+
+        return view('pemilik.riwayat.index', compact('rekam'));
     }
 }

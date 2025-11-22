@@ -1,7 +1,7 @@
-@extends('layouts.admin')
+@extends('layouts.lte.main')
 
+@section('page-title', 'Dashboard Pemilik')
 @section('content')
-@include('layouts.sidebar')
 
 <div class="main-content" id="mainContent">
     <div class="container mt-4">

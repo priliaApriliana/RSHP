@@ -7,40 +7,46 @@ use Illuminate\Http\Request;
 use App\Models\TemuDokter;
 use App\Models\Pet;
 use App\Models\RoleUser;
-use Carbon\Carbon;
 
 class TemuDokterController extends Controller
 {
-    //tampilkan form
+    /**
+     * FORM DAFTAR TEMU DOKTER
+     */
     public function create()
     {
-        $pet = Pet::with('pemilik.user')->get();
-        $dokter = RoleUser::with('user')
-                    ->where('idrole', 2) // role dokter
-                    ->where('status', 1)
-                    ->get();
+        // semua hewan beserta pemilik
+        $pet = Pet::with('pemilik')->get();
+
+        // ambil semua role_user yang role nya adalah dokter (idrole = 2)
+        $dokter = RoleUser::where('idrole', 2)->with('user')->get();
 
         return view('resepsionis.temudokter.create', compact('pet', 'dokter'));
     }
 
-    // simpan data ke tabel temu_dokter
+    /**
+     * PROSES SIMPAN KE DB
+     */
     public function store(Request $request)
     {
         $request->validate([
-            'idpet' => 'required',
-            'idrole_user' => 'required',
+            'idpet' => 'required|integer',
+            'idrole_user' => 'required|integer'
         ]);
 
-        $noUrut = TemuDokter::whereDate('waktu_daftar', Carbon::today())->count() + 1;
+        // Tentukan no_urut per hari
+        $no_urut = TemuDokter::whereDate('waktu_daftar', now())->count() + 1;
 
+        // Simpan data temu_dokter
         TemuDokter::create([
-            'no_urut' => $noUrut,
-            'waktu_daftar' => Carbon::today(),
-            'status' => 'A', // aktif
+            'no_urut' => $no_urut,
+            'waktu_daftar' => now()->toDateString(),
+            'status' => 'A', // A = aktif / menunggu
             'idpet' => $request->idpet,
             'idrole_user' => $request->idrole_user,
         ]);
 
-        return redirect()->back()->with('success', 'Pendaftaran Temu Dokter berhasil dilakukan.');
+        return redirect()->route('resepsionis.dashboard')
+                ->with('success', 'Pasien berhasil didaftarkan ke antrian dokter.');
     }
 }

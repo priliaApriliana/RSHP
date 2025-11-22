@@ -1,11 +1,17 @@
-@extends('layouts.admin')
+@extends('layouts.lte.main')
+
+@section('page-title', 'Form Registrasi Pemilik Hewan')
 
 @section('content')
-@include('layouts.sidebar')
+@if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Berhasil!</strong> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 
 <div class="main-content" id="mainContent">
     <div class="container mt-4">
-        <h3 class="mb-4 fw-bold text-primary">Form Registrasi Pemilik Hewan</h3>
 
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>

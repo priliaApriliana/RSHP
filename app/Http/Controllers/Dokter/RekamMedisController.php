@@ -3,45 +3,80 @@
 namespace App\Http\Controllers\Dokter;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\RekamMedis;
 use App\Models\TemuDokter;
-use Illuminate\Http\Request;
+use App\Models\RoleUser;
 
 class RekamMedisController extends Controller
 {
+    /**
+     * LIST PASIEN DARI TEMU_DOKTER
+     * status = A (aktif / menunggu)
+     */
     public function index()
     {
-        $rekamMedis = RekamMedis::with(['temuDokter.pet.pemilik.user'])->paginate(10);
-        return view('dokter.rekammedis.index', compact('rekamMedis'));
-    }
+        $idDokter = auth()->user()->iduser;
 
-    public function create()
-    {
-        $temuDokter = TemuDokter::with(['pet.pemilik.user'])
-            ->where('status', '1') // misal hanya yang aktif
+        // cari role_user dokter
+        $roleUser = RoleUser::where('iduser', $idDokter)
+                            ->where('idrole', 2)
+                            ->first();
+
+        // Ambil pasien yang mendaftar ke dokter yang login
+        $antrian = TemuDokter::with(['pet.pemilik.user'])
+            ->where('idrole_user', $roleUser->idrole_user)
+            ->where('status', 'A')
             ->get();
 
-        return view('dokter.rekammedis.create', compact('temuDokter'));
+        return view('dokter.rekammedis.index', compact('antrian'));
     }
 
+    /**
+     * FORM UNTUK MENGISI REKAM MEDIS
+     */
+    public function create(Request $request)
+    {
+        $id = $request->idreservasi_dokter;
+    
+        $pasien = TemuDokter::with(['pet.pemilik.user'])
+            ->findOrFail($id);
+    
+        return view('dokter.rekammedis.create', compact('pasien'));
+    }
+    
+
+    /**
+     * SIMPAN REKAM MEDIS
+     */
     public function store(Request $request)
     {
         $request->validate([
             'idreservasi_dokter' => 'required',
-            'anamnesa' => 'required|string',
-            'temuan_klinis' => 'required|string',
-            'diagnosa' => 'required|string',
+            'anamnesa' => 'required',
+            'temuan_klinis' => 'required',
+            'diagnosa' => 'required',
         ]);
 
+        // ambil role_user dokter yang login
+        $roleUser = RoleUser::where('iduser', auth()->user()->iduser)
+                            ->where('idrole', 2)
+                            ->first();
+
         RekamMedis::create([
-            'idreservasi_dokter' => $request->idreservasi_dokter,
             'anamnesa' => $request->anamnesa,
             'temuan_klinis' => $request->temuan_klinis,
             'diagnosa' => $request->diagnosa,
-            'dokter_pemeriksa' => auth()->user()->roleUser->idrole_user,
-            'created_at' => now(),
+            'idreservasi_dokter' => $request->idreservasi_dokter,
+            'dokter_pemeriksa' => $roleUser->idrole_user,
+            'created_at' => now()
         ]);
 
-        return redirect()->route('dokter.rekammedis.index')->with('success', 'Rekam Medis berhasil ditambahkan!');
+        // ubah status temu_dokter → selesai (S)
+        TemuDokter::where('idreservasi_dokter', $request->idreservasi_dokter)
+                  ->update(['status' => 'S']);
+
+        return redirect()->route('dokter.rekammedis.index')
+                         ->with('success', 'Rekam medis berhasil disimpan.');
     }
 }

@@ -11,13 +11,11 @@ use Illuminate\Support\Facades\DB;
 
 class PemilikController extends Controller
 {
-    // Tampilkan form registrasi pemilik
     public function create()
     {
         return view('resepsionis.pemilik.create');
     }
 
-    // Simpan data pemilik baru
     public function store(Request $request)
     {
         $request->validate([
@@ -30,25 +28,33 @@ class PemilikController extends Controller
 
         DB::beginTransaction();
         try {
-            // Simpan ke tabel user
+
+            // 1️⃣ Simpan user terlebih dahulu
             $user = User::create([
-                'nama' => $request->nama,
-                'email' => $request->email,
+                'nama'     => $request->nama,
+                'email'    => $request->email,
                 'password' => Hash::make($request->password),
             ]);
 
-            // Simpan ke tabel pemilik
+            // 2️⃣ Generate idpemilik manual (menggunakan max + 1)
+            $nextId = Pemilik::max('idpemilik') + 1;
+
+            // 3️⃣ Simpan pemilik
             Pemilik::create([
-                'no_wa' => $request->no_wa,
-                'alamat' => $request->alamat,
-                'iduser' => $user->iduser,
+                'idpemilik' => $nextId,
+                'no_wa'     => $request->no_wa,
+                'alamat'    => $request->alamat,
+                'iduser'    => $user->iduser,
             ]);
 
             DB::commit();
-            return redirect()->route('resepsionis.dashboard')->with('success', 'Data pemilik berhasil ditambahkan!');
+            return redirect()->route('resepsionis.dashboard')
+                            ->with('success', 'Data pemilik berhasil ditambahkan!');
+
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
         }
     }
+
 }

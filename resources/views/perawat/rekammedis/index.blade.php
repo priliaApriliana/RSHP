@@ -1,62 +1,112 @@
-<!-- untuk Menampilkan daftar semua data (list rekam medis) -->
-@extends('layouts.admin')
+@extends('layouts.lte.main')
+
+@section('page-title', 'Rekam Medis')
 
 @section('content')
-@include('layouts.sidebar')
 
-<div class="main-content" id="mainContent">
-    <div class="container mt-4">
-        <h3 class="fw-bold text-primary mb-4">
-            <i class="fas fa-notes-medical"></i> Daftar Rekam Medis
-        </h3>
+<div class="container-fluid mt-3">
 
-        <a href="{{ route('perawat.rekammedis.create') }}" class="btn btn-success mb-3">
-            <i class="fas fa-plus-circle"></i> Tambah Rekam Medis
-        </a>
+    <!-- Judul Halaman -->
+    <p class="text-muted">Kelola rekam medis pasien hewan</p>
 
-        <table class="card">
-            <div class="card-body">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Hewan</th>
-                            <th>Pemilik</th>
-                            <th>Anamnesa</th>
-                            <th>Diagnosa</th>
-                            <th>Tanggal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($rekamMedis as $r)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $r->temuDokter->pet->nama ?? '-' }}</td>
-                            <td>{{ $r->temuDokter->pet->pemilik->user->nama ?? '-' }}</td>
-                            <td>{{ Str::limit($r->anamnesa, 40) }}</td>
-                            <td>{{ Str::limit($r->diagnosa, 40) }}</td>
-                            <td>{{ $r->created_at }}</td>
-                            <td>
-                                <a href="{{ route('perawat.rekammedis.show', $r->idrekam_medis) }}" class="btn btn-info btn-sm">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{{ route('perawat.rekammedis.edit', $r->idrekam_medis) }}" class="btn btn-warning btn-sm">
-                                    <i class="fas fa-edit"></i>
-                                </a>
+    <!-- Card Filter -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
 
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">Belum ada data rekam medis.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-        </table>
-        {{ $rekamMedis->links() }}
-            </div>
+            <form method="GET" action="{{ route('perawat.rekammedis.index') }}">
+
+                <div class="row g-3">
+
+                    <!-- Search -->
+                    <div class="col-md-4">
+                        <label class="form-label">Cari</label>
+                        <input type="text" name="q" value="{{ request('q') }}"
+                               placeholder="Nama pet, pemilik, atau diagnosa..."
+                               class="form-control">
+                    </div>
+
+                    <!-- Tanggal Dari -->
+                    <div class="col-md-3">
+                        <label class="form-label">Tanggal Dari</label>
+                        <input type="date" name="from" value="{{ request('from') }}"
+                               class="form-control">
+                    </div>
+
+                    <!-- Tanggal Sampai -->
+                    <div class="col-md-3">
+                        <label class="form-label">Tanggal Sampai</label>
+                        <input type="date" name="to" value="{{ request('to') }}"
+                               class="form-control">
+                    </div>
+
+                    <!-- Tombol Filter -->
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary w-100">
+                            <i class="bi bi-funnel-fill"></i> Filter
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
     </div>
+
+    <!-- Tabel Rekam Medis -->
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <strong>Daftar Rekam Medis</strong>
+        </div>
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-center" style="width: 60px;">No</th>
+                        <th>Tanggal</th>
+                        <th>Nama Pet</th>
+                        <th>Pemilik</th>
+                        <th>Diagnosa</th>
+                        <th>Dokter</th>
+                        <th>No. Reservasi</th>
+                        <th class="text-center" style="width: 100px;">Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse ($rekammedis as $i => $r)
+                    <tr>
+                        <td class="text-center">{{ $i + 1 }}</td>
+                        <td>{{ $r->created_at->format('d M Y') }}</td>
+                        <td>{{ $r->temu->pet->nama ?? '-' }}</td>
+                        <td>{{ $r->temu->pet->pemilik->nama ?? '-' }}</td>
+                        <td>{{ $r->diagnosa ?? '-' }}</td>
+                        <td>{{ $r->dokter_pemeriksa ?? '-' }}</td>
+                        <td>#{{ $r->temu->idtemu ?? '---' }}</td>
+
+                        <td class="text-center">
+                            <a href="{{ route('perawat.rekammedis.show', $r->idrekam_medis) }}"
+                               class="btn btn-info btn-sm">
+                                <i class="bi bi-eye-fill"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                    @empty
+                    <tr>
+                        <td colspan="8" class="text-center py-3 text-muted">
+                            Tidak ada data rekam medis ditemukan.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
 </div>
+
 @endsection
-
-

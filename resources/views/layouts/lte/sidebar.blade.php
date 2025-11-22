@@ -158,70 +158,65 @@
                         </a>
                     </li>
 
-                    <!-- Jadwal -->
-                    <li class="nav-item">
-                        <a href="{{ url('/dokter/jadwal') }}" 
-                           class="nav-link {{ request()->is('dokter/jadwal*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-calendar-check-fill"></i>
-                            <p>Jadwal Praktik</p>
-                        </a>
-                    </li>
+                    {{-- PERAWAT MENU --}}
+                    @elseif($roleId == 3)
+                        <!-- Dashboard -->
+                        <li class="nav-item">
+                            <a href="{{ route('perawat.dashboard') }}" 
+                            class="nav-link {{ request()->routeIs('perawat.dashboard') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-speedometer"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
 
-                {{-- PERAWAT MENU --}}
-                @elseif($roleId == 3)
-                    <!-- Dashboard -->
-                    <li class="nav-item">
-                        <a href="{{ route('perawat.dashboard') }}" 
-                           class="nav-link {{ request()->routeIs('perawat.dashboard') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-speedometer"></i>
-                            <p>Dashboard</p>
-                        </a>
-                    </li>
+                        <!-- Rekam Medis -->
+                        <li class="nav-item {{ request()->is('perawat/rekammedis*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi-file-earmark-medical-fill"></i>
+                                <p>
+                                    Rekam Medis
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('perawat.rekammedis.index') }}" 
+                                    class="nav-link {{ request()->routeIs('perawat.rekammedis.index') ? 'active' : '' }}">
+                                        <i class="nav-icon bi bi-circle"></i>
+                                        <p>Daftar Rekam Medis</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <!-- Rekam Medis -->
-                    <li class="nav-item {{ request()->is('perawat/rekammedis*') ? 'menu-open' : '' }}">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon bi bi-file-earmark-medical-fill"></i>
-                            <p>
-                                Rekam Medis
-                                <i class="nav-arrow bi bi-chevron-right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('perawat.rekammedis.index') }}" 
-                                   class="nav-link {{ request()->routeIs('perawat.rekammedis.index') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-circle"></i>
-                                    <p>Daftar Rekam Medis</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('perawat.rekammedis.create') }}" 
-                                   class="nav-link {{ request()->routeIs('perawat.rekammedis.create') ? 'active' : '' }}">
-                                    <i class="nav-icon bi bi-circle"></i>
-                                    <p>Form Rekam Medis</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                        <!-- TINDAKAN TERAPI -->
+                        <li class="nav-item {{ request()->is('perawat/tindakan*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon bi bi-syringe"></i>
+                                <p>
+                                    Kode Tindakan Terapi
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
 
-                    <!-- Jadwal -->
-                    <li class="nav-item">
-                        <a href="{{ route('perawat.jadwal') }}" 
-                           class="nav-link {{ request()->routeIs('perawat.jadwal') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-calendar-event-fill"></i>
-                            <p>Jadwal</p>
-                        </a>
-                    </li>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('perawat.tindakan.index') }}"
+                                    class="nav-link {{ request()->routeIs('perawat.tindakan.index') ? 'active' : '' }}">
+                                        <i class="nav-icon bi bi-circle"></i>
+                                        <p>Daftar Kode Tindakan Terapi</p>
+                                    </a>
+                                </li>
 
-                    <!-- Pasien -->
-                    <li class="nav-item">
-                        <a href="{{ route('perawat.pasien') }}" 
-                           class="nav-link {{ request()->routeIs('perawat.pasien') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-person-fill"></i>
-                            <p>Data Pasien</p>
-                        </a>
-                    </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('perawat.tindakan.create') }}"
+                                    class="nav-link {{ request()->routeIs('perawat.tindakan.create') ? 'active' : '' }}">
+                                        <i class="nav-icon bi bi-circle"></i>
+                                        <p>Form Tindakan Terapi</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
                 {{-- RESEPSIONIS MENU --}}
                 @elseif($roleId == 4)
