@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dokter;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\RekamMedis;
 use App\Models\TemuDokter;
 use App\Models\RoleUser;
@@ -12,11 +13,11 @@ class RekamMedisController extends Controller
 {
     /**
      * LIST PASIEN DARI TEMU_DOKTER
-     * status = A (aktif / menunggu)
      */
     public function index()
     {
-        $idDokter = auth()->user()->iduser;
+        // FIX ERROR: gunakan Auth::user()
+        $idDokter = Auth::user()->iduser;
 
         // cari role_user dokter
         $roleUser = RoleUser::where('iduser', $idDokter)
@@ -38,13 +39,12 @@ class RekamMedisController extends Controller
     public function create(Request $request)
     {
         $id = $request->idreservasi_dokter;
-    
+
         $pasien = TemuDokter::with(['pet.pemilik.user'])
             ->findOrFail($id);
-    
+
         return view('dokter.rekammedis.create', compact('pasien'));
     }
-    
 
     /**
      * SIMPAN REKAM MEDIS
@@ -58,8 +58,8 @@ class RekamMedisController extends Controller
             'diagnosa' => 'required',
         ]);
 
-        // ambil role_user dokter yang login
-        $roleUser = RoleUser::where('iduser', auth()->user()->iduser)
+        // FIX ERROR: Auth::user()
+        $roleUser = RoleUser::where('iduser', Auth::user()->iduser)
                             ->where('idrole', 2)
                             ->first();
 
