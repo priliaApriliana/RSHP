@@ -1,6 +1,6 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Profil Saya')
+@section('page-title', 'Profil Admin')
 
 @section('content')
 
@@ -53,6 +53,13 @@
         font-size: 1.25rem;
         font-weight: 600;
         color: #395886;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-role {
+        text-align: center;
+        font-size: 0.875rem;
+        color: #628ECB;
         margin-bottom: 1.25rem;
     }
     
@@ -187,11 +194,11 @@
 <div class="page-header">
     <div class="row align-items-center">
         <div class="col-md-9">
-            <h1><i class="bi bi-person-circle"></i> Profil Saya</h1>
-            <p>Kelola informasi akun dan data pribadi Anda</p>
+            <h1><i class="bi bi-person-circle"></i> Profil Admin</h1>
+            <p>Kelola informasi akun administrator</p>
         </div>
         <div class="col-md-3 text-end d-none d-md-block">
-            <i class="bi bi-gear-fill" style="font-size: 3rem; opacity: 0.25;"></i>
+            <i class="bi bi-shield-fill-check" style="font-size: 3rem; opacity: 0.25;"></i>
         </div>
     </div>
 </div>
@@ -223,21 +230,25 @@
 <div class="profile-card">
     <!-- Avatar -->
     <div class="profile-avatar">
-        <i class="bi bi-person-fill"></i>
+        <i class="bi bi-shield-fill-check"></i>
     </div>
     
     <div class="profile-name">
-        {{ $pemilik->nama }}
+        {{ $user->nama }}
+    </div>
+
+    <div class="profile-role">
+        <i class="bi bi-star-fill"></i> Administrator
     </div>
 
     <!-- Info Box -->
     <div class="info-box">
         <i class="bi bi-info-circle-fill"></i>
-        <strong>Informasi:</strong> Pastikan data yang Anda masukkan valid dan terkini untuk memudahkan komunikasi.
+        <strong>Informasi:</strong> Pastikan data yang Anda masukkan valid dan terkini.
     </div>
 
     <!-- Form Update Profile -->
-    <form action="{{ route('pemilik.profil.update') }}" method="POST">
+    <form action="{{ route('admin.profil.update') }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -252,7 +263,7 @@
                     class="form-control @error('nama') is-invalid @enderror" 
                     id="nama" 
                     name="nama" 
-                    value="{{ old('nama', $pemilik->nama) }}" 
+                    value="{{ old('nama', $user->nama) }}" 
                     required
                 >
                 @error('nama')
@@ -270,45 +281,10 @@
                     class="form-control @error('email') is-invalid @enderror" 
                     id="email" 
                     name="email" 
-                    value="{{ old('email', $pemilik->email) }}" 
+                    value="{{ old('email', $user->email) }}" 
                     required
                 >
                 @error('email')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- No. WhatsApp -->
-            <div class="col-md-6 mb-3">
-                <label for="no_wa" class="form-label">
-                    <i class="bi bi-whatsapp"></i> No. WhatsApp
-                </label>
-                <input 
-                    type="text" 
-                    class="form-control @error('no_wa') is-invalid @enderror" 
-                    id="no_wa" 
-                    name="no_wa" 
-                    value="{{ old('no_wa', $pemilik->no_wa) }}" 
-                    placeholder="Contoh: 081234567890"
-                >
-                @error('no_wa')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- Alamat -->
-            <div class="col-md-6 mb-3">
-                <label for="alamat" class="form-label">
-                    <i class="bi bi-geo-alt-fill"></i> Alamat
-                </label>
-                <textarea 
-                    class="form-control @error('alamat') is-invalid @enderror" 
-                    id="alamat" 
-                    name="alamat" 
-                    rows="3"
-                    placeholder="Masukkan alamat lengkap"
-                >{{ old('alamat', $pemilik->alamat) }}</textarea>
-                @error('alamat')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
@@ -362,7 +338,7 @@
 
         <!-- Buttons -->
         <div class="d-flex justify-content-between mt-3">
-            <a href="{{ route('pemilik.dashboard') }}" class="btn btn-secondary">
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left"></i> Kembali
             </a>
             <button type="submit" class="btn btn-primary">

@@ -1,148 +1,277 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Riwayat Rekam Medis')
+@section('page-title', 'Riwayat Pemeriksaan')
 
 @section('content')
 
 <style>
-    .card {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(57, 88, 134, 0.08);
-    }
-
-    .card-header {
+    .page-header {
         background: linear-gradient(135deg, #628ECB 0%, #395886 100%);
+        border-radius: 12px;
         color: white;
-        border-radius: 12px 12px 0 0 !important;
-        padding: 1.25rem;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 8px rgba(98, 142, 203, 0.2);
     }
-
-    .card-title {
+    
+    .page-header h1 {
+        font-size: 1.5rem;
         font-weight: 600;
-        margin: 0;
-        font-size: 1.25rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .page-header p {
+        opacity: 0.9;
+        margin-bottom: 0;
+        font-size: 0.875rem;
     }
 
-    .table {
+    .timeline {
+        position: relative;
+        padding-left: 35px;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 13px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(180deg, #628ECB 0%, #D5DEEF 100%);
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .timeline-item:last-child {
         margin-bottom: 0;
     }
 
-    .table thead th {
-        background-color: #D5DEEF;
-        color: #395886;
-        font-weight: 600;
-        border-bottom: 2px solid #628ECB;
-        padding: 1rem;
+    .timeline-marker {
+        position: absolute;
+        left: -28px;
+        top: 6px;
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, #628ECB 0%, #8AAEE0 100%);
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 2px 4px rgba(98, 142, 203, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .table tbody tr {
+    .timeline-marker i {
+        color: white;
+        font-size: 0.7rem;
+    }
+
+    .timeline-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.25rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
         transition: all 0.3s ease;
     }
 
-    .table tbody tr:hover {
-        background-color: #F0F3FA;
-        transform: translateX(5px);
+    .timeline-card:hover {
+        transform: translateX(3px);
+        box-shadow: 0 3px 10px rgba(98, 142, 203, 0.12);
+        border-color: #628ECB;
     }
 
-    .table td {
-        padding: 1rem;
-        vertical-align: middle;
-        color: #395886;
+    .timeline-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.875rem;
+        border-bottom: 1px solid #F0F3FA;
+        gap: 0.75rem;
+        flex-wrap: wrap;
     }
 
     .pet-badge {
-        background-color: #D5DEEF;
-        color: #395886;
-        padding: 0.4rem 0.8rem;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 0.875rem;
+        background: linear-gradient(135deg, #FF6B9D 0%, #FFB6C1 100%);
+        color: white;
+        padding: 0.4rem 0.875rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.8125rem;
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.375rem;
+        box-shadow: 0 2px 4px rgba(255, 107, 157, 0.25);
     }
 
     .pet-badge i {
-        color: #8AAEE0;
+        font-size: 0.8125rem;
     }
 
     .date-badge {
-        background-color: #F0F3FA;
+        background: #F0F3FA;
         color: #628ECB;
-        padding: 0.4rem 0.8rem;
-        border-radius: 6px;
+        padding: 0.4rem 0.875rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+    }
+
+    .date-badge i {
+        font-size: 0.75rem;
+    }
+
+    .timeline-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 0.875rem;
+    }
+
+    .info-block {
+        background: #F0F3FA;
+        padding: 0.875rem;
+        border-radius: 8px;
+        border-left: 3px solid #628ECB;
+    }
+
+    .info-block-label {
+        font-size: 0.6875rem;
+        color: #628ECB;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-bottom: 0.375rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .info-block-label i {
+        font-size: 0.75rem;
+    }
+
+    .info-block-value {
+        color: #395886;
         font-weight: 500;
-        font-size: 0.875rem;
-        display: inline-block;
+        font-size: 0.8125rem;
+        line-height: 1.4;
     }
 
     .empty-state {
-        padding: 3rem;
+        background: white;
+        border-radius: 12px;
+        padding: 3rem 2rem;
         text-align: center;
-        color: #628ECB;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
     }
 
-    .empty-state i {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-        opacity: 0.5;
+    .empty-state-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #F0F3FA 0%, #E8EEF8 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+
+    .empty-state-icon i {
+        font-size: 2rem;
+        color: #8AAEE0;
+    }
+
+    .empty-state h5 {
+        color: #395886;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 1.125rem;
+    }
+
+    .empty-state p {
+        color: #628ECB;
+        margin: 0;
+        font-size: 0.875rem;
     }
 </style>
 
-<div class="card">
-    <div class="card-header">
-        <h3 class="card-title">
-            <i class="fas fa-file-medical"></i> Riwayat Rekam Medis
-        </h3>
-    </div>
-
-    <div class="card-body table-responsive p-0">
-        @if(count($rekam) > 0)
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th style="width: 180px;">Hewan</th>
-                        <th style="width: 150px;">Tanggal</th>
-                        <th>Anamnesa</th>
-                        <th>Diagnosa</th>
-                        <th>Temuan Klinis</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach($rekam as $r)
-                    <tr>
-                        <td>
-                            <span class="pet-badge">
-                                <i class="fas fa-paw"></i>
-                                {{ $r->nama_pet }}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="date-badge">
-                                <i class="far fa-calendar-alt me-1"></i>
-                                {{ \Carbon\Carbon::parse($r->created_at)->format('d M Y') }}
-                            </span>
-                        </td>
-                        <td>{{ $r->anamnesa }}</td>
-                        <td><strong>{{ $r->diagnosa }}</strong></td>
-                        <td>{{ $r->temuan_klinis }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @else
-            <div class="empty-state">
-                <i class="fas fa-file-medical"></i>
-                <h5 style="color: #395886;">Belum Ada Riwayat Rekam Medis</h5>
-                <p style="color: #628ECB;">Belum ada catatan rekam medis untuk hewan peliharaan Anda.</p>
-            </div>
-        @endif
+<!-- Page Header -->
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col-md-9">
+            <h1><i class="bi bi-clock-history"></i> Riwayat Pemeriksaan</h1>
+            <p>Lihat riwayat rekam medis hewan peliharaan Anda</p>
+        </div>
+        <div class="col-md-3 text-end d-none d-md-block">
+            <i class="bi bi-file-medical-fill" style="font-size: 3rem; opacity: 0.25;"></i>
+        </div>
     </div>
 </div>
+
+<!-- Timeline -->
+@if(count($rekam) > 0)
+    <div class="timeline">
+        @foreach($rekam as $r)
+        <div class="timeline-item">
+            <div class="timeline-marker">
+                <i class="bi bi-file-medical-fill"></i>
+            </div>
+            
+            <div class="timeline-card">
+                <div class="timeline-header">
+                    <span class="pet-badge">
+                        <i class="bi bi-heart-fill"></i>
+                        {{ $r->nama_pet }}
+                    </span>
+                    <span class="date-badge">
+                        <i class="bi bi-calendar-fill"></i>
+                        {{ \Carbon\Carbon::parse($r->created_at)->format('d M Y') }}
+                    </span>
+                </div>
+
+                <div class="timeline-content">
+                    <div class="info-block">
+                        <div class="info-block-label">
+                            <i class="bi bi-chat-dots-fill"></i> Anamnesa
+                        </div>
+                        <div class="info-block-value">{{ $r->anamnesa }}</div>
+                    </div>
+
+                    <div class="info-block">
+                        <div class="info-block-label">
+                            <i class="bi bi-clipboard-pulse"></i> Diagnosa
+                        </div>
+                        <div class="info-block-value">{{ $r->diagnosa }}</div>
+                    </div>
+
+                    <div class="info-block">
+                        <div class="info-block-label">
+                            <i class="bi bi-search"></i> Temuan Klinis
+                        </div>
+                        <div class="info-block-value">{{ $r->temuan_klinis }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+@else
+    <div class="empty-state">
+        <div class="empty-state-icon">
+            <i class="bi bi-clipboard2-x"></i>
+        </div>
+        <h5>Belum Ada Riwayat Pemeriksaan</h5>
+        <p>Belum ada catatan rekam medis untuk hewan peliharaan Anda</p>
+    </div>
+@endif
 
 @endsection

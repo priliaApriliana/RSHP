@@ -153,6 +153,20 @@
                         </a>
                     </li>
 
+                    <!-- ... menu lain ... -->
+    
+                    <!-- Divider -->
+                    <li class="nav-header">AKUN</li>
+                    
+                    <!-- Profil Admin -->
+                    <li class="nav-item">
+                        <a href="{{ route('admin.profil') }}" 
+                        class="nav-link {{ request()->routeIs('admin.profil*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-person-circle"></i>
+                            <p>Profil Saya</p>
+                        </a>
+                    </li>
+
                 {{-- DOKTER MENU --}}
                 @elseif($roleId == 2)
                     <!-- Dashboard -->

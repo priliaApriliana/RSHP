@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\LoginController;
 
 // ADMIN
 use App\Http\Controllers\Admin\{
+    AdminProfilController,
     DashboardAdminController,
     PetController as AdminPetController,
     PemilikController as AdminPemilikController,
@@ -221,6 +222,12 @@ Route::middleware('isAdministrator')->prefix('admin')->name('admin.')->group(fun
         Route::put('/{perawat}', [PerawatController::class, 'update'])->name('update');
         Route::delete('/{perawat}', [PerawatController::class, 'destroy'])->name('destroy');
     });
+
+     // ========================================
+    // DATA PEGAWAI - PERAWAT
+    // ========================================
+    Route::get('/profil', [AdminProfilController::class, 'index'])->name('profil');
+    Route::put('/profil/update', [AdminProfilController::class, 'update'])->name('profil.update');
 });
 
 
