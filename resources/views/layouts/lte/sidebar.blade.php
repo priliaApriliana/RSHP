@@ -97,7 +97,7 @@
                     <li class="nav-item">
                         <a href="{{ route('admin.pet.index') }}" 
                            class="nav-link {{ request()->routeIs('admin.pet.*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-heart-fill"></i>
+                            <i class="nav-icon bi bi-bug"></i>
                             <p>Data Pet</p>
                         </a>
                     </li>
@@ -141,14 +141,14 @@
 
                     <li class="nav-item">
                         <a href="{{ route('admin.dokter.index') }}" class="nav-link">
-                            <i class="nav-icon fas fa-user-md"></i>
+                            <i class="nav-icon bi bi bi-person-hearts"></i>
                             <p>Data Dokter</p>
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a href="{{ route('admin.perawat.index') }}" class="nav-link">
-                            <i class="nav-icon fas fa-user-nurse"></i>
+                            <i class="nav-icon bi bi-person-badge"></i>
                             <p>Data Perawat</p>
                         </a>
                     </li>

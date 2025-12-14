@@ -13,7 +13,7 @@
 <div class="card">
 
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-user-nurse"></i> Edit Data Perawat</h3>
+        <h3 class="card-title"><i class="bi bi-user-nurse"></i> Edit Data Perawat</h3>
     </div>
 
     <div class="card-body">
@@ -59,7 +59,7 @@
                 </select>
             </div>
 
-            <button class="btn btn-primary"><i class="fas fa-save"></i> Update</button>
+            <button class="btn btn-primary"><i class="bi bi-save"></i> Update</button>
             <a href="{{ route('admin.perawat.index') }}" class="btn btn-secondary">Kembali</a>
 
         </form>
