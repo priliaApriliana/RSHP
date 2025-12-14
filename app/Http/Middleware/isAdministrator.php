@@ -22,7 +22,7 @@ class isAdministrator
         }
 
         //ambil role dari session atau dari relasi user
-        $userRole = session('user_role');
+        $userRole = session('user_role_id');
 
         //jika user terautentifikasi tapi role 1, return 403
         if ($userRole === 1) {

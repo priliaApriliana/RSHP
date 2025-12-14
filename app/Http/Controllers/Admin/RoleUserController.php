@@ -92,14 +92,22 @@ class RoleUserController extends Controller
 
     // ===============================
     // DESTROY - Hapus relasi role-user
-    // ===============================
     public function destroy($id)
     {
-        DB::table('role_user')->where('idrole_user', $id)->delete();
-
+        $roleUser = DB::table('role_user')->where('idrole_user', $id)->first();
+    
+        if ($roleUser) {
+            // Hapus role_user
+            DB::table('role_user')->where('idrole_user', $id)->delete();
+    
+            // Hapus user terkait
+            DB::table('user')->where('iduser', $roleUser->iduser)->delete();
+        }
+    
         return redirect()->route('admin.roleuser.index')
-                         ->with('success', 'Relasi roleuser berhasil dihapus.');
+                         ->with('success', 'User dan role berhasil dihapus.');
     }
+    
 
     // ======================================================
     // PROTECTED HELPER FUNCTIONS
@@ -113,7 +121,7 @@ class RoleUserController extends Controller
             'email' => 'required|email|unique:user,email',
             'password' => 'required|min:6|confirmed',
             'idrole' => 'required|exists:role,idrole',
-            'status' => 'required|in:aktif,nonaktif',
+            'status' => 'required|in:1,0',
         ];
 
         $messages = [
@@ -134,7 +142,7 @@ class RoleUserController extends Controller
             'email' => 'required|email|unique:user,email,' . ($roleUser->iduser ?? 'NULL') . ',iduser',
             'password' => 'nullable|min:6',
             'idrole' => 'required|exists:role,idrole',
-            'status' => 'required|in:aktif,nonaktif',
+            'status' => 'required|in:1,0',
         ];
 
         $messages = [
@@ -157,19 +165,18 @@ class RoleUserController extends Controller
     // Simpan relasi role-user baru
     protected function createRoleUser(Request $request, $userId)
     {
-        $status = $request->status === 'aktif' ? 1 : 0;
-
         DB::table('role_user')->insert([
             'iduser' => $userId,
             'idrole' => $request->idrole,
-            'status' => $status,
+            'status' => (int) $request->status, // ← perbaikan
         ]);
     }
+    
 
     // Update data user dan relasinya
     protected function updateUserAndRole(Request $request, $id)
     {
-        $status = $request->status === 'aktif' ? 1 : 0;
+        $status = (int) $request->status;
         $roleUser = DB::table('role_user')->where('idrole_user', $id)->first();
 
         if ($roleUser) {

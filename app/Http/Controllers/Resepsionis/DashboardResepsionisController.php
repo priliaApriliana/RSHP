@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Pet;
 use App\Models\Pemilik;
 use App\Models\TemuDokter;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardResepsionisController extends Controller
 {
@@ -15,7 +17,8 @@ class DashboardResepsionisController extends Controller
         $totalPet = Pet::count();
         $totalPemilik = Pemilik::count();
         $totalTemuDokter = TemuDokter::count();
+        $user = Auth::user();
 
-        return view('resepsionis.dashboard-resepsionis', compact('totalPet', 'totalPemilik', 'totalTemuDokter'));
+        return view('resepsionis.dashboard-resepsionis', compact('totalPet', 'totalPemilik', 'totalTemuDokter', 'user'));
     }
 }

@@ -23,17 +23,17 @@
                 @method('PUT')
                 
                 <div class="card-body">
-                    <!-- Nama Lengkap -->
+                    <!-- Nama -->
                     <div class="mb-3">
-                        <label for="nama_lengkap" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                        <label for="nama" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
                         <input type="text" 
-                               class="form-control @error('nama_lengkap') is-invalid @enderror" 
-                               id="nama_lengkap" 
-                               name="nama_lengkap" 
+                               class="form-control @error('nama') is-invalid @enderror" 
+                               id="nama" 
+                               name="nama" 
                                placeholder="Masukkan nama pengguna..."
-                               value="{{ old('nama_lengkap', $roleUser->nama_user) }}"
+                               value="{{ old('nama', $roleUser->nama_user) }}"
                                required>
-                        @error('nama_lengkap')
+                        @error('nama')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

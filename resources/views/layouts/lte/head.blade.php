@@ -59,4 +59,7 @@
         integrity="sha256-uIeLmTK0Qrb+Z6kDYS/NRshKsONXFHUblf029/o4="
         crossorigin="anonymous"
     />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>

@@ -42,4 +42,9 @@ class TemuDokter extends Model
     {
         return $this->hasMany(RekamMedis::class, 'idreservasi_dokter', 'idreservasi_dokter');
     }
+
+    public function roleUser()
+    {
+        return $this->belongsTo(RoleUser::class, 'idrole_user', 'idrole_user');
+    }
 }

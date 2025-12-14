@@ -35,7 +35,7 @@
                                 <th>Tanggal Lahir</th>
                                 <th>Warna / Tanda</th>
                                 <th>Jenis Kelamin</th>
-                                <th>Ras</th>
+                                <th>Ras Hewan</th>
                                 <th>Pemilik</th>
                                 <th style="width: 160px;">Aksi</th>
                             </tr>

@@ -68,7 +68,7 @@ class KategoriController extends Controller
 
         $data = Kategori::findOrFail($id);
         $data->update([
-            'nama_kategori' => $this->formatTitleCase($validatedData['nama_kategori']),
+            'nama_kategori' => $this->formatNamaKategori($validatedData['nama_kategori']),
             'deskripsi'     => $validatedData['deskripsi'] ?? null,
         ]);
 

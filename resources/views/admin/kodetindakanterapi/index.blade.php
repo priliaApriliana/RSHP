@@ -56,8 +56,8 @@
 
                                 <td>{{ $k->kode }}</td>
                                 <td>{{ $k->deskripsi_tindakan_terapi }}</td>
-                                <td>{{ $k->kategori->nama_kategori ?? '-' }}</td>
-                                <td>{{ $k->kategoriKlinis->nama_kategori_klinis ?? '-' }}</td>
+                                <td>{{ $k->nama_kategori ?? '-' }}</td>
+                                <td>{{ $k->nama_kategori_klinis ?? '-' }}</td>
 
                                 <td class="text-center">
                                     <a href="{{ route('admin.kodetindakanterapi.edit', $k->idkode_tindakan_terapi) }}"

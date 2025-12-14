@@ -83,5 +83,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
         crossorigin="anonymous"></script>
+
+    @yield('scripts')  <!-- Tambahkan baris ini -->
 </body>
 </html>

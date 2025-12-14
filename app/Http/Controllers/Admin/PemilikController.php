@@ -105,10 +105,23 @@ class PemilikController extends Controller
     // Form edit
     public function edit($id)
     {
-        $data = Pemilik::findOrFail($id);
-        $users = User::all();
-        return view('admin.pemilik.edit', compact('data', 'users'));
+        // ambil data pemilik
+        $pemilik = DB::table('pemilik')
+            ->where('idpemilik', $id)
+            ->first();
+    
+        // jika tidak ada → tampilkan 404
+        if (!$pemilik) {
+            abort(404, 'Data Pemilik tidak ditemukan');
+        }
+    
+        // ambil semua user
+        $users = DB::table('user')->get();
+    
+        // kirim ke view
+        return view('admin.pemilik.edit', compact('pemilik', 'users'));
     }
+    
 
     // Update data
     public function update(Request $request, $id)

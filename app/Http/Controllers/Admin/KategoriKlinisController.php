@@ -18,7 +18,7 @@ class KategoriKlinisController extends Controller
             ->select('idkategori_klinis', 'nama_kategori_klinis')
             ->get();
 
-            return view('admin.KategoriKlinis.index', compact('kategoriKlinis'));
+            return view('admin.kategoriklinis.index', compact('kategoriKlinis'));
 
         // $kategori_klinis = KategoriKlinis::all();
         // return view('admin.kategoriklinis.index', compact('kategori_klinis'));
@@ -104,7 +104,7 @@ class KategoriKlinisController extends Controller
     public function edit($id)
     {
         $data = KategoriKlinis::findOrFail($id);
-        return view('admin.kategori_klinis.edit', compact('data'));
+        return view('admin.kategoriklinis.edit', compact('data'));
     }
 
     // -------------------------------
@@ -116,7 +116,7 @@ class KategoriKlinisController extends Controller
 
         $data = KategoriKlinis::findOrFail($id);
         $data->update([
-            'nama_kategori_klinis' => $this->formatTitleCase($validatedData['nama_kategori_klinis']),
+            'nama_kategori_klinis' => $this->formatNamaKategoriKlinis($validatedData['nama_kategori_klinis']),
         ]);
 
         return redirect()->route('admin.kategoriklinis.index')

@@ -3,124 +3,87 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use App\Models\Role;
-use App\Models\User;
-use App\Models\RoleUser;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator; //tambahan
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    use AuthenticatesUsers;
-
-    public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
-        $this->middleware('auth')->only('logout');
-    }
-
-    //tampilkan form login (kalo mau nganti css)
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    //proses login           
     public function login(Request $request)
     {
-        //validasi input
+        // Validasi
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|min:6',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            return back()->withErrors($validator)->withInput();
         }
 
-        //ambil user beserta role yang aktif
-        $user = User::with(['roleUser' => function($query) {
-                $query->where('status', 1);
-        }, 'roleUser.role'])
-        ->where('email', $request->input('email'))
-        ->first();
+        // Ambil user dari tabel user
+        $user = DB::table('user')
+            ->where('email', $request->email)
+            ->first();
 
         if (!$user) {
-            return redirect()->back()
-                ->withErrors(['email' => 'Email tidak ditemukan.'])
-                ->withInput();
+            return back()->withErrors(['email' => 'Email tidak ditemukan.']);
         }
 
-        //cek password
+        // Cek password
         if (!Hash::check($request->password, $user->password)) {
-            return redirect()->back()
-                ->withErrors(['password' => 'Password salah.'])
-                ->withInput();
+            return back()->withErrors(['password' => 'Password salah.']);
         }
 
-        //ambil data role user
-        $roleId = $user->roleUser[0]->idrole ?? null;
-        $namaRole = Role::where('idrole', $user->roleUser(0)->idrole ?? null)->first();
+        // Ambil role user aktif
+        $roleUser = DB::table('role_user')
+            ->where('iduser', $user->iduser)
+            ->where('status', 1)
+            ->first();
 
-        //login user ke sessionn laravel
-        Auth::login($user);
+        if (!$roleUser) {
+            return back()->withErrors(['role' => 'Role tidak aktif.']);
+        }
 
-        //simpan data user ke session
-        $request->session()->put([
-            'user_id' => $user->iduser,
-            'user_name' => $user->nama,
-            'user_email' => $user->email,
-            'user_role_id' => $roleId,
-             'user_role' => $roleId,
-            'user_role_name' => $namaRole->nama_role ?? 'User',
-            'user_status' => $user->roleUser(0)->status ?? 'active'
+        // Ambil nama role
+        $role = DB::table('role')
+            ->where('idrole', $roleUser->idrole)
+            ->first();
+
+        // Login manual
+        Auth::loginUsingId($user->iduser);
+
+        // Simpan session
+        session([
+            'user_id'        => $user->iduser,
+            'user_name'      => $user->nama,
+            'user_email'     => $user->email,
+            'user_role_id'   => $roleUser->idrole,
+            'user_role_name' => $role->nama_role ?? 'User',
         ]);
 
-        switch ($roleId) {
-            case '1':
-                return redirect()->route('admin.dashboard')->with('success', 'Login berhasil!');
-            case '2':
-                return redirect()->route('dokter.dashboard')->with('success', 'Login berhasil!');
-            case '3':
-                return redirect()->route('perawat.dashboard')->with('success', 'Login berhasil!');
-            case '4':
-                return redirect()->route('resepsionis.dashboard')->with('success', 'Login berhasil!');
-            case '5':
-                return redirect()->route('pemilik.dashboard')->with('success', 'Login berhasil!');
-            // default:
-            //     return redirect()->route('pemilik.dashboard')->with('success', 'Login berhasil!');
-        }
+        // Redirect berdasarkan role
+        return match ($roleUser->idrole) {
+            1 => redirect()->route('admin.dashboard'),
+            2 => redirect()->route('dokter.dashboard'),
+            3 => redirect()->route('perawat.dashboard'),
+            4 => redirect()->route('resepsionis.dashboard'),
+            5 => redirect()->route('pemilik.dashboard'),
+        };
     }
 
-    public function logout(Request $request) 
+    public function logout(Request $request)
     {
         Auth::logout();
-        
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        return redirect('/login')->with('success', 'logout berhasil!');
+        return redirect('/login')->with('success', 'Logout berhasil!');
     }
-    
-
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-
-
-
 }

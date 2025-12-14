@@ -22,4 +22,9 @@ class Rashewan extends Model
     {
         return $this->belongsTo(JenisHewan::class, 'idjenis_hewan', 'idjenis_hewan');
     }
+
+    public function pet()
+    {
+        return $this->hasMany(Pet::class, 'idras_hewan', 'idras_hewan');
+    }
 }

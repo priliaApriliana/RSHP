@@ -22,7 +22,7 @@
             </div>
 
             <!-- FORM -->
-            <form action="{{ route('admin.kategori.update', $kategori->idkategori) }}" method="POST">
+            <form action="{{ route('admin.kategori.update', $data->idkategori) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -51,7 +51,7 @@
                                name="nama_kategori"
                                class="form-control @error('nama_kategori') is-invalid @enderror"
                                placeholder="Contoh: Obat, Vaksinasi, Grooming"
-                               value="{{ old('nama_kategori', $kategori->nama_kategori) }}"
+                               value="{{ old('nama_kategori', $data->nama_kategori) }}"
                                required>
 
                         @error('nama_kategori')
@@ -69,7 +69,7 @@
                                   name="deskripsi"
                                   class="form-control @error('deskripsi') is-invalid @enderror"
                                   rows="3"
-                                  placeholder="Tulis keterangan tambahan jika diperlukan...">{{ old('deskripsi', $kategori->deskripsi) }}</textarea>
+                                  placeholder="Tulis keterangan tambahan jika diperlukan...">{{ old('deskripsi', $data->deskripsi) }}</textarea>
 
                         @error('deskripsi')
                             <div class="invalid-feedback">{{ $message }}</div>

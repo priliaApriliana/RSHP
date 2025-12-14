@@ -34,14 +34,15 @@
             </thead>
 
             <tbody>
-                @foreach ($perawat as $p)
+                @foreach ($perawats as $p)
                 <tr>
                     <td>{{ $p->id_perawat }}</td>
                     <td>{{ $p->alamat }}</td>
                     <td>{{ $p->no_hp }}</td>
                     <td>{{ $p->jenis_kelamin }}</td>
                     <td>{{ $p->pendidikan }}</td>
-                    <td>{{ $p->user->nama ?? '-' }}</td>
+                    {{-- User dari join --}}
+                    <td>{{ $p->nama ?? '-' }}</td>
 
                     <td>
                         <a href="{{ route('admin.perawat.edit', $p->id_perawat) }}" 

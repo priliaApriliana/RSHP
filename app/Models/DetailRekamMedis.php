@@ -16,6 +16,11 @@ class DetailRekamMedis extends Model
         'detail'
     ];
 
+    public function rekamMedis()
+    {
+        return $this->belongsTo(RekamMedis::class, 'idrekam_medis', 'idrekam_medis');
+    }
+    
     public function tindakan()
     {
         return $this->belongsTo(KodeTindakanTerapi::class, 'idkode_tindakan_terapi');

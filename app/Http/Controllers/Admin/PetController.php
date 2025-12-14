@@ -111,7 +111,7 @@ class PetController extends Controller
             'warna_tanda'   => $this->formatNamaPet($data['warna_tanda']),
             'jenis_kelamin' => $data['jenis_kelamin'],
             'idpemilik'     => $data['idpemilik'],
-            'idras_hewan'   => $data['idras_hewan'],                'idras_hewan'    => $data['idras_hewan'],
+            'idras_hewan'   => $data['idras_hewan'],        
         ]);
 
         return $newId;
@@ -126,22 +126,25 @@ class PetController extends Controller
      // Tampilkan form edit/update data
      public function edit($id)
      {
-        $pet = DB::table('pet')->where('idpet', $id)->first();
-        $ras = DB::table('ras_hewan')
-            ->join('jenis_hewan', 'ras_hewan.idjenis_hewan', '=', 'jenis_hewan.idjenis_hewan')
-            ->select('ras_hewan.*', 'jenis_hewan.nama_jenis_hewan')        
-        ->get();
-        $pemilik = DB::table('pemilik')
-                ->join('user', 'pemilik.iduser', '=', 'user.iduser')
-                ->select(
-                    'pemilik.idpemilik',
-                    'pemilik.no_wa',
-                    'user.nama as nama_pemilik'
-        )
-        ->get();
-
-         return view('admin.pet.edit', compact('pet', 'jenis', 'pemilik'));
+         $pet = DB::table('pet')->where('idpet', $id)->first();
+     
+         $ras = DB::table('ras_hewan')
+             ->join('jenis_hewan', 'ras_hewan.idjenis_hewan', '=', 'jenis_hewan.idjenis_hewan')
+             ->select('ras_hewan.*', 'jenis_hewan.nama_jenis_hewan')
+             ->get();
+     
+         $pemilik = DB::table('pemilik')
+             ->join('user', 'pemilik.iduser', '=', 'user.iduser')
+             ->select(
+                 'pemilik.idpemilik',
+                 'pemilik.no_wa',
+                 'user.nama as nama_pemilik'
+             )
+             ->get();
+     
+         return view('admin.pet.edit', compact('pet', 'ras', 'pemilik'));
      }
+     
  
      // Update data
      public function update(Request $request, $id)
@@ -149,9 +152,9 @@ class PetController extends Controller
         $validated = $this->validatePet($request, $id);
 
         DB::table('pet')->where('idpet', $id)->update([
-            'nama'           => $this->formatTitleCase($validated['nama']),
+            'nama'           => $this->formatNamaPet($validated['nama']),
             'tanggal_lahir'  => $validated['tanggal_lahir'],
-            'warna_tanda'    => $this->formatTitleCase($validated['warna_tanda']),
+            'warna_tanda'    => $this->formatNamaPet($validated['warna_tanda']),
             'jenis_kelamin'  => $validated['jenis_kelamin'],
             'idpemilik'      => $validated['idpemilik'],
             'idras_hewan'    => $validated['idras_hewan'],

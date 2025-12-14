@@ -20,9 +20,12 @@ class KategoriKlinis extends Model
 
     // Kolom yang dapat diisi
     protected $fillable = [
-        'idkategori_klinis',
         'nama_kategori_klinis'
     ];
 
+    public function kodeTindakanTerapi()
+    {
+        return $this->hasMany(KodeTindakanTerapi::class, 'idkategori_klinis', 'idkategori_klinis');
+    }
 
 }

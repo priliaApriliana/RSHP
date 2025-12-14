@@ -18,31 +18,31 @@
 
     <div class="card-body">
 
-        <form action="{{ route('admin.perawat.update', $perawat->id_perawat) }}" method="POST">
+        <form action="{{ route('admin.perawat.update', $data->id_perawat) }}" method="POST">
             @csrf
             @method('PUT')
 
             <div class="mb-3">
                 <label>Alamat</label>
-                <input type="text" name="alamat" value="{{ $perawat->alamat }}" class="form-control" required>
+                <input type="text" name="alamat" value="{{ $data->alamat }}" class="form-control" required>
             </div>
 
             <div class="mb-3">
                 <label>No HP</label>
-                <input type="text" name="no_hp" value="{{ $perawat->no_hp }}" class="form-control" required>
+                <input type="text" name="no_hp" value="{{ $data->no_hp }}" class="form-control" required>
             </div>
 
             <div class="mb-3">
                 <label>Jenis Kelamin</label>
                 <select name="jenis_kelamin" class="form-control" required>
-                    <option value="L" {{ $perawat->jenis_kelamin == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                    <option value="P" {{ $perawat->jenis_kelamin == 'P' ? 'selected' : '' }}>Perempuan</option>
+                    <option value="L" {{ $data->jenis_kelamin == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                    <option value="P" {{ $data->jenis_kelamin == 'P' ? 'selected' : '' }}>Perempuan</option>
                 </select>
             </div>
 
             <div class="mb-3">
                 <label>Pendidikan</label>
-                <input type="text" name="pendidikan" value="{{ $perawat->pendidikan }}" class="form-control" required>
+                <input type="text" name="pendidikan" value="{{ $data->pendidikan }}" class="form-control" required>
             </div>
 
             <div class="mb-3">
@@ -51,7 +51,7 @@
 
                     @foreach($user as $u)
                     <option value="{{ $u->iduser }}" 
-                        {{ $perawat->id_user == $u->iduser ? 'selected' : '' }}>
+                        {{ $data->id_user == $u->iduser ? 'selected' : '' }}>
                         {{ $u->nama }} ({{ $u->email }})
                     </option>
                     @endforeach

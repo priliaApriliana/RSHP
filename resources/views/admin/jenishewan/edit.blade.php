@@ -22,7 +22,7 @@
             </div>
 
             {{-- FORM --}}
-            <form action="{{ route('admin.jenishewan.update', $jenisHewan->idjenis_hewan) }}" method="POST">
+            <form action="{{ route('admin.jenishewan.update', $data->idjenis_hewan) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -52,7 +52,7 @@
                                name="nama_jenis_hewan"
                                class="form-control @error('nama_jenis_hewan') is-invalid @enderror"
                                placeholder="Masukkan nama jenis hewan"
-                               value="{{ old('nama_jenis_hewan', $jenisHewan->nama_jenis_hewan) }}"
+                               value="{{ old('nama_jenis_hewan', $data->nama_jenis_hewan) }}"
                                required>
 
                         @error('nama_jenis_hewan')

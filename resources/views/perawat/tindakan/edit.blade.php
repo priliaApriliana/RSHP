@@ -4,8 +4,6 @@
 
 @section('content')
 
-<h3 class="fw-bold mb-3">Edit Kode Tindakan Terapi</h3>
-
 <div class="card">
     <div class="card-body">
 

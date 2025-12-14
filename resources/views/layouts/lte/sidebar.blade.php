@@ -50,7 +50,7 @@
                         <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-box-seam-fill"></i>
                             <p>
-                                Master Data
+                                Data Master
                                 <i class="nav-arrow bi bi-chevron-right"></i>
                             </p>
                         </a>
@@ -132,10 +132,25 @@
                                 <a href="{{ route('admin.roleuser.index') }}" 
                                    class="nav-link {{ request()->routeIs('admin.roleuser.*') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-circle"></i>
-                                    <p>User</p>
+                                    <p>Role User</p>
                                 </a>
                             </li>
                         </ul>
+                    </li>
+                    <li class="nav-header">TRANSAKSI</li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('admin.dokter.index') }}" class="nav-link">
+                            <i class="nav-icon fas fa-user-md"></i>
+                            <p>Data Dokter</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('admin.perawat.index') }}" class="nav-link">
+                            <i class="nav-icon fas fa-user-nurse"></i>
+                            <p>Data Perawat</p>
+                        </a>
                     </li>
 
                 {{-- DOKTER MENU --}}
@@ -144,17 +159,40 @@
                     <li class="nav-item">
                         <a href="{{ route('dokter.dashboard') }}" 
                            class="nav-link {{ request()->routeIs('dokter.dashboard') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-speedometer"></i>
+                            <i class="nav-icon bi bi-speedometer2"></i>
                             <p>Dashboard</p>
                         </a>
                     </li>
 
-                    <!-- Rekam Medis -->
+                    <!-- Rekam Medis Management -->
+                    <li class="nav-item {{ request()->is('dokter/rekammedis*') ? 'menu-open' : '' }}">
+                        <a href="{{ url('/dokter/rekammedis') }}" class="nav-link {{ request()->is('dokter/rekammedis') || request()->is('dokter/rekammedis/create') || request()->is('dokter/rekammedis/*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-file-earmark-medical-fill"></i>
+                            <p>
+                                Rekam Medis
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ url('/dokter/rekammedis') }}" 
+                                   class="nav-link {{ request()->is('dokter/rekammedis') || request()->is('dokter/rekammedis/create') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-circle-fill"></i>
+                                    <p>Semua Rekam Medis</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Divider -->
+                    <li class="nav-header">PROFIL & PENGATURAN</li>
+
+                    <!-- Profil Dokter -->
                     <li class="nav-item">
-                        <a href="{{ url('/dokter/rekammedis') }}" 
-                           class="nav-link {{ request()->is('dokter/rekammedis*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-file-medical-fill"></i>
-                            <p>Rekam Medis</p>
+                        <a href="{{ route('dokter.profil') }}" 
+                           class="nav-link {{ request()->routeIs('dokter.profil*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-person-circle"></i>
+                            <p>Profil Saya</p>
                         </a>
                     </li>
 
@@ -166,6 +204,15 @@
                             class="nav-link {{ request()->routeIs('perawat.dashboard') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-speedometer"></i>
                                 <p>Dashboard</p>
+                            </a>
+                        </li>
+
+                        <!-- Data Pasien (hewan) -->
+                        <li class="nav-item">
+                            <a href="{{ route('perawat.pasien.index') }}" 
+                            class="nav-link {{ request()->routeIs('perawat.pasien.*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-people-fill"></i>
+                                <p>Data Pasien-Hewan</p>
                             </a>
                         </li>
 
@@ -189,33 +236,14 @@
                             </ul>
                         </li>
 
-                        <!-- TINDAKAN TERAPI -->
-                        <li class="nav-item {{ request()->is('perawat/tindakan*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon bi bi-syringe"></i>
-                                <p>
-                                    Kode Tindakan Terapi
-                                    <i class="nav-arrow bi bi-chevron-right"></i>
-                                </p>
+                        <!-- Profil Perawat -->
+                        <li class="nav-header">AKUN</li>
+                        <li class="nav-item">
+                            <a href="{{ route('perawat.profil') }}" 
+                            class="nav-link {{ request()->routeIs('perawat.profil*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-person-circle"></i>
+                                <p>Profil Saya</p>
                             </a>
-
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('perawat.tindakan.index') }}"
-                                    class="nav-link {{ request()->routeIs('perawat.tindakan.index') ? 'active' : '' }}">
-                                        <i class="nav-icon bi bi-circle"></i>
-                                        <p>Daftar Kode Tindakan Terapi</p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('perawat.tindakan.create') }}"
-                                    class="nav-link {{ request()->routeIs('perawat.tindakan.create') ? 'active' : '' }}">
-                                        <i class="nav-icon bi bi-circle"></i>
-                                        <p>Form Tindakan Terapi</p>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
 
                 {{-- RESEPSIONIS MENU --}}
@@ -229,30 +257,40 @@
                         </a>
                     </li>
 
-                    <!-- Registrasi Pet -->
+                    <!-- Pet -->
                     <li class="nav-item">
-                        <a href="{{ url('/resepsionis/pet/create') }}" 
-                           class="nav-link {{ request()->is('resepsionis/pet*') ? 'active' : '' }}">
+                        <a href="{{ route('resepsionis.pet.index') }}" 
+                           class="nav-link {{ request()->routeIs('resepsionis.pet.*') ? 'active' : '' }}">
                             <i class="nav-icon bi bi-heart-fill"></i>
-                            <p>Registrasi Pet</p>
+                            <p>Pet</p>
                         </a>
                     </li>
 
-                    <!-- Registrasi Pemilik -->
+                    <!-- Pemilik -->
                     <li class="nav-item">
-                        <a href="{{ url('/resepsionis/pemilik') }}" 
-                           class="nav-link {{ request()->is('resepsionis/pemilik*') ? 'active' : '' }}">
+                        <a href="{{ route('resepsionis.pemilik.index') }}" 
+                           class="nav-link {{ request()->routeIs('resepsionis.pemilik.*') ? 'active' : '' }}">
                             <i class="nav-icon bi bi-people-fill"></i>
-                            <p>Registrasi Pemilik</p>
+                            <p>Pemilik</p>
                         </a>
                     </li>
 
                     <!-- Temu Dokter -->
                     <li class="nav-item">
-                        <a href="{{ url('/resepsionis/temudokter') }}" 
-                           class="nav-link {{ request()->is('resepsionis/temudokter*') ? 'active' : '' }}">
+                        <a href="{{ route('resepsionis.temudokter.index') }}" 
+                           class="nav-link {{ request()->routeIs('resepsionis.temudokter.*') ? 'active' : '' }}">
                             <i class="nav-icon bi bi-person-badge-fill"></i>
-                            <p>Daftar Temu Dokter</p>
+                            <p>Temu Dokter</p>
+                        </a>
+                    </li>
+
+                    <!-- Profil Resepsionis -->
+                    <li class="nav-header">AKUN</li>
+                    <li class="nav-item">
+                        <a href="{{ route('resepsionis.profil') }}" 
+                        class="nav-link {{ request()->routeIs('resepsionis.profil*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-person-circle"></i>
+                            <p>Profil Saya</p>
                         </a>
                     </li>
 
@@ -276,6 +314,15 @@
                         </a>
                     </li>
 
+                        <!-- Jadwal Temu Dokter -->
+                    <li class="nav-item">
+                        <a href="{{ route('pemilik.temu-dokter') }}" 
+                        class="nav-link {{ request()->routeIs('pemilik.temu-dokter') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-calendar-check"></i>
+                            <p>Jadwal Temu Dokter</p>
+                        </a>
+                    </li>
+
                     <!-- Riwayat Pemeriksaan -->
                     <li class="nav-item">
                         <a href="{{ route('pemilik.riwayat') }}" 
@@ -284,10 +331,21 @@
                             <p>Riwayat Pemeriksaan</p>
                         </a>
                     </li>
+
+                    <!-- Divider AKUN -->
+                    <li class="nav-header">AKUN</li>
+
+                    <!-- Profil Pemilik - MENU BARU INI YANG DITAMBAHKAN -->
+                    <li class="nav-item">
+                        <a href="{{ route('pemilik.profil') }}" 
+                           class="nav-link {{ request()->routeIs('pemilik.profil*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-person-circle"></i>
+                            <p>Profil Saya</p>
+                        </a>
+                    </li>
                 @endif
 
                 {{-- LOGOUT - Untuk semua role --}}
-                <li class="nav-header">AKUN</li>
                 <li class="nav-item">
                     <a href="{{ route('logout') }}" 
                        class="nav-link"

@@ -8,7 +8,7 @@ use App\Models\KodeTindakanTerapi;
 use App\Models\Kategori;
 use App\Models\KategoriKlinis;
 
-class KodeTindakanTerapiController extends Controller
+class TindakanController extends Controller
 {
     /**
      * LIST DATA
@@ -22,7 +22,6 @@ class KodeTindakanTerapiController extends Controller
         return view('perawat.tindakan.index', compact('data'));
     }
 
-
     /**
      * FORM CREATE
      */
@@ -33,7 +32,6 @@ class KodeTindakanTerapiController extends Controller
 
         return view('perawat.tindakan.create', compact('kategori', 'kategoriKlinis'));
     }
-
 
     /**
      * SIMPAN DATA BARU
@@ -58,7 +56,6 @@ class KodeTindakanTerapiController extends Controller
                          ->with('success', 'Tindakan berhasil ditambahkan.');
     }
 
-
     /**
      * FORM EDIT
      */
@@ -71,7 +68,6 @@ class KodeTindakanTerapiController extends Controller
 
         return view('perawat.tindakan.edit', compact('data', 'kategori', 'kategoriKlinis'));
     }
-
 
     /**
      * UPDATE DATA
@@ -99,7 +95,6 @@ class KodeTindakanTerapiController extends Controller
         return redirect()->route('perawat.tindakan.index')
                          ->with('success', 'Tindakan berhasil diupdate.');
     }
-
 
     /**
      * HAPUS DATA

@@ -21,9 +21,12 @@ class Kategori extends Model
 
     // Kolom yang boleh diisi mass-assignment
     protected $fillable = [
-        'idkategori',
         'nama_kategori',
     ];
 
+    public function kodeTindakanTerapi()
+    {
+        return $this->hasMany(KodeTindakanTerapi::class, 'idkategori', 'idkategori');
+    }
 
 }

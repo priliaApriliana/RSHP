@@ -33,7 +33,7 @@
                             <tr>
                                 <th style="width: 60px">No</th>
                                 <th>Nama Pemilik</th>
-                                <th>No WA</th>
+                                <th>No.WhatsApp</th>
                                 <th>Alamat</th>
                                 <th style="width: 160px">Aksi</th>
                             </tr>

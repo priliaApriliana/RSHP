@@ -24,15 +24,15 @@
                 <div class="card-body">
                     <!-- Nama Lengkap -->
                     <div class="mb-3">
-                        <label for="nama_lengkap" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                        <label for="nama" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
                         <input type="text" 
-                               class="form-control @error('nama_lengkap') is-invalid @enderror" 
+                               class="form-control @error('nama') is-invalid @enderror" 
                                id="nama_lengkap" 
-                               name="nama_lengkap" 
+                               name="nama" 
                                placeholder="Masukkan nama pengguna..."
-                               value="{{ old('nama_lengkap') }}"
+                               value="{{ old('nama') }}"
                                required>
-                        @error('nama_lengkap')
+                        @error('nama')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -88,7 +88,7 @@
                                 id="idrole" 
                                 name="idrole"
                                 required>
-                            <option value="" selected disabled>-- Pilih Role --</option>
+                            <option value="">-- Pilih Role --</option>
                             @foreach($roles as $role)
                                 <option value="{{ $role->idrole }}" {{ old('idrole') == $role->idrole ? 'selected' : '' }}>
                                     {{ $role->nama_role }}
@@ -107,7 +107,7 @@
                                 id="status" 
                                 name="status"
                                 required>
-                            <option value="" selected disabled>-- Pilih Status --</option>
+                            <option value="">-- Pilih Status --</option>
                             <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Aktif</option>
                             <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Nonaktif</option>
                         </select>

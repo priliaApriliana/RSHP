@@ -4,33 +4,45 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dokter;
-use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DokterController extends Controller
 {
     /**
-     * Tampilkan semua dokter
+     * List Dokter
      */
     public function index()
     {
-        $dokter = Dokter::with('user')->get();
+        $dokter = DB::table('dokter')
+            ->join('user', 'dokter.id_user', '=', 'user.iduser')
+            ->select('dokter.*', 'user.nama', 'user.email')
+            ->get();
+
         return view('admin.dokter.index', compact('dokter'));
     }
 
     /**
-     * Form tambah dokter
+     * Form Tambah Dokter
      */
     public function create()
     {
-        // ambil semua akun user agar bisa dipilih sebagai dokter
-        $user = User::all();
+        // Ambil user yg role = Dokter dan belum masuk tabel dokter
+        $user = DB::table('user')
+            ->join('role_user', 'user.iduser', '=', 'role_user.iduser')
+            ->join('role', 'role_user.idrole', '=', 'role.idrole')
+            ->where('role.nama_role', 'Dokter')
+            ->whereNotIn('user.iduser', function ($q) {
+                $q->select('id_user')->from('dokter');
+            })
+            ->select('user.iduser', 'user.nama', 'user.email')
+            ->get();
 
         return view('admin.dokter.create', compact('user'));
     }
 
     /**
-     * Simpan data dokter baru
+     * Simpan Dokter
      */
     public function store(Request $request)
     {
@@ -38,35 +50,31 @@ class DokterController extends Controller
             'alamat' => 'required|max:100',
             'no_hp' => 'required|max:45',
             'bidang_dokter' => 'required|max:100',
-            'jenis_kelamin' => 'required|max:1',
-            'id_user' => 'required'
+            'jenis_kelamin' => 'required|in:L,P',
+            'id_user' => 'required|exists:user,iduser',
         ]);
 
-        Dokter::create([
-            'alamat' => $request->alamat,
-            'no_hp' => $request->no_hp,
-            'bidang_dokter' => $request->bidang_dokter,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'id_user' => $request->id_user
-        ]);
+        Dokter::create($request->all());
 
         return redirect()->route('admin.dokter.index')
-            ->with('success', 'Data dokter berhasil ditambahkan.');
+            ->with('success', 'Data dokter berhasil ditambahkan!');
     }
 
     /**
-     * Form edit dokter
+     * Edit Dokter
      */
     public function edit($id)
     {
         $dokter = Dokter::findOrFail($id);
-        $user = User::all();
+
+        // AMBIL DATA USER untuk dropdown
+        $user = DB::table('user')->get();
 
         return view('admin.dokter.edit', compact('dokter', 'user'));
     }
 
     /**
-     * Update dokter
+     * Update Dokter
      */
     public function update(Request $request, $id)
     {
@@ -74,30 +82,23 @@ class DokterController extends Controller
             'alamat' => 'required|max:100',
             'no_hp' => 'required|max:45',
             'bidang_dokter' => 'required|max:100',
-            'jenis_kelamin' => 'required|max:1',
-            'id_user' => 'required'
+            'jenis_kelamin' => 'required|in:L,P',
         ]);
 
-        Dokter::findOrFail($id)->update([
-            'alamat' => $request->alamat,
-            'no_hp' => $request->no_hp,
-            'bidang_dokter' => $request->bidang_dokter,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'id_user' => $request->id_user
-        ]);
+        Dokter::findOrFail($id)->update($request->all());
 
         return redirect()->route('admin.dokter.index')
-            ->with('success', 'Data dokter berhasil diupdate.');
+            ->with('success', 'Data dokter berhasil diperbarui!');
     }
 
     /**
-     * Hapus dokter
+     * Hapus Dokter
      */
     public function destroy($id)
     {
-        Dokter::destroy($id);
+        Dokter::findOrFail($id)->delete();
 
         return redirect()->route('admin.dokter.index')
-            ->with('success', 'Data dokter berhasil dihapus.');
+            ->with('success', 'Data dokter berhasil dihapus!');
     }
 }

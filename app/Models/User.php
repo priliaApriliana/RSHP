@@ -14,6 +14,7 @@ class User extends Authenticatable
     protected $primaryKey = 'iduser';
     public $timestamps = false;
 
+    // The attributes that are mass assignable.
     protected $fillable = [
         'iduser',
         'nama', 
@@ -21,11 +22,20 @@ class User extends Authenticatable
         'password',
     ];
 
-    // Relasi many-to-many ke Role
-    public function role()
+    /**
+    * The attributes that should be hidden for serialization.
+    */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * Relations
+     */
+    public function roleUser()
     {
-        return $this->belongsToMany(Role::class, 'role_user', 'iduser', 'idrole')
-                    ->withPivot('status'); // kalau kamu ingin akses kolom 'status'
+        return $this->hasMany(RoleUser::class, 'iduser', 'iduser');
     }
 
     public function pemilik()
@@ -33,9 +43,14 @@ class User extends Authenticatable
         return $this->hasOne(Pemilik::class, 'iduser', 'iduser');
     }
 
-    public function roleUser()
+    public function perawat()
     {
-        return $this->hasMany(RoleUser::class, 'iduser', 'iduser');
+        return $this->hasOne(Perawat::class, 'id_user', 'iduser');
+    }
+
+    public function dokter()
+    {
+        return $this->hasOne(Dokter::class, 'id_user', 'iduser');
     }
     
 }

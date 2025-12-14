@@ -19,8 +19,21 @@ class RekamMedis extends Model
         'dokter_pemeriksa'
     ];
 
+     // Relasi ke TemuDokter (melalui idreservasi_dokter)
     public function temu()
     {
-        return $this->belongsTo(TemuDokter::class, 'idreservasi_dokter');
+        return $this->belongsTo(TemuDokter::class, 'idreservasi_dokter', 'idreservasi_dokter');
     }
+    
+    public function detailRekamMedis()
+    {
+        return $this->hasMany(DetailRekamMedis::class, 'idrekam_medis', 'idrekam_medis');
+    }
+
+    // Relasi ke dokter pemeriksa (melalui role_user)
+    public function dokterPemeriksa()
+    {
+        return $this->belongsTo(RoleUser::class, 'dokter_pemeriksa', 'idrole_user');
+    }
+
 }

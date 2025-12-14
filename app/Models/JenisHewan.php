@@ -22,4 +22,9 @@ class JenisHewan extends Model
 
     // kalau tabel tidak punya kolom created_at & updated_at
     public $timestamps = false;
+
+    public function rasHewan()
+    {
+        return $this->hasMany(RasHewan::class, 'idjenis_hewan', 'idjenis_hewan');
+    }
 }

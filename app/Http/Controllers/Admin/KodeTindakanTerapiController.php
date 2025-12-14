@@ -103,11 +103,11 @@ class KodeTindakanTerapiController extends Controller
     // EDIT: form edit
     public function edit($id)
     {
-        $data = DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->first();
+        $kode = DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->first();
         $kategori = DB::table('kategori')->get();
         $kategoriKlinis = DB::table('kategori_klinis')->get();
 
-        return view('admin.kodetindakanterapi.edit', compact('data', 'kategori', 'kategoriKlinis'));
+        return view('admin.kodetindakanterapi.edit', compact('kode', 'kategori', 'kategoriKlinis'));
     }
 
     // UPDATE: simpan perubahan
@@ -119,7 +119,7 @@ class KodeTindakanTerapiController extends Controller
             ->where('idkode_tindakan_terapi', $id)
             ->update([
                 'kode' => strtoupper(trim($validatedData['kode'])),
-                'deskripsi_tindakan_terapi' => $this->formatSentence($validatedData['deskripsi_tindakan_terapi']),
+                'deskripsi_tindakan_terapi' => $this->formatDeskripsi($validatedData['deskripsi_tindakan_terapi']),
                 'idkategori' => $validatedData['idkategori'],
                 'idkategori_klinis' => $validatedData['idkategori_klinis'],
         ]);

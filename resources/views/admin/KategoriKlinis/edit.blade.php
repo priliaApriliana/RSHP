@@ -3,7 +3,7 @@
 @section('page-title', 'Edit Kategori Klinis')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.KategoriKlinis.index') }}">Kategori Klinis</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.kategoriklinis.index') }}">Kategori Klinis</a></li>
     <li class="breadcrumb-item active">Edit</li>
 @endsection
 
@@ -22,7 +22,7 @@
             </div>
 
             {{-- FORM --}}
-            <form action="{{ route('admin.KategoriKlinis.update', $kategoriKlinis->idkategori_klinis) }}" method="POST">
+            <form action="{{ route('admin.kategoriklinis.update', $data->idkategori_klinis) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -52,7 +52,7 @@
                                name="nama_kategori_klinis"
                                class="form-control @error('nama_kategori_klinis') is-invalid @enderror"
                                placeholder="Contoh: Umum, Bedah, Gigi"
-                               value="{{ old('nama_kategori_klinis', $kategoriKlinis->nama_kategori_klinis) }}"
+                               value="{{ old('nama_kategori_klinis', $data->nama_kategori_klinis) }}"
                                required>
 
                         @error('nama_kategori_klinis')
@@ -64,7 +64,7 @@
 
                 {{-- FOOTER --}}
                 <div class="card-footer d-flex justify-content-between">
-                    <a href="{{ route('admin.KategoriKlinis.index') }}" class="btn btn-secondary">
+                    <a href="{{ route('admin.kategoriklinis.index') }}" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Kembali
                     </a>
 

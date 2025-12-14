@@ -46,7 +46,7 @@
             </div>
 
             <div class="mb-3">
-                <label>User</label>
+                <label>Edit</label>
                 <select name="id_user" class="form-control" required>
 
                     @foreach($user as $u)
