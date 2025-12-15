@@ -45,7 +45,7 @@
     }
     
     .form-body {
-        padding: 2rem;
+        padding: 1.5rem;
         background: #F8FAFC;
     }
     
@@ -55,7 +55,7 @@
         border-left: 5px solid #d63031;
         border-radius: 10px;
         padding: 1rem 1.25rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.25rem;
     }
     
     .alert-error-text {
@@ -74,17 +74,17 @@
     
     .input-group-wrapper {
         background: #ffffff;
-        padding: 1.5rem;
+        padding: 1.25rem;
         border-radius: 12px;
         border: 2px solid #D5DEEF;
-        margin-bottom: 1.25rem;
+        margin-bottom: 1rem;
     }
     
     .form-label-custom {
         display: block;
         font-weight: 700;
         color: #395886;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.5rem;
         font-size: 0.9375rem;
     }
     

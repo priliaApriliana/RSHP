@@ -223,6 +223,57 @@
         box-shadow: 0 6px 16px rgba(98, 142, 203, 0.4);
         color: #ffffff;
     }
+
+    /* AUTO CODE DISPLAY STYLES */
+    .auto-code-display {
+        background: linear-gradient(135deg, #E8F4F8 0%, #D5DEEF 100%);
+        border: 2px dashed #628ECB;
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 8px rgba(98, 142, 203, 0.1);
+    }
+
+    .auto-code-label {
+        font-size: 0.8125rem;
+        color: #395886;
+        font-weight: 600;
+        margin-bottom: 0.625rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .auto-code-label i {
+        color: #628ECB;
+        font-size: 1rem;
+    }
+
+    .auto-code-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #395886;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 3px;
+        text-align: center;
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 8px;
+        margin-bottom: 0.625rem;
+    }
+
+    .auto-code-info {
+        font-size: 0.75rem;
+        color: #628ECB;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        justify-content: center;
+    }
+
+    .auto-code-info i {
+        font-size: 0.875rem;
+    }
 </style>
 
 <div class="container-fluid px-2">
@@ -257,29 +308,26 @@
                         </div>
                     @endif
 
-                    {{-- KODE --}}
-                    <div class="mb-3">
-                        <label class="form-label">Kode <span class="text-danger">*</span></label>
-                        <input type="text" 
-                               class="form-control @error('kode') is-invalid @enderror" 
-                               name="kode" 
-                               maxlength="5"
-                               placeholder="Contoh: K001"
-                               value="{{ old('kode') }}"
-                               required>
-
-                        @error('kode')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                    {{-- AUTO GENERATED CODE DISPLAY --}}
+                    <div class="auto-code-display">
+                        <div class="auto-code-label">
+                            <i class="bi bi-magic"></i>
+                            Kode Otomatis (akan digenerate saat menyimpan)
+                        </div>
+                        <div class="auto-code-value">{{ $nextCode }}</div>
+                        <div class="auto-code-info">
+                            <i class="bi bi-info-circle-fill"></i>
+                            Kode akan digenerate secara otomatis oleh sistem
+                        </div>
                     </div>
 
-                    {{-- DESKRIPSI --}}
+                    {{-- DESKRIPSI, Nama Tindakan Terapi --}}
                     <div class="mb-3">
-                        <label class="form-label">Deskripsi <span class="text-danger">*</span></label>
+                        <label class="form-label">Nama Tindakan Terapi <span class="text-danger">*</span></label>
                         <textarea name="deskripsi_tindakan_terapi" 
                                   class="form-control @error('deskripsi_tindakan_terapi') is-invalid @enderror"
                                   rows="4"
-                                  placeholder="Masukkan deskripsi tindakan..."
+                                  placeholder="Masukkan deskripsi tindakan terapi..."
                                   required>{{ old('deskripsi_tindakan_terapi') }}</textarea>
 
                         @error('deskripsi_tindakan_terapi')

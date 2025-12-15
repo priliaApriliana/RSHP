@@ -5,9 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-// use App\Models\KodeTindakanTerapi;
-// use App\Models\Kategori;
-// use App\Models\KategoriKlinis;
 
 class KodeTindakanTerapiController extends Controller
 {
@@ -32,8 +29,11 @@ class KodeTindakanTerapiController extends Controller
     {
         $kategori = DB::table('kategori')->get();
         $kategoriKlinis = DB::table('kategori_klinis')->get();
+        
+        // Generate kode otomatis untuk preview
+        $nextCode = $this->generateNextCode();
 
-        return view('admin.kodetindakanterapi.create', compact('kategori', 'kategoriKlinis'));
+        return view('admin.kodetindakanterapi.create', compact('kategori', 'kategoriKlinis', 'nextCode'));
     }
 
     // STORE: simpan data baru
@@ -49,19 +49,11 @@ class KodeTindakanTerapiController extends Controller
     // VALIDATOR
     protected function validateKodeTindakan(Request $request, $id = null)
     {
-        $uniqueRule = $id
-            ? 'unique:kode_tindakan_terapi,kode,' . $id . ',idkode_tindakan_terapi'
-            : 'unique:kode_tindakan_terapi,kode';
-
         return $request->validate([
-            'kode'                      => ['required', 'string', 'max:5', $uniqueRule],
             'deskripsi_tindakan_terapi' => ['required', 'string', 'max:1000'],
             'idkategori'                => ['required', 'exists:kategori,idkategori'],
             'idkategori_klinis'         => ['required', 'exists:kategori_klinis,idkategori_klinis'],
         ], [
-            'kode.required'                      => 'Kode wajib diisi.',
-            'kode.unique'                        => 'Kode sudah digunakan.',
-            'kode.max'                           => 'Kode maksimal 5 karakter.',
             'deskripsi_tindakan_terapi.required' => 'Deskripsi wajib diisi.',
             'deskripsi_tindakan_terapi.max'      => 'Deskripsi maksimal 1000 karakter.',
             'idkategori.required'                => 'Kategori wajib dipilih.',
@@ -71,20 +63,26 @@ class KodeTindakanTerapiController extends Controller
         ]);
     }
 
+    // GENERATE NEXT CODE
+    protected function generateNextCode()
+    {
+        $last = DB::table('kode_tindakan_terapi')
+            ->orderBy('idkode_tindakan_terapi', 'desc')
+            ->first();
+
+        if (!$last) {
+            return 'T01';
+        }
+
+        $lastNumber = intval(substr($last->kode, 1));
+        $newNumber = $lastNumber + 1;
+        return 'T' . str_pad($newNumber, 2, '0', STR_PAD_LEFT);
+    }
+
     // HELPER: simpan ke database
     protected function createKodeTindakan(array $data)
     {
-        // ambil kode terakhir
-        $last = DB::table('kode_tindakan_terapi')
-            ->orderBy('idkode_tindakan_terapi', 'desc')->first();
-
-        if (!$last) {
-            $newCode = 'T01';
-        } else {
-            $lastNumber = intval(substr($last->kode, 1));
-            $newNumber = $lastNumber + 1;
-            $newCode = 'T' . str_pad($newNumber, 2, '0', STR_PAD_LEFT);
-        }
+        $newCode = $this->generateNextCode();
 
         DB::table('kode_tindakan_terapi')->insert([
             'kode' => $newCode,
@@ -92,7 +90,7 @@ class KodeTindakanTerapiController extends Controller
             'idkategori' => $data['idkategori'],
             'idkategori_klinis' => $data['idkategori_klinis'],
         ]);
-}
+    }
 
     // FORMAT DESKRIPSI
     protected function formatDeskripsi($text)
@@ -118,7 +116,7 @@ class KodeTindakanTerapiController extends Controller
         DB::table('kode_tindakan_terapi')
             ->where('idkode_tindakan_terapi', $id)
             ->update([
-                'kode' => strtoupper(trim($validatedData['kode'])),
+                // kode tidak diupdate karena otomatis
                 'deskripsi_tindakan_terapi' => $this->formatDeskripsi($validatedData['deskripsi_tindakan_terapi']),
                 'idkategori' => $validatedData['idkategori'],
                 'idkategori_klinis' => $validatedData['idkategori_klinis'],

@@ -45,7 +45,7 @@
     }
     
     .form-body {
-        padding: 2rem;
+        padding: 1.5rem;
         background: #F8FAFC;
     }
     

@@ -1,6 +1,6 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Data Jenis Hewan')
+
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
     <li class="breadcrumb-item active">Jenis Hewan</li>
@@ -106,19 +106,20 @@
     }
     
     .data-table thead th {
-        padding: 1.125rem 1.5rem;
+        padding: 1rem;
         font-size: 0.75rem;
         font-weight: 700;
         color: #395886;
         text-transform: uppercase;
         letter-spacing: 0.8px;
-        border: none;
+        border: 2px solid #D5DEEF;
+        border-top: none;
     }
     
     .data-table tbody td {
-        padding: 1.25rem 1.5rem;
+        padding: 1rem;
         vertical-align: middle;
-        border-bottom: 1px solid #F0F3FA;
+        border: 2px solid #D5DEEF;
         font-size: 0.875rem;
         color: #395886;
     }
@@ -265,8 +266,8 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th style="width: 80px;">No</th>
-                        <th style="width: 150px;">ID Jenis</th>
+                        <th style="width: 70px;">No</th>
+                        <th style="width: 120px;">ID Jenis</th>
                         <th>Nama Jenis Hewan</th>
                         <th style="width: 200px;" class="text-center">Aksi</th>
                     </tr>

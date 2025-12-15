@@ -9,15 +9,196 @@
 
 @section('content')
 
-<div class="row">
-    <div class="col-md-8 offset-md-2">
+<style>
+    .form-wrapper {
+        max-width: 1000px;
+        margin: 0;
+        margin-left: 2rem;
+        margin-right: auto;
+    }
+    
+    .form-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(57, 88, 134, 0.1);
+        overflow: hidden;
+        border: 1px solid #D5DEEF;
+    }
+    
+    .form-header {
+        background: linear-gradient(135deg, #628ECB 0%, #395886 100%);
+        padding: 1.5rem 2rem;
+        border-bottom: 3px solid #395886;
+    }
+    
+    .form-header-title {
+        color: #ffffff;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+    }
+    
+    .form-header-title i {
+        font-size: 1.375rem;
+    }
+    
+    .form-body {
+        padding: 2rem;
+        background: #F8FAFC;
+    }
+    
+    .alert-error {
+        background: #ffffff;
+        border: 2px solid #ff6b6b;
+        border-left: 5px solid #d63031;
+        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .alert-error-title {
+        color: #d63031;
+        font-size: 0.9375rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .alert-error-title i {
+        font-size: 1.125rem;
+    }
+    
+    .alert-error ul {
+        margin: 0;
+        padding-left: 1.75rem;
+        list-style: disc;
+    }
+    
+    .alert-error li {
+        color: #e74c3c;
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .form-label-custom {
+        display: block;
+        font-weight: 700;
+        color: #395886;
+        margin-bottom: 0.75rem;
+        font-size: 0.9375rem;
+    }
+    
+    .required-star {
+        color: #d63031;
+        margin-left: 0.25rem;
+        font-size: 1rem;
+    }
+    
+    .form-input-custom {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #D5DEEF;
+        border-radius: 10px;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        background: #ffffff;
+        color: #2c3e50;
+        font-weight: 500;
+    }
+    
+    .form-input-custom:focus {
+        border-color: #628ECB;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(98, 142, 203, 0.15);
+        outline: none;
+    }
+    
+    .form-input-custom::placeholder {
+        color: #95a5a6;
+        font-weight: 400;
+    }
+    
+    .form-input-custom.is-invalid {
+        border-color: #e74c3c;
+        background: #fff5f5;
+    }
+    
+    .error-message {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        color: #e74c3c;
+        font-size: 0.8125rem;
+        margin-top: 0.5rem;
+        font-weight: 600;
+    }
+    
+    .error-message i {
+        font-size: 0.875rem;
+    }
+    
+    .form-footer {
+        background: linear-gradient(to right, #F0F3FA 0%, #ffffff 100%);
+        padding: 1.5rem 2rem;
+        border-top: 2px solid #D5DEEF;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .btn-custom {
+        padding: 0.75rem 1.75rem;
+        border-radius: 10px;
+        font-size: 0.9375rem;
+        font-weight: 700;
+        border: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+    
+    .btn-back-custom {
+        background: #ffffff;
+        color: #628ECB;
+        border: 2px solid #628ECB;
+    }
+    
+    .btn-back-custom:hover {
+        background: #628ECB;
+        color: #ffffff;
+        transform: translateX(-3px);
+        box-shadow: 0 4px 8px rgba(98, 142, 203, 0.3);
+    }
+    
+    .btn-update-custom {
+        background: linear-gradient(135deg, #628ECB 0%, #395886 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 10px rgba(98, 142, 203, 0.3);
+    }
+    
+    .btn-update-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(98, 142, 203, 0.4);
+        color: #ffffff;
+    }
+</style>
 
-        <div class="card">
+<div class="container-fluid px-2">
+    <div class="form-wrapper">
+        <div class="form-card">
 
             {{-- HEADER --}}
-            <div class="card-header">
-                <h3 class="card-title mb-0">
-                    <i class="bi bi-pencil-square"></i> Edit Role
+            <div class="form-header">
+                <h3 class="form-header-title">
+                    <i class="bi bi-pencil-square"></i>
+                    Edit Role
                 </h3>
             </div>
 
@@ -26,13 +207,16 @@
                 @csrf
                 @method('PUT')
 
-                <div class="card-body">
+                <div class="form-body">
 
                     {{-- Error Notif --}}
                     @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <strong>Terjadi kesalahan:</strong>
-                            <ul class="mt-2 mb-0">
+                        <div class="alert-error">
+                            <div class="alert-error-title">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                Terjadi kesalahan
+                            </div>
+                            <ul>
                                 @foreach ($errors->all() as $e)
                                     <li>{{ $e }}</li>
                                 @endforeach
@@ -42,31 +226,34 @@
 
                     {{-- Nama Role --}}
                     <div class="mb-3">
-                        <label for="nama_role" class="form-label">
-                            Nama Role <span class="text-danger">*</span>
+                        <label for="nama_role" class="form-label-custom">
+                            Nama Role <span class="required-star">*</span>
                         </label>
                         <input type="text"
                                id="nama_role"
                                name="nama_role"
-                               class="form-control @error('nama_role') is-invalid @enderror"
+                               class="form-input-custom @error('nama_role') is-invalid @enderror"
                                placeholder="Masukkan nama role"
                                value="{{ old('nama_role', $role->nama_role) }}"
                                required>
 
                         @error('nama_role')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="error-message">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
 
                 </div>
 
                 {{-- FOOTER --}}
-                <div class="card-footer d-flex justify-content-between">
-                    <a href="{{ route('admin.role.index') }}" class="btn btn-secondary">
+                <div class="form-footer">
+                    <a href="{{ route('admin.role.index') }}" class="btn-custom btn-back-custom">
                         <i class="bi bi-arrow-left"></i> Kembali
                     </a>
 
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn-custom btn-update-custom">
                         <i class="bi bi-save"></i> Update
                     </button>
                 </div>

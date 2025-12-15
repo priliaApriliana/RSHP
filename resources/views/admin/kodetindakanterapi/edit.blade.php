@@ -9,6 +9,43 @@
 
 @section('content')
 
+<style>
+    .locked-code-display {
+        background: linear-gradient(135deg, #F0F3FA 0%, #E8F4F8 100%);
+        border: 2px solid #8AAEE0;
+        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .locked-code-label {
+        font-size: 0.8125rem;
+        color: #395886;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .locked-code-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #395886;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 2px;
+    }
+
+    .locked-code-info {
+        font-size: 0.75rem;
+        color: #628ECB;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+    }
+</style>
+
 <div class="row">
     <div class="col-md-10 offset-md-1">
 
@@ -40,31 +77,23 @@
                         </div>
                     @endif
 
-
-                    {{-- KODE --}}
-                    <div class="mb-3">
-                        <label for="kode" class="form-label">
-                            Kode Tindakan <span class="text-danger">*</span>
-                        </label>
-
-                        <input type="text"
-                               id="kode"
-                               name="kode"
-                               maxlength="10"
-                               class="form-control @error('kode') is-invalid @enderror"
-                               value="{{ old('kode', $kode->kode) }}"
-                               placeholder="Contoh: T001"
-                               required>
-
-                        @error('kode')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                    {{-- LOCKED CODE DISPLAY --}}
+                    <div class="locked-code-display">
+                        <div class="locked-code-label">
+                            <i class="bi bi-lock-fill"></i>
+                            Kode Tindakan (Tidak dapat diubah)
+                        </div>
+                        <div class="locked-code-value">{{ $kode->kode }}</div>
+                        <div class="locked-code-info">
+                            <i class="bi bi-info-circle"></i>
+                            Kode bersifat permanen dan tidak dapat diubah setelah dibuat
+                        </div>
                     </div>
 
                     {{-- DESKRIPSI --}}
                     <div class="mb-3">
                         <label for="deskripsi_tindakan_terapi" class="form-label">
-                            Deskripsi Tindakan Terapi <span class="text-danger">*</span>
+                            Nama Tindakan Terapi <span class="text-danger">*</span>
                         </label>
 
                         <textarea name="deskripsi_tindakan_terapi"
