@@ -1,6 +1,6 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Detail Temu Dokter')
+
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('resepsionis.dashboard') }}">Dashboard</a></li>
@@ -60,13 +60,13 @@
                             <th><i class="bi bi-info-circle me-2"></i>Status</th>
                             <td>
                                 @if($temuDokter->status == 'A')
-                                    <span class="badge" style="background: linear-gradient(135deg, #628ECB 0%, #395686 100%); color: white;">Aktif</span>
+                                    <span class="badge bg-warning">Antri</span>
+                                @elseif($temuDokter->status == 'P')
+                                    <span class="badge bg-info">Proses</span>
                                 @elseif($temuDokter->status == 'S')
-                                    <span class="badge" style="background-color: rgba(138, 174, 224, 0.3); color: #8AAEE0;">Selesai</span>
+                                    <span class="badge bg-success">Selesai</span>
                                 @elseif($temuDokter->status == 'B')
                                     <span class="badge bg-danger">Batal</span>
-                                @else
-                                    <span class="badge bg-secondary">-</span>
                                 @endif
                             </td>
                         </tr>

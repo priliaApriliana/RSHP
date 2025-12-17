@@ -300,33 +300,6 @@
                         @enderror
                     </div>
 
-                    {{-- Deskripsi --}}
-                    <div class="input-group-wrapper">
-                        <label for="deskripsi" class="form-label-custom">
-                            Deskripsi
-                            <span class="label-optional">(opsional)</span>
-                        </label>
-
-                        <textarea id="deskripsi"
-                                  name="deskripsi"
-                                  class="form-textarea-custom @error('deskripsi') is-invalid @enderror"
-                                  rows="3"
-                                  placeholder="Tulis keterangan tambahan jika diperlukan...">{{ old('deskripsi', $data->deskripsi) }}</textarea>
-
-                        @error('deskripsi')
-                            <div class="error-message">
-                                <i class="bi bi-x-circle-fill"></i>
-                                {{ $message }}
-                            </div>
-                        @else
-                            <div class="helper-text">
-                                <i class="bi bi-info-circle-fill"></i>
-                                Perbarui deskripsi untuk penjelasan lebih detail (tidak wajib)
-                            </div>
-                        @enderror
-                    </div>
-                </div>
-
                 {{-- Footer --}}
                 <div class="form-footer">
                     <a href="{{ route('admin.kategori.index') }}" class="btn-custom btn-back-custom">

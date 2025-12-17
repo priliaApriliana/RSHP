@@ -129,6 +129,13 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a href="{{ route('admin.user.index') }}" 
+                                   class="nav-link {{ request()->routeIs('admin.user.*') ? 'active' : '' }}">
+                                    <i class="nav-icon bi bi-circle"></i>
+                                    <p>User</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="{{ route('admin.roleuser.index') }}" 
                                    class="nav-link {{ request()->routeIs('admin.roleuser.*') ? 'active' : '' }}">
                                     <i class="nav-icon bi bi-circle"></i>

@@ -1,6 +1,5 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Detail Rekam Medis')
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dokter.dashboard') }}">Dashboard</a></li>
@@ -182,6 +181,25 @@
         <a href="{{ route('dokter.rekammedis.index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left me-2"></i> Kembali
         </a>
+    </div>
+</div>
+
+<div class="card-header gradient-header-blue text-white border-0 py-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <h5 class="mb-0 fw-semibold">
+            <i class="bi bi-stethoscope me-2"></i> Data Rekam Medis
+        </h5>
+        <div class="d-flex gap-2">
+            <span class="badge bg-white" style="color: var(--primary-blue);">
+                <i class="bi bi-calendar-check me-1"></i>
+                {{ \Carbon\Carbon::parse($rekamMedis->created_at)->format('d M Y, H:i') }}
+            </span>
+            {{--  TAMBAH TOMBOL EDIT --}}
+            <a href="{{ route('dokter.rekammedis.edit', $rekamMedis->idrekam_medis) }}" 
+               class="btn btn-sm btn-light">
+                <i class="bi bi-pencil-square me-1"></i> Edit Rekam Medis
+            </a>
+        </div>
     </div>
 </div>
 

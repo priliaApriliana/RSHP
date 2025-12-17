@@ -1,13 +1,13 @@
 @extends('layouts.lte.main')
 
 
-
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item active">Kode Tindakan Terapi</li>
+    <li class="breadcrumb-item active">Data User</li>
 @endsection
 
 @section('content')
+
 <style>
     .page-header {
         background: linear-gradient(135deg, #628ECB 0%, #395886 100%);
@@ -41,6 +41,7 @@
         border: none;
         transition: all 0.3s ease;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        text-decoration: none;
     }
     
     .btn-add-new:hover {
@@ -67,30 +68,29 @@
         max-width: 450px;
     }
     
-    .search-box input {
-        padding: 0.5rem 0.75rem 0.5rem 2.5rem;
-        border: 2px solid #D5DEEF;
-        border-radius: 8px;
-        font-size: 0.875rem;
-        transition: all 0.3s ease;
-        background: #ffffff;
-        width: 100%;
-    }
-    
-    .search-box input:focus {
-        border-color: #8AAEE0;
-        background: #ffffff;
-        box-shadow: 0 0 0 3px rgba(138, 174, 224, 0.1);
-        outline: none;
-    }
-    
-    .search-box i {
+    .search-icon {
         position: absolute;
-        left: 0.875rem;
+        left: 1rem;
         top: 50%;
         transform: translateY(-50%);
         color: #628ECB;
+        font-size: 1rem;
+    }
+    
+    .search-input {
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        border: 2px solid #D5DEEF;
+        border-radius: 12px;
         font-size: 0.875rem;
+        width: 100%;
+        transition: all 0.3s ease;
+        background: #ffffff;
+    }
+    
+    .search-input:focus {
+        border-color: #8AAEE0;
+        box-shadow: 0 0 0 4px rgba(138, 174, 224, 0.1);
+        outline: none;
     }
     
     .table-container {
@@ -104,6 +104,7 @@
     
     .data-table thead {
         background: linear-gradient(to right, #F0F3FA 0%, #F8FAFC 100%);
+        border-bottom: 2px solid #D5DEEF;
     }
     
     .data-table thead th {
@@ -131,6 +132,7 @@
     
     .data-table tbody tr:hover {
         background: linear-gradient(to right, #F8FAFC 0%, #F0F3FA 100%);
+        transform: scale(1.002);
     }
     
     .row-number {
@@ -148,23 +150,17 @@
         border-radius: 8px;
         font-weight: 700;
         font-size: 0.8125rem;
-        min-width: 60px;
+        min-width: 50px;
     }
     
-    .kode-text {
+    .user-name {
         font-weight: 600;
         color: #395886;
-        font-family: 'Courier New', monospace;
     }
-    
-    .kategori-badge {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        background: #E8F4F8;
-        color: #2c7a9e;
-        border-radius: 6px;
+
+    .user-email {
+        color: #628ECB;
         font-size: 0.8125rem;
-        font-weight: 500;
     }
     
     .action-buttons {
@@ -183,28 +179,43 @@
         transition: all 0.3s ease;
         display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.375rem;
+        text-decoration: none;
     }
     
     .btn-edit {
         background: linear-gradient(135deg, #8AAEE0 0%, #628ECB 100%);
         color: #ffffff;
+        box-shadow: 0 2px 4px rgba(98, 142, 203, 0.2);
     }
     
     .btn-edit:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(98, 142, 203, 0.3);
+        box-shadow: 0 4px 8px rgba(98, 142, 203, 0.35);
         color: #ffffff;
     }
     
     .btn-delete {
         background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
         color: #ffffff;
+        box-shadow: 0 2px 4px rgba(214, 48, 49, 0.2);
     }
     
     .btn-delete:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(214, 48, 49, 0.3);
+        box-shadow: 0 4px 8px rgba(214, 48, 49, 0.35);
+        color: #ffffff;
+    }
+
+    .btn-reset {
+        background: linear-gradient(135deg, #20028eff 0%, #0609aaff 100%);
+        color: #ffffff;
+        box-shadow: 0 2px 4px rgba(255, 165, 2, 0.2);
+    }
+    
+    .btn-reset:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(255, 165, 2, 0.35);
         color: #ffffff;
     }
     
@@ -248,26 +259,41 @@
     <div class="page-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
-                <h2>Data Kode Tindakan Terapi</h2>
-                <p>Kelola dan pantau data kode tindakan terapi dalam sistem</p>
+                <h2>Data User</h2>
+                <p>Kelola dan pantau data pengguna dalam sistem</p>
             </div>
-            <a href="{{ route('admin.kodetindakanterapi.create') }}" class="btn-add-new">
-                <i class="bi bi-plus-circle me-2"></i>Tambah Kode Tindakan
+            <a href="{{ route('admin.user.create') }}" class="btn-add-new">
+                <i class="bi bi-plus-circle me-2"></i>Tambah User
             </a>
         </div>
     </div>
+
+    {{-- Success Message --}}
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Berhasil!</strong> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    {{-- Error Message --}}
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Gagal!</strong> {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
 
     {{-- Content Card --}}
     <div class="content-card">
         {{-- Search Section --}}
         <div class="search-section">
             <div class="search-wrapper">
-                <div class="search-box">
-                    <i class="bi bi-search"></i>
-                    <input type="text" 
-                           id="searchInput" 
-                           placeholder="Cari berdasarkan kode, deskripsi, atau kategori...">
-                </div>
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" 
+                       id="searchInput" 
+                       class="search-input" 
+                       placeholder="Cari berdasarkan ID, nama, atau email...">
             </div>
         </div>
 
@@ -276,68 +302,68 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th style="width: 70px">No</th>
-                        <th style="width: 100px">ID</th>
-                        <th style="width: 120px">Kode</th>
-                        <th>Nama Tindakan Terapi</th>
-                        <th style="width: 140px">Kategori</th>
-                        <th style="width: 140px">Kategori Klinis</th>
-                        <th style="width: 200px">Aksi</th>
+                        <th style="width: 70px;">No</th>
+                        <th style="width: 120px;">ID User</th>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th style="width: 300px;" class="text-center">Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody id="tableBody">
-                    @forelse ($kodeTindakan as $index => $k)
-                    <tr>
-                        <td class="row-number text-center">{{ $index + 1 }}</td>
-                        <td class="text-center">
-                            <span class="id-badge">{{ $k->idkode_tindakan_terapi }}</span>
-                        </td>
-                        <td class="text-center">
-                            <span class="kode-text">{{ $k->kode }}</span>
-                        </td>
-                        <td>{{ $k->deskripsi_tindakan_terapi }}</td>
-                        <td class="text-center">
-                            <span class="kategori-badge">{{ $k->nama_kategori ?? '-' }}</span>
-                        </td>
-                        <td class="text-center">
-                            <span class="kategori-badge">{{ $k->nama_kategori_klinis ?? '-' }}</span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <a href="{{ route('admin.kodetindakanterapi.edit', $k->idkode_tindakan_terapi) }}"
-                                   class="btn-action btn-edit">
-                                    <i class="bi bi-pencil-square"></i>
-                                    Edit
-                                </a>
+                    @forelse ($users as $index => $user)
+                        <tr>
+                            <td class="row-number">{{ $index + 1 }}</td>
+                            <td>
+                                <span class="id-badge">{{ $user->iduser }}</span>
+                            </td>
+                            <td class="user-name">{{ $user->nama }}</td>
+                            <td class="user-email">{{ $user->email }}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{{ route('admin.user.edit', $user->iduser) }}" 
+                                       class="btn-action btn-edit">
+                                        <i class="bi bi-pencil-square"></i>
+                                        Edit
+                                    </a>
 
-                                <form action="{{ route('admin.kodetindakanterapi.destroy', $k->idkode_tindakan_terapi) }}"
-                                      method="POST"
-                                      style="margin: 0;"
-                                      onsubmit="return confirm('Hapus data ini?')">
-                                    @csrf
-                                    @method('DELETE')
+                                    <form action="{{ route('admin.user.destroy', $user->iduser) }}" 
+                                          method="POST" 
+                                          style="margin: 0;"
+                                          onsubmit="return confirm('Yakin ingin menghapus user ini?')">
+                                        @csrf 
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-action btn-delete">
+                                            <i class="bi bi-trash"></i>
+                                            Hapus
+                                        </button>
+                                    </form>
 
-                                    <button type="submit" class="btn-action btn-delete">
-                                        <i class="bi bi-trash"></i>
-                                        Hapus
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr id="emptyRow">
-                        <td colspan="7">
-                            <div class="empty-state">
-                                <div class="empty-state-icon">
-                                    <i class="bi bi-inbox"></i>
+                                    <form action="{{ route('admin.user.resetPassword', $user->iduser) }}" 
+                                          method="POST" 
+                                          style="margin: 0;"
+                                          onsubmit="return confirm('Reset password menjadi 123456?')">
+                                        @csrf
+                                        <button type="submit" class="btn-action btn-reset">
+                                            <i class="bi bi-key"></i>
+                                            Reset
+                                        </button>
+                                    </form>
                                 </div>
-                                <h5>Belum Ada Data</h5>
-                                <p>Belum ada data kode tindakan terapi yang tersedia</p>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr id="emptyRow">
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">
+                                        <i class="bi bi-inbox"></i>
+                                    </div>
+                                    <h5>Belum Ada Data</h5>
+                                    <p>Belum ada data user yang tersedia</p>
+                                </div>
+                            </td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -361,8 +387,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const cells = rows[i].getElementsByTagName('td');
             let found = false;
 
-            // Search in kode, deskripsi, and kategori columns (index 2, 3, 4, 5)
-            for (let j = 2; j <= 5; j++) {
+            // Search in ID (index 1), Name (index 2), and Email (index 3)
+            for (let j = 1; j <= 3; j++) {
                 if (cells[j]) {
                     const text = cells[j].textContent.toLowerCase();
                     if (text.includes(searchTerm)) {
@@ -387,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const newRow = document.createElement('tr');
                 newRow.id = 'noResultRow';
                 newRow.innerHTML = `
-                    <td colspan="7">
+                    <td colspan="5">
                         <div class="empty-state">
                             <div class="empty-state-icon">
                                 <i class="bi bi-search"></i>

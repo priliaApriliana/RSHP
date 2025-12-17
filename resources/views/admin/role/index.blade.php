@@ -1,6 +1,6 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Daftar Role')
+
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
@@ -144,6 +144,9 @@
         font-weight: 600;
         border: none;
         transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
     }
     
     .btn-edit {

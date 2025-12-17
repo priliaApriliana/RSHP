@@ -1,6 +1,6 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Daftar Pet')
+
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('resepsionis.dashboard') }}">Dashboard</a></li>
@@ -251,6 +251,9 @@
                                         <i class="bi bi-person me-2"></i>Pemilik
                                     </th>
                                     <th>
+                                        <i class="bi bi-tags me-2"></i>Jenis Hewan
+                                    </th>
+                                    <th>
                                         <i class="bi bi-list me-2"></i>Ras
                                     </th>
                                     <th style="width: 11%;">
@@ -276,6 +279,8 @@
                                     <td>
                                         <span class="text-pet-info">{{ $p->nama_pemilik }}</span>
                                     </td>
+                                    <td>
+                                        <span class="text-pet-info">{{ $p->nama_jenis_hewan }}</span>
                                     <td>
                                         <span class="text-pet-info">{{ $p->nama_ras }}</span>
                                     </td>
@@ -320,7 +325,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="7">
+                                    <td colspan="8">
                                         <div class="empty-state">
                                             <i class="fas fa-inbox"></i>
                                             <p class="mb-1">Tidak ada data pet</p>
@@ -336,7 +341,7 @@
                     <!-- Pagination -->
                     @if($pet->hasPages())
                     <div class="d-flex justify-content-center mt-4">
-                        {{ $pet->links() }}
+                        {{ $pet->links('pagination::bootstrap-5') }}
                     </div>
                     @endif
                 </div>

@@ -1,6 +1,6 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Form Registrasi Pet')
+
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('resepsionis.dashboard') }}">Dashboard</a></li>
@@ -41,7 +41,7 @@
         <div class="col-md-6 offset-md-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-header" style="background: linear-gradient(135deg, #628ECB 0%, #395686 100%); color: white; border: none;">
-                    <h5 class="mb-0"><i class="bi bi-heart-fill me-2"></i>Tambah Pet</h5>
+                    <h5 class="mb-0"><i class="bi bi-heart-fill me-2"></i>Registrasi Pet</h5>
                 </div>
                 <div class="card-body">
                     @if(session('success'))
@@ -112,12 +112,24 @@
                             <select name="idras_hewan" id="idras_hewan" class="form-select" required>
                                 <option value="">-- Pilih Ras --</option>
                                 @foreach ($rasHewan as $r)
-                                    <option value="{{ $r->idras_hewan }}" {{ old('idras_hewan') == $r->idras_hewan ? 'selected' : '' }}>
-                                        {{ $r->nama_ras }} ({{ $r->jenisHewan->nama_jenis_hewan ?? 'Tanpa Jenis' }})
+                                    <option value="{{ $r->idras_hewan }}"
+                                            data-jenis="{{ $r->jenisHewan->nama_jenis_hewan ?? '-' }}"
+                                            {{ old('idras_hewan') == $r->idras_hewan ? 'selected' : '' }}>
+                                        {{ $r->nama_ras }}
                                     </option>
                                 @endforeach
                             </select>
                             @error('idras_hewan')<span class="text-danger small">{{ $message }}</span>@enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-tags me-2" style="color:#628ECB;"></i>Jenis Hewan
+                            </label>
+                            <input type="text" 
+                                id="jenis_hewan_display" 
+                                class="form-control" 
+                                placeholder="Otomatis terisi setelah pilih ras"
+                                readonly>
                         </div>
 
                         <div class="d-flex gap-2 mt-3">
@@ -129,6 +141,14 @@
                             </a>
                         </div>
                     </form>
+
+                    <script>
+                        document.getElementById('idras_hewan').addEventListener('change', function () {
+                            const selected = this.options[this.selectedIndex];
+                            document.getElementById('jenis_hewan_display').value =
+                                selected.getAttribute('data-jenis') || '';
+                        });
+                    </script>
                 </div>
             </div>
         </div>

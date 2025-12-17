@@ -1,133 +1,244 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Tambah Role User')
+@section('page-title', 'Tambah Role untuk ' . $user->nama)
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.roleuser.index') }}">Role User</a></li>
-    <li class="breadcrumb-item active">Tambah</li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.roleuser.index') }}">Manajemen Role</a></li>
+    <li class="breadcrumb-item active">Tambah Role</li>
 @endsection
 
 @section('content')
+<style>
+    .form-wrapper {
+        max-width: 900px;
+        margin: 0;
+        margin-left: 2rem;
+        margin-right: auto;
+    }
+    
+    .form-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(57, 88, 134, 0.1);
+        overflow: hidden;
+        border: 1px solid #D5DEEF;
+    }
+    
+    .form-header {
+        background: linear-gradient(135deg, #628ECB 0%, #395886 100%);
+        padding: 1.5rem 2rem;
+        border-bottom: 3px solid #395886;
+    }
+    
+    .form-header-title {
+        color: #ffffff;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+    }
+    
+    .form-header-title i {
+        font-size: 1.375rem;
+    }
+    
+    .form-body {
+        padding: 1.5rem;
+        background: #F8FAFC;
+    }
+    
+    .input-group-wrapper {
+        background: #ffffff;
+        padding: 1.25rem;
+        border-radius: 12px;
+        border: 2px solid #D5DEEF;
+        margin-bottom: 1rem;
+    }
+    
+    .form-label-custom {
+        display: block;
+        font-weight: 700;
+        color: #395886;
+        margin-bottom: 0.5rem;
+        font-size: 0.9375rem;
+    }
+    
+    .required-star {
+        color: #d63031;
+        margin-left: 0.25rem;
+    }
+    
+    .form-input-custom,
+    .form-select-custom {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #D5DEEF;
+        border-radius: 10px;
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+        background: #ffffff;
+        color: #2c3e50;
+        font-weight: 500;
+    }
+    
+    .form-input-custom:focus,
+    .form-select-custom:focus {
+        border-color: #628ECB;
+        box-shadow: 0 0 0 4px rgba(98, 142, 203, 0.15);
+        outline: none;
+    }
+    
+    .form-input-custom:read-only {
+        background: #F0F3FA;
+        color: #7d8da1;
+    }
+    
+    .form-input-custom.is-invalid,
+    .form-select-custom.is-invalid {
+        border-color: #e74c3c;
+        background: #fff5f5;
+    }
+    
+    .error-message {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        color: #e74c3c;
+        font-size: 0.8125rem;
+        margin-top: 0.5rem;
+        font-weight: 600;
+    }
+    
+    .helper-text {
+        font-size: 0.8125rem;
+        color: #628ECB;
+        margin-top: 0.375rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .form-footer {
+        background: linear-gradient(to right, #F0F3FA 0%, #ffffff 100%);
+        padding: 1.5rem 2rem;
+        border-top: 2px solid #D5DEEF;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .btn-custom {
+        padding: 0.75rem 1.75rem;
+        border-radius: 10px;
+        font-size: 0.9375rem;
+        font-weight: 700;
+        border: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+    
+    .btn-back-custom {
+        background: #ffffff;
+        color: #628ECB;
+        border: 2px solid #628ECB;
+    }
+    
+    .btn-back-custom:hover {
+        background: #628ECB;
+        color: #ffffff;
+        transform: translateX(-3px);
+        box-shadow: 0 4px 8px rgba(98, 142, 203, 0.3);
+    }
+    
+    .btn-save-custom {
+        background: linear-gradient(135deg, #628ECB 0%, #395886 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 10px rgba(98, 142, 203, 0.3);
+    }
+    
+    .btn-save-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(98, 142, 203, 0.4);
+        color: #ffffff;
+    }
+</style>
 
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title mb-0">
-                    <i class="bi bi-person-plus-fill"></i> Tambah Relasi Role User
+<div class="container-fluid px-2">
+    <div class="form-wrapper">
+        <div class="form-card">
+            
+            {{-- Header --}}
+            <div class="form-header">
+                <h3 class="form-header-title">
+                    <i class="bi bi-person-plus-fill"></i>
+                    Tambah Role untuk {{ $user->nama }}
                 </h3>
             </div>
 
-            <form action="{{ route('admin.roleuser.store') }}" method="POST">
+            {{-- Form --}}
+            <form action="{{ route('admin.roleuser.store', $user->iduser) }}" method="POST">
                 @csrf
                 
-                <div class="card-body">
-                    <!-- Nama Lengkap -->
-                    <div class="mb-3">
-                        <label for="nama" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                <div class="form-body">
+                    {{-- Nama User --}}
+                    <div class="input-group-wrapper">
+                        <label class="form-label-custom">Nama User</label>
                         <input type="text" 
-                               class="form-control @error('nama') is-invalid @enderror" 
-                               id="nama_lengkap" 
-                               name="nama" 
-                               placeholder="Masukkan nama pengguna..."
-                               value="{{ old('nama') }}"
-                               required>
-                        @error('nama')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                               class="form-input-custom" 
+                               value="{{ $user->nama }}" 
+                               readonly>
                     </div>
 
-                    <!-- Email -->
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                        <input type="email" 
-                               class="form-control @error('email') is-invalid @enderror" 
-                               id="email" 
-                               name="email" 
-                               placeholder="contoh@mail.com"
-                               value="{{ old('email') }}"
-                               required>
-                        @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <!-- Password -->
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-                        <input type="password" 
-                               class="form-control @error('password') is-invalid @enderror" 
-                               id="password" 
-                               name="password" 
-                               placeholder="Masukkan password..."
-                               required>
-                        @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <small class="form-text text-muted">Minimal 8 karakter</small>
-                    </div>
-
-                    <!-- Konfirmasi Password -->
-                    <div class="mb-3">
-                        <label for="password_confirmation" class="form-label">Konfirmasi Password <span class="text-danger">*</span></label>
-                        <input type="password" 
-                               class="form-control @error('password_confirmation') is-invalid @enderror" 
-                               id="password_confirmation" 
-                               name="password_confirmation" 
-                               placeholder="Ketik ulang password..."
-                               required>
-                        @error('password_confirmation')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <!-- Pilih Role -->
-                    <div class="mb-3">
-                        <label for="idrole" class="form-label">Pilih Role <span class="text-danger">*</span></label>
-                        <select class="form-select @error('idrole') is-invalid @enderror" 
+                    {{-- Pilih Role --}}
+                    <div class="input-group-wrapper">
+                        <label for="idrole" class="form-label-custom">
+                            Pilih Role<span class="required-star">*</span>
+                        </label>
+                        <select class="form-select-custom @error('idrole') is-invalid @enderror" 
                                 id="idrole" 
                                 name="idrole"
                                 required>
                             <option value="">-- Pilih Role --</option>
                             @foreach($roles as $role)
-                                <option value="{{ $role->idrole }}" {{ old('idrole') == $role->idrole ? 'selected' : '' }}>
-                                    {{ $role->nama_role }}
-                                </option>
+                                @if(!in_array($role->idrole, $existingRoles))
+                                    <option value="{{ $role->idrole }}" {{ old('idrole') == $role->idrole ? 'selected' : '' }}>
+                                        {{ $role->nama_role }}
+                                    </option>
+                                @endif
                             @endforeach
                         </select>
                         @error('idrole')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <!-- Status -->
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                        <select class="form-select @error('status') is-invalid @enderror" 
-                                id="status" 
-                                name="status"
-                                required>
-                            <option value="">-- Pilih Status --</option>
-                            <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Aktif</option>
-                            <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Nonaktif</option>
-                        </select>
-                        @error('status')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="error-message">
+                                <i class="bi bi-x-circle-fill"></i>{{ $message }}
+                            </div>
+                        @else
+                            <small class="helper-text">
+                                <i class="bi bi-info-circle-fill"></i>
+                                Role yang sudah dimiliki tidak ditampilkan
+                            </small>
                         @enderror
                     </div>
                 </div>
 
-                <div class="card-footer">
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ route('admin.roleuser.index') }}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Kembali
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> Simpan
-                        </button>
-                    </div>
+                {{-- Footer --}}
+                <div class="form-footer">
+                    <a href="{{ route('admin.roleuser.index') }}" class="btn-custom btn-back-custom">
+                        <i class="bi bi-arrow-left"></i>
+                        Batal
+                    </a>
+
+                    <button type="submit" class="btn-custom btn-save-custom">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Simpan
+                    </button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>

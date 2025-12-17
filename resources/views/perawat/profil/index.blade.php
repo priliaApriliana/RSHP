@@ -8,58 +8,164 @@
 @endsection
 
 @section('content')
-<!-- Alert Messages -->
+
+<style>
+:root {
+    --blue-light: #8AAEE0;
+    --blue-soft: #B1C9EF;
+    --blue-main: #628ECB;
+    --blue-bg: #D5DEEF;
+    --blue-dark: #395886;
+    --blue-white: #F0F3FA;
+}
+
+/* ===== ALERT ===== */
+.alert-success {
+    background: linear-gradient(135deg, var(--blue-white), var(--blue-bg));
+    border: 2px solid var(--blue-soft);
+    color: var(--blue-dark);
+    border-radius: 12px;
+}
+
+/* ===== CARD ===== */
+.card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(98,142,203,.15);
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--blue-main), var(--blue-dark));
+    color: white;
+    padding: 20px 24px;
+}
+
+.card-title {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* ===== PROFILE ===== */
+.profile-user-img {
+    background: linear-gradient(135deg, var(--blue-light), var(--blue-main));
+    color: white;
+    box-shadow: 0 4px 12px rgba(98,142,203,.3);
+}
+
+.profile-username {
+    font-weight: 700;
+    color: var(--blue-dark);
+}
+
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid var(--blue-bg);
+    color: var(--blue-dark);
+}
+
+/* ===== FORM ===== */
+.form-control {
+    border: 2px solid var(--blue-bg);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--blue-dark);
+}
+
+.form-control:focus {
+    border-color: var(--blue-main);
+    box-shadow: 0 0 0 4px rgba(98,142,203,.15);
+}
+
+label {
+    font-weight: 600;
+    color: var(--blue-dark);
+}
+
+/* ===== BUTTON ===== */
+.btn-primary,
+.btn-secondary {
+    background: linear-gradient(135deg, var(--blue-light), var(--blue-main));
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 10px 22px;
+}
+
+.card-footer {
+    background: var(--blue-white);
+    border-top: 2px solid var(--blue-bg);
+    padding: 20px 24px;
+}
+
+    .btn-blue {
+        background: linear-gradient(135deg, #628ECB 0%, #395686 100%);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-blue:hover {
+        background: linear-gradient(135deg, #395686 0%, #2d4570 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(98, 142, 203, 0.3);
+        color: white;
+    }
+</style>
+
+{{-- ALERT --}}
 @if(session('success'))
 <div class="alert alert-success alert-dismissible fade show">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
-    <i class="fas fa-check-circle"></i> {{ session('success') }}
+    <i class="bi bi-check-circle"></i> {{ session('success') }}
 </div>
 @endif
 
 <div class="row">
-    <!-- Profil Card -->
+    <!-- PROFIL -->
     <div class="col-md-4">
-        <div class="card card-primary card-outline">
-            <div class="card-body box-profile">
-                <div class="text-center">
-                    <div class="profile-user-img img-fluid img-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto" 
-                         style="width: 100px; height: 100px; font-size: 48px;">
-                        <i class="fas fa-user-nurse"></i>
-                    </div>
+        <div class="card mb-4">
+            <div class="card-body box-profile text-center">
+                <div class="profile-user-img img-circle mx-auto d-flex align-items-center justify-content-center"
+                     style="width:100px;height:100px;font-size:42px;">
+                    <i class="bi bi-people"></i>
                 </div>
 
-                <h3 class="profile-username text-center">{{ $user->nama }}</h3>
-                <p class="text-muted text-center">Perawat</p>
+                <h3 class="profile-username mt-3">{{ $user->nama }}</h3>
+                <p class="text-muted">Perawat</p>
 
-                <ul class="list-group list-group-unbordered mb-3">
+                <ul class="list-group list-group-unbordered text-start">
                     <li class="list-group-item">
-                        <b>Email</b> <a class="float-right">{{ $user->email }}</a>
+                        <b>Email</b>
+                        <span class="float-right">{{ $user->email }}</span>
                     </li>
                     <li class="list-group-item">
-                        <b>No. HP</b> <a class="float-right">{{ $perawat->no_hp ?? '-' }}</a>
+                        <b>No. HP</b>
+                        <span class="float-right">{{ $perawat->no_hp ?? '-' }}</span>
                     </li>
                     <li class="list-group-item">
-                        <b>Jenis Kelamin</b> 
-                        <a class="float-right">
-                            @if($perawat && $perawat->jenis_kelamin === 'L')
+                        <b>Jenis Kelamin</b>
+                        <span class="float-right">
+                            @if($perawat?->jenis_kelamin === 'L')
                                 Laki-laki
-                            @elseif($perawat && $perawat->jenis_kelamin === 'P')
+                            @elseif($perawat?->jenis_kelamin === 'P')
                                 Perempuan
                             @else
                                 -
                             @endif
-                        </a>
+                        </span>
                     </li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <!-- Form Edit Profil -->
+    <!-- EDIT PROFIL -->
     <div class="col-md-8">
-        <div class="card card-primary">
+        <div class="card">
             <div class="card-header">
-                <h3 class="card-title"><i class="fas fa-edit"></i> Edit Profil</h3>
+                <h3 class="card-title"><i class="bi bi-pencil-square"></i> Edit Profil</h3>
             </div>
 
             <form action="{{ route('perawat.profil.update') }}" method="POST">
@@ -67,115 +173,68 @@
                 @method('PUT')
 
                 <div class="card-body">
-                    <!-- Nama -->
                     <div class="form-group">
-                        <label for="nama">Nama Lengkap <span class="text-danger">*</span></label>
-                        <input type="text" name="nama" id="nama" 
-                               value="{{ old('nama', $user->nama) }}"
-                               class="form-control @error('nama') is-invalid @enderror" required>
-                        @error('nama')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label>Nama Lengkap *</label>
+                        <input type="text" name="nama" class="form-control" value="{{ old('nama',$user->nama) }}" required>
                     </div>
 
-                    <!-- Email -->
                     <div class="form-group">
-                        <label for="email">Email <span class="text-danger">*</span></label>
-                        <input type="email" name="email" id="email" 
-                               value="{{ old('email', $user->email) }}"
-                               class="form-control @error('email') is-invalid @enderror" required>
-                        @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label>Email *</label>
+                        <input type="email" name="email" class="form-control" value="{{ old('email',$user->email) }}" required>
                     </div>
 
-                    <!-- Password -->
                     <div class="form-group">
-                        <label for="password">Password Baru</label>
-                        <input type="password" name="password" id="password" 
-                               class="form-control @error('password') is-invalid @enderror"
-                               placeholder="Kosongkan jika tidak ingin mengubah password">
-                        @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <small class="form-text text-muted">
-                            Minimal 6 karakter. Kosongkan jika tidak ingin mengubah password.
-                        </small>
+                        <label>Password Baru</label>
+                        <input type="password" name="password" class="form-control"
+                               placeholder="Kosongkan jika tidak diubah">
+                        <small class="text-muted">Minimal 6 karakter</small>
                     </div>
 
-                    <!-- Konfirmasi Password -->
                     <div class="form-group">
-                        <label for="password_confirmation">Konfirmasi Password</label>
-                        <input type="password" name="password_confirmation" id="password_confirmation" 
-                               class="form-control"
-                               placeholder="Ulangi password baru">
+                        <label>Konfirmasi Password</label>
+                        <input type="password" name="password_confirmation" class="form-control">
                     </div>
 
                     <hr>
 
-                    <!-- Alamat -->
                     <div class="form-group">
-                        <label for="alamat">Alamat</label>
-                        <textarea name="alamat" id="alamat" rows="3" 
-                                  class="form-control @error('alamat') is-invalid @enderror"
-                                  placeholder="Alamat lengkap...">{{ old('alamat', $perawat->alamat ?? '') }}</textarea>
-                        @error('alamat')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label>Alamat</label>
+                        <textarea name="alamat" rows="3" class="form-control">{{ old('alamat',$perawat->alamat ?? '') }}</textarea>
                     </div>
 
-                    <!-- No HP -->
                     <div class="form-group">
-                        <label for="no_hp">No. HP</label>
-                        <input type="text" name="no_hp" id="no_hp" 
-                               value="{{ old('no_hp', $perawat->no_hp ?? '') }}"
-                               class="form-control @error('no_hp') is-invalid @enderror"
-                               placeholder="08xxxxxxxxxx">
-                        @error('no_hp')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label>No. HP</label>
+                        <input type="text" name="no_hp" class="form-control" value="{{ old('no_hp',$perawat->no_hp ?? '') }}">
                     </div>
 
-                    <!-- Jenis Kelamin -->
                     <div class="form-group">
-                        <label for="jenis_kelamin">Jenis Kelamin</label>
-                        <select name="jenis_kelamin" id="jenis_kelamin" class="form-control @error('jenis_kelamin') is-invalid @enderror">
+                        <label>Jenis Kelamin</label>
+                        <select name="jenis_kelamin" class="form-control">
                             <option value="">-- Pilih --</option>
-                            <option value="L" {{ old('jenis_kelamin', $perawat->jenis_kelamin ?? '') === 'L' ? 'selected' : '' }}>
-                                Laki-laki
-                            </option>
-                            <option value="P" {{ old('jenis_kelamin', $perawat->jenis_kelamin ?? '') === 'P' ? 'selected' : '' }}>
-                                Perempuan
-                            </option>
+                            <option value="L" {{ old('jenis_kelamin',$perawat->jenis_kelamin ?? '')=='L'?'selected':'' }}>Laki-laki</option>
+                            <option value="P" {{ old('jenis_kelamin',$perawat->jenis_kelamin ?? '')=='P'?'selected':'' }}>Perempuan</option>
                         </select>
-                        @error('jenis_kelamin')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
 
-                    <!-- Pendidikan -->
                     <div class="form-group">
-                        <label for="pendidikan">Pendidikan Terakhir</label>
-                        <input type="text" name="pendidikan" id="pendidikan" 
-                               value="{{ old('pendidikan', $perawat->pendidikan ?? '') }}"
-                               class="form-control @error('pendidikan') is-invalid @enderror"
-                               placeholder="Contoh: S1 Keperawatan">
-                        @error('pendidikan')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label>Pendidikan Terakhir</label>
+                        <input type="text" name="pendidikan" class="form-control"
+                               value="{{ old('pendidikan',$perawat->pendidikan ?? '') }}">
                     </div>
                 </div>
 
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Simpan Perubahan
+                <div class="card-footer text-end">
+                    {{-- SIMPAN --}}
+                    <button type="submit" class="btn btn-blue">
+                        <i class="bi bi-check-circle me-2"></i> Simpan
                     </button>
-                    <a href="{{ route('perawat.dashboard') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Kembali
+                    <a href="{{ route('perawat.dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left-circle me-2"></i> Kembali
                     </a>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 @endsection

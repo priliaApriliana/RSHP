@@ -1,6 +1,5 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Periksa Pasien')
 
 @section('content')
 

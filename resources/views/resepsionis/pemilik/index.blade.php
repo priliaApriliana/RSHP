@@ -1,6 +1,6 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Daftar Pemilik')
+
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('resepsionis.dashboard') }}">Dashboard</a></li>
@@ -246,6 +246,9 @@
                                     <th>
                                         <i class="bi bi-phone me-2"></i>No. WA
                                     </th>
+                                    <th>
+                                        <i class="bi bi-geo-alt me-2"></i>Alamat
+                                    </th>
                                     <th style="width: 15%; text-align: center;">
                                         <i class="bi bi-gear me-2"></i>Aksi
                                     </th>
@@ -273,6 +276,13 @@
                                             <i class="bi bi-whatsapp"></i>
                                             <span>{{ $p->no_wa }}</span>
                                         </div>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted d-block"
+                                            style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                            <i class="bi bi-geo-alt me-1 icon-light"></i>
+                                            {{ $p->alamat }}
+                                        </small>
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
@@ -303,7 +313,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="5">
+                                    <td colspan="6">
                                         <div class="empty-state">
                                             <i class="bi bi-inbox"></i>
                                             <p class="mb-1">Tidak ada data pemilik</p>
@@ -319,7 +329,7 @@
                     <!-- Pagination -->
                     @if($pemilik->hasPages())
                     <div class="d-flex justify-content-center mt-4">
-                        {{ $pemilik->links() }}
+                        {{ $pemilik->links('pagination::bootstrap-5') }}
                     </div>
                     @endif
                 </div>

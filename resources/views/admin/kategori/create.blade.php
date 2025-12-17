@@ -1,6 +1,5 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Tambah Kategori')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
     <li class="breadcrumb-item"><a href="{{ route('admin.kategori.index') }}">Kategori</a></li>
@@ -284,35 +283,6 @@
                             </div>
                         @enderror
                     </div>
-
-                    {{-- Deskripsi --}}
-                    <div class="input-group-wrapper">
-                        <label for="deskripsi" class="form-label-custom">
-                            Deskripsi
-                            <span class="optional-text">(opsional)</span>
-                        </label>
-
-                        <textarea 
-                            class="form-textarea-custom @error('deskripsi') is-invalid @enderror"
-                            id="deskripsi"
-                            name="deskripsi"
-                            rows="4"
-                            placeholder="Tulis keterangan tambahan jika diperlukan..."
-                        >{{ old('deskripsi') }}</textarea>
-
-                        @error('deskripsi')
-                            <div class="error-message">
-                                <i class="bi bi-x-circle-fill"></i>
-                                {{ $message }}
-                            </div>
-                        @else
-                            <div class="helper-text">
-                                <i class="bi bi-info-circle-fill"></i>
-                                Tambahkan deskripsi untuk penjelasan lebih detail (tidak wajib)
-                            </div>
-                        @enderror
-                    </div>
-                </div>
 
                 {{-- Footer --}}
                 <div class="form-footer">

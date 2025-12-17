@@ -9,6 +9,237 @@
 @endsection
 
 @section('content')
+<style>
+    /* Color Palette Variables */
+    :root {
+        --primary-color: #628ECB;
+        --primary-dark: #395886;
+        --primary-light: #8AAEE0;
+        --secondary-light: #B1C9EF;
+        --bg-light: #D5DEEF;
+        --bg-lighter: #F0F3FA;
+    }
+
+    /* Card Primary Styling */
+    .card-primary {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(98, 142, 203, 0.15);
+        overflow: hidden;
+        margin-bottom: 24px;
+    }
+
+    .card-primary > .card-header {
+        background: linear-gradient(135deg, #628ECB 0%, #395886 100%);
+        border: none;
+        padding: 20px 24px;
+    }
+
+    .card-primary .card-title {
+        color: white;
+        font-weight: 700;
+        font-size: 18px;
+        margin: 0;
+    }
+
+    .card-primary .card-title i {
+        margin-right: 8px;
+    }
+
+    .card-primary .card-body {
+        background: white;
+        padding: 32px 24px;
+    }
+
+    /* Card Success Styling */
+    .card-success {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(98, 142, 203, 0.15);
+        overflow: hidden;
+    }
+
+    .card-success > .card-header {
+        background: linear-gradient(135deg, #8AAEE0 0%, #628ECB 100%);
+        border: none;
+        padding: 20px 24px;
+    }
+
+    .card-success .card-title {
+        color: white;
+        font-weight: 700;
+        font-size: 18px;
+        margin: 0;
+    }
+
+    .card-success .card-title i {
+        margin-right: 8px;
+    }
+
+    .card-success .card-body {
+        background: white;
+        padding: 32px 24px;
+    }
+
+    /* Table Borderless Styling */
+    .table-borderless th {
+        color: #395886;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 12px 8px;
+        border: none;
+    }
+
+    .table-borderless td {
+        color: #395886;
+        padding: 12px 8px;
+        border: none;
+    }
+
+    .table-borderless td strong {
+        color: #395886;
+        font-weight: 700;
+        font-size: 16px;
+    }
+
+    .table-borderless .text-muted {
+        color: #8AAEE0 !important;
+        font-size: 13px;
+    }
+
+    /* Badge Styling */
+    .badge-primary {
+        background: linear-gradient(135deg, #628ECB 0%, #395886 100%) !important;
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13px;
+        color: white;
+    }
+
+    .badge-danger {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13px;
+        color: white;
+    }
+
+    .badge-secondary {
+        background: linear-gradient(135deg, #8AAEE0 0%, #628ECB 100%) !important;
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13px;
+        color: white;
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, #27ae60 0%, #229954 100%) !important;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 12px;
+        color: white;
+    }
+
+    .badge-warning {
+        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%) !important;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 12px;
+        color: white;
+    }
+
+    /* Table Hover Styling */
+    .table-hover thead.table-light {
+        background: linear-gradient(135deg, #F0F3FA 0%, #D5DEEF 100%);
+    }
+
+    .table-hover thead th {
+        color: #395886;
+        font-weight: 600;
+        font-size: 14px;
+        border-bottom: 2px solid #B1C9EF;
+        padding: 16px 12px;
+    }
+
+    .table-hover tbody td {
+        color: #395886;
+        padding: 16px 12px;
+        vertical-align: middle;
+        border-bottom: 1px solid #F0F3FA;
+    }
+
+    .table-hover tbody tr:hover {
+        background: linear-gradient(135deg, #F0F3FA 0%, rgba(241, 243, 250, 0.5) 100%);
+    }
+
+    /* Alert Info */
+    .alert-info {
+        background: linear-gradient(135deg, #D5DEEF 0%, #F0F3FA 100%);
+        border: 2px solid #B1C9EF;
+        border-radius: 12px;
+        color: #395886;
+        padding: 16px 20px;
+    }
+
+    .alert-info i {
+        color: #628ECB;
+        margin-right: 8px;
+    }
+
+    /* Button Styling */
+    .btn-info {
+        background: linear-gradient(135deg, #8AAEE0 0%, #628ECB 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(138, 174, 224, 0.3);
+    }
+
+    .btn-info:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(138, 174, 224, 0.4);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #8AAEE0 0%, #628ECB 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(138, 174, 224, 0.3);
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(138, 174, 224, 0.4);
+        color: white;
+    }
+
+    /* Card Footer */
+    .card-footer {
+        background: #F0F3FA;
+        border-top: 2px solid #D5DEEF;
+        padding: 20px 24px;
+    }
+
+    /* Table Responsive */
+    .table-responsive {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+</style>
+
 <!-- Info Pasien -->
 <div class="card card-primary">
     <div class="card-header">

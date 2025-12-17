@@ -1,7 +1,5 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Rekam Medis Pasien')
-
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dokter.dashboard') }}">Dashboard</a></li>
     <li class="breadcrumb-item active">Rekam Medis</li>
@@ -19,7 +17,6 @@
         --dark-blue: #395686;
     }
 
-    /* Stats Cards */
     .stats-card {
         border: none;
         border-radius: 12px;
@@ -54,7 +51,6 @@
         opacity: 0.3;
     }
 
-    /* Tab Navigation */
     .custom-tabs {
         border-bottom: 2px solid #D5DEEF;
         margin-bottom: 2rem;
@@ -101,7 +97,6 @@
         font-weight: 600;
     }
 
-    /* Content Cards */
     .content-card {
         border: none;
         border-radius: 12px;
@@ -121,7 +116,6 @@
         padding: 1.5rem;
     }
 
-    /* List Items */
     .patient-item {
         border: none;
         border-bottom: 1px solid #D5DEEF;
@@ -169,7 +163,6 @@
         font-size: 0.85rem;
     }
 
-    /* Buttons */
     .btn-blue {
         background: linear-gradient(135deg, #628ECB 0%, #395686 100%);
         border: none;
@@ -204,7 +197,6 @@
         color: white;
     }
 
-    /* Empty State */
     .empty-state {
         padding: 4rem 2rem;
         text-align: center;
@@ -217,7 +209,6 @@
         opacity: 0.5;
     }
 
-    /* Alert */
     .alert-custom {
         border: none;
         border-radius: 10px;
@@ -236,13 +227,23 @@
     </div>
 @endif
 
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-circle me-3" style="font-size: 1.5rem;"></i>
+            <span style="font-weight: 500;">{{ session('error') }}</span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
 <!-- Page Header -->
 <div class="mb-4">
     <h3 class="fw-bold text-dark mb-1">
         <i class="bi bi-file-medical me-2" style="color: var(--primary-blue);"></i> 
         Rekam Medis Pasien
     </h3>
-    <p class="text-muted mb-0">Kelola antrian dan riwayat pemeriksaan pasien</p>
+    <p class="text-muted mb-0">Kelola antrian pemeriksaan dan lihat riwayat rekam medis pasien</p>
 </div>
 
 <!-- Stats Cards -->
@@ -333,7 +334,7 @@
                         <h5 class="text-white mb-1 fw-semibold">
                             <i class="bi bi-people-fill me-2"></i> Antrian Pemeriksaan
                         </h5>
-                        <small class="text-white opacity-75">Pasien yang sedang menunggu pemeriksaan</small>
+                        <small class="text-white opacity-75">Pasien yang menunggu untuk diperiksa</small>
                     </div>
                     <span class="badge bg-white fs-6" style="color: var(--primary-blue);">{{ count($antrian) }} Pasien</span>
                 </div>
@@ -351,8 +352,8 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center mb-2">
-                                        <span class="number-badge me-2">No. {{ $loop->iteration }}</span>
-                                        <h6 class="mb-0 fw-bold text-dark">{{ $item->nama ?? '-' }}</h6>
+                                        <span class="number-badge me-2">No. {{ $item->no_urut }}</span>
+                                        <h6 class="mb-0 fw-bold text-dark">{{ $item->nama_pet ?? '-' }}</h6>
                                     </div>
                                     <div class="d-flex flex-wrap gap-3 text-muted small">
                                         <span>
@@ -365,11 +366,17 @@
                                         </span>
                                     </div>
                                 </div>
+                                {{-- DI BAGIAN ANTRIAN --}}
                                 <div class="flex-shrink-0 ms-3">
-                                    <a href="{{ route('dokter.rekammedis.create', ['idreservasi_dokter' => $item->idreservasi_dokter]) }}" 
-                                       class="btn btn-blue">
-                                        <i class="bi bi-stethoscope me-2"></i> Periksa
-                                    </a>
+                                    {{-- ✅ LINK KE SHOW (bukan start!) --}}
+                                    @if($item->idrekam_medis)
+                                        <a href="{{ route('dokter.rekammedis.show', $item->idrekam_medis) }}"
+                                        class="btn btn-blue">
+                                            <i class="bi bi-stethoscope me-2"></i> Periksa
+                                        </a>
+                                    @else
+                                        <span class="badge bg-secondary">Belum siap</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -413,8 +420,7 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex align-items-center mb-2">
-                                        <span class="number-badge me-2">No. {{ $loop->iteration }}</span>
-                                        <h6 class="mb-0 fw-bold text-dark">{{ $rm->nama ?? '-' }}</h6>
+                                        <h6 class="mb-0 fw-bold text-dark">{{ $rm->nama_pet ?? '-' }}</h6>
                                     </div>
                                     <div class="d-flex flex-wrap gap-3 text-muted small">
                                         <span>
@@ -428,6 +434,7 @@
                                     </div>
                                 </div>
                                 <div class="flex-shrink-0 ms-3">
+                                    {{-- ✅ VIEW SAJA --}}
                                     <a href="{{ route('dokter.rekammedis.show', $rm->idrekam_medis) }}" 
                                        class="btn btn-cyan">
                                         <i class="bi bi-eye me-2"></i> Lihat Detail

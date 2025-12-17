@@ -20,11 +20,18 @@ class PetController extends Controller
             ->join('pemilik', 'pet.idpemilik', '=', 'pemilik.idpemilik')
             ->join('user', 'pemilik.iduser', '=', 'user.iduser')
             ->join('ras_hewan', 'pet.idras_hewan', '=', 'ras_hewan.idras_hewan')
-            ->select('pet.*', 'user.nama as nama_pemilik', 'ras_hewan.nama_ras')
+            ->join('jenis_hewan', 'ras_hewan.idjenis_hewan', '=', 'jenis_hewan.idjenis_hewan')
+            ->select(
+                'pet.*',
+                'user.nama as nama_pemilik',
+                'ras_hewan.nama_ras',
+                'jenis_hewan.nama_jenis_hewan'
+            )
             ->paginate(10);
 
         return view('resepsionis.pet.index', compact('pet'));
     }
+
 
     /**
      * Tampilkan form registrasi pet.

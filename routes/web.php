@@ -16,7 +16,7 @@ use App\Http\Controllers\Admin\{
     RoleUserController, RoleController,
     KategoriController, RasHewanController, JenisHewanController,
     KategoriKlinisController, KodeTindakanTerapiController,
-    PerawatController, DokterController
+    PerawatController, DokterController, UserController,
 };
 
 // RESEPSIONIS
@@ -185,16 +185,28 @@ Route::middleware('isAdministrator')->prefix('admin')->name('admin.')->group(fun
     });
 
     // ========================================
-    // ROLE USER
+    // USER
+    // ========================================
+    Route::prefix('user')->name('user.')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::get('/create', [UserController::class, 'create'])->name('create');
+        Route::post('/', [UserController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [UserController::class, 'update'])->name('update');
+        Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/reset-password', [UserController::class, 'resetPassword'])->name('resetPassword');
+    });
+
+    // ========================================
+    // ROLE USER (Many-to-Many Management)
     // ========================================
     Route::prefix('roleuser')->name('roleuser.')->group(function () {
         Route::get('/', [RoleUserController::class, 'index'])->name('index');
-        Route::get('/create', [RoleUserController::class, 'create'])->name('create');
-        Route::post('/', [RoleUserController::class, 'store'])->name('store');
-        Route::get('/{roleuser}', [RoleUserController::class, 'show'])->name('show');
-        Route::get('/{roleuser}/edit', [RoleUserController::class, 'edit'])->name('edit');
-        Route::put('/{roleuser}', [RoleUserController::class, 'update'])->name('update');
-        Route::delete('/{roleuser}', [RoleUserController::class, 'destroy'])->name('destroy');
+        Route::get('/{iduser}/create', [RoleUserController::class, 'create'])->name('create');
+        Route::post('/{iduser}', [RoleUserController::class, 'store'])->name('store');
+        Route::get('/{idrole_user}/edit', [RoleUserController::class, 'edit'])->name('edit');
+        Route::put('/{idrole_user}', [RoleUserController::class, 'update'])->name('update');
+        Route::delete('/{idrole_user}', [RoleUserController::class, 'destroy'])->name('destroy');
     });
 
     // ========================================
@@ -223,11 +235,12 @@ Route::middleware('isAdministrator')->prefix('admin')->name('admin.')->group(fun
         Route::delete('/{perawat}', [PerawatController::class, 'destroy'])->name('destroy');
     });
 
-     // ========================================
-    // DATA PEGAWAI - PERAWAT
+    // ========================================
+    // PROFILE ADMIN
     // ========================================
     Route::get('/profil', [AdminProfilController::class, 'index'])->name('profil');
     Route::put('/profil/update', [AdminProfilController::class, 'update'])->name('profil.update');
+
 });
 
 
@@ -283,6 +296,7 @@ Route::middleware('isResepsionis')->prefix('resepsionis')->group(function () {
         Route::get('/{temudokter}', [TemuDokterController::class, 'show'])->name('show');
         Route::get('/{temudokter}/edit', [TemuDokterController::class, 'edit'])->name('edit');
         Route::put('/{temudokter}', [TemuDokterController::class, 'update'])->name('update');
+        Route::put('/resepsionis/temudokter/{id}/batal',[TemuDokterController::class, 'batal'])->name('batal');
         Route::delete('/{temudokter}', [TemuDokterController::class, 'destroy'])->name('destroy');
     });
 });
@@ -300,14 +314,18 @@ Route::prefix('perawat')->middleware(['auth', 'isPerawat'])->group(function () {
     Route::get('/dashboard', [PerawatDashboardController::class, 'index'])
         ->name('perawat.dashboard');
 
-    // Data Pasien
+    // ========================================
+    // DATA PASIEN (VIEW ONLY)
+    // ========================================
     Route::get('/pasien', [PerawatPasienController::class, 'index'])
         ->name('perawat.pasien.index');
     
     Route::get('/pasien/{id}', [PerawatPasienController::class, 'show'])
         ->name('perawat.pasien.show');
-        
-    // Rekam Medis
+
+    // ========================================
+    // REKAM MEDIS (CRUD)
+    // ========================================
     Route::get('/rekam-medis', [PerawatRekamMedisController::class, 'index'])
         ->name('perawat.rekammedis.index');
 
@@ -317,19 +335,24 @@ Route::prefix('perawat')->middleware(['auth', 'isPerawat'])->group(function () {
     Route::post('/rekam-medis', [PerawatRekamMedisController::class, 'store'])
         ->name('perawat.rekammedis.store');
 
+    // VIEW DETAIL (READ ONLY untuk detail tindakan)
     Route::get('/rekam-medis/{id}', [PerawatRekamMedisController::class, 'show'])
         ->name('perawat.rekammedis.show');
 
+    // EDIT REKAM MEDIS (diagnosa + tambah tindakan baru)
     Route::get('/rekam-medis/{id}/edit', [PerawatRekamMedisController::class, 'edit'])
         ->name('perawat.rekammedis.edit');
 
     Route::post('/rekam-medis/{id}', [PerawatRekamMedisController::class, 'update'])
         ->name('perawat.rekammedis.update');
 
+    // DELETE REKAM MEDIS
     Route::delete('/rekam-medis/{id}', [PerawatRekamMedisController::class, 'destroy'])
         ->name('perawat.rekammedis.destroy');
 
-    // Profil Perawat
+    // ========================================
+    // PROFIL PERAWAT
+    // ========================================
     Route::get('/profil', [PerawatProfilController::class, 'index'])
         ->name('perawat.profil');
     
@@ -339,33 +362,44 @@ Route::prefix('perawat')->middleware(['auth', 'isPerawat'])->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| DOKTER
+| DOKTER ROUTES
 |--------------------------------------------------------------------------
 */
 
 Route::middleware(['auth', 'isDokter'])->prefix('dokter')->name('dokter.')->group(function () {
 
+    // DASHBOARD
     Route::get('/dashboard', [DashboardDokterController::class, 'index'])
         ->name('dashboard');
 
-    // REKAM MEDIS ROUTES
+    // ========================================
+    // REKAM MEDIS
+    // ========================================
+    
+    // List antrian & riwayat (VIEW DATA PASIEN + VIEW REKAM MEDIS)
     Route::get('/rekammedis', [DokterRekamMedisController::class, 'index'])
         ->name('rekammedis.index');
 
-    Route::get('/rekammedis/create', [DokterRekamMedisController::class, 'create'])
-        ->name('rekammedis.create');
+    // Edit rekam medis (anamnesa, temuan klinis, diagnosa)
+    Route::get('/rekammedis/{id}/edit', [DokterRekamMedisController::class, 'edit'])
+        ->name('rekammedis.edit');
 
-    Route::post('/rekammedis/store', [DokterRekamMedisController::class, 'store'])
-        ->name('rekammedis.store');
+    // Update rekam medis
+    Route::put('/rekammedis/{id}', [DokterRekamMedisController::class, 'update'])
+        ->name('rekammedis.update');
 
+    // View detail rekam medis (READ ONLY)
     Route::get('/rekammedis/{id}', [DokterRekamMedisController::class, 'show'])
         ->name('rekammedis.show');
 
-    // DETAIL REKAM MEDIS ROUTES
+    // ========================================
+    // DETAIL REKAM MEDIS (TINDAKAN/TERAPI) - FULL CRUD
+    // ========================================
+    
     Route::get('/rekammedis/{idrekam_medis}/detail/create', [DetailRekamMedisController::class, 'create'])
         ->name('detail_rekammedis.create');
 
-    Route::post('/rekammedis/{idrekam_medis}/detail/store', [DetailRekamMedisController::class, 'store'])
+    Route::post('/rekammedis/{idrekam_medis}/detail', [DetailRekamMedisController::class, 'store'])
         ->name('detail_rekammedis.store');
 
     Route::get('/rekammedis/{idrekam_medis}/detail/{iddetail}/edit', [DetailRekamMedisController::class, 'edit'])
@@ -377,9 +411,14 @@ Route::middleware(['auth', 'isDokter'])->prefix('dokter')->name('dokter.')->grou
     Route::delete('/rekammedis/{idrekam_medis}/detail/{iddetail}', [DetailRekamMedisController::class, 'destroy'])
         ->name('detail_rekammedis.destroy');
 
-    // PROFIL DOKTER ROUTE
+    // ========================================
+    // PROFIL DOKTER
+    // ========================================
     Route::get('/profil', [ProfilDokterController::class, 'index'])
         ->name('profil');
+    
+    Route::put('/profil/update', [ProfilDokterController::class, 'update'])
+        ->name('profil.update');
 });
 
 

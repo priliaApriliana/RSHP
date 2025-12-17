@@ -1,6 +1,6 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Daftar Temu Dokter')
+
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('resepsionis.dashboard') }}">Dashboard</a></li>
@@ -64,7 +64,7 @@
 
                         <div class="mb-4">
                             <label class="form-label"><i class="bi bi-heart me-2" style="color: #628ECB;"></i>Nama Hewan</label>
-                            <select name="idpet" class="form-select form-select-lg @error('idpet') is-invalid @enderror" required>
+                            <select name="idpet" class="form-select @error('idpet') is-invalid @enderror" required>
                                 <option value="">-- Pilih Hewan --</option>
                                 @foreach ($pet as $p)
                                     <option value="{{ $p->idpet }}" {{ old('idpet') == $p->idpet ? 'selected' : '' }}>
@@ -77,7 +77,7 @@
 
                         <div class="mb-4">
                             <label class="form-label"><i class="bi bi-stethoscope me-2" style="color: #628ECB;"></i>Pilih Dokter</label>
-                            <select name="idrole_user" class="form-select form-select-lg @error('idrole_user') is-invalid @enderror" required>
+                            <select name="idrole_user" class="form-select @error('idrole_user') is-invalid @enderror" required>
                                 <option value="">-- Pilih Dokter --</option>
                                 @foreach ($dokter as $d)
                                     <option value="{{ $d->idrole_user }}" {{ old('idrole_user') == $d->idrole_user ? 'selected' : '' }}>
@@ -89,10 +89,10 @@
                         </div>
 
                         <div class="d-flex gap-2 mt-4">
-                            <button class="btn btn-lg" style="background: linear-gradient(135deg, #628ECB 0%, #395686 100%); color: white; border: none; flex: 1;">
+                            <button class="btn" style="background: linear-gradient(135deg, #628ECB 0%, #395686 100%); color: white; border: none; flex: 1;">
                                 <i class="bi bi-save me-2"></i>Daftarkan
                             </button>
-                            <a href="{{ route('resepsionis.temudokter.index') }}" class="btn btn-lg btn-secondary" style="flex: 0.5;">
+                            <a href="{{ route('resepsionis.temudokter.index') }}" class="btn btn-secondary" style="flex: 0.5;">
                                 <i class="bi bi-x me-2"></i>Batal
                             </a>
                         </div>
