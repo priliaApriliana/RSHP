@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 class TemuDokterController extends Controller
 {
     /**
-     * ✅ DAFTAR TEMU DOKTER - dengan STATUS DINAMIS
+     * ✅ DAFTAR TEMU DOKTER - dengan STATUS DINAMIS dan SORTING PRIORITAS
      */
     public function index()
     {
@@ -22,28 +22,37 @@ class TemuDokterController extends Controller
             ->join('user as pemilik_user', 'pemilik.iduser', '=', 'pemilik_user.iduser')
             ->join('role_user', 'temu_dokter.idrole_user', '=', 'role_user.idrole_user')
             ->join('user as dokter_user', 'role_user.iduser', '=', 'dokter_user.iduser')
-            ->leftJoin('rekam_medis', 'temu_dokter.idreservasi_dokter', '=', 'rekam_medis.idreservasi_dokter') // ✅ LEFT JOIN
+            ->leftJoin('rekam_medis', 'temu_dokter.idreservasi_dokter', '=', 'rekam_medis.idreservasi_dokter')
             ->select(
                 'temu_dokter.*',
                 'pet.nama as nama_hewan',
                 'pemilik_user.nama as nama_pemilik',
                 'dokter_user.nama as nama_dokter',
-                'rekam_medis.idrekam_medis' // ✅ Untuk cek status dinamis
+                'rekam_medis.idrekam_medis'
             )
-            ->orderBy('temu_dokter.waktu_daftar', 'desc')
+            // ✅ SORTING PRIORITAS:
+            // 1. Status ANTRI & PROSES di atas (berdasarkan no_urut ASC)
+            // 2. Status SELESAI & BATAL di bawah (waktu_daftar DESC)
+            ->orderByRaw("
+                CASE 
+                    WHEN temu_dokter.status IN ('A', 'P') THEN 0
+                    ELSE 1
+                END ASC
+            ")
+            ->orderBy('temu_dokter.no_urut', 'ASC')  // Untuk ANTRI/PROSES
+            ->orderBy('temu_dokter.waktu_daftar', 'DESC')  // Untuk SELESAI/BATAL
             ->paginate(10);
 
         // ✅ TAMBAHKAN STATUS DINAMIS
         $temuDokter->getCollection()->transform(function($item) {
-            // Hitung status display berdasarkan kondisi
             if ($item->status == 'B') {
                 $item->status_display = 'B'; // Batal
             } elseif ($item->status == 'S') {
                 $item->status_display = 'S'; // Selesai
             } elseif ($item->idrekam_medis) {
-                $item->status_display = 'P'; // ✅ Ada rekam medis = PROSES
+                $item->status_display = 'P'; // Ada rekam medis = PROSES
             } else {
-                $item->status_display = 'A'; // ✅ Belum ada rekam medis = ANTRI
+                $item->status_display = 'A'; // Belum ada rekam medis = ANTRI
             }
             return $item;
         });
@@ -72,7 +81,10 @@ class TemuDokterController extends Controller
             'idrole_user' => 'required|exists:role_user,idrole_user',
         ]);
 
-        $no_urut = TemuDokter::whereDate('waktu_daftar', today())->count() + 1;
+        // ✅ HITUNG NO URUT BERDASARKAN HARI INI (yang belum selesai/batal)
+        $no_urut = TemuDokter::whereDate('waktu_daftar', today())
+            ->whereNotIn('status', ['S', 'B'])
+            ->count() + 1;
 
         TemuDokter::create([
             'no_urut' => $no_urut,
