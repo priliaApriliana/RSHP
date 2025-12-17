@@ -33,7 +33,7 @@ class DetailRekamMedisController extends Controller
 
         // ✅ CEK APAKAH REKAM MEDIS SUDAH DIISI (anamnesa, temuan_klinis, diagnosa)
         if (empty($rekamMedis->anamnesa) || empty($rekamMedis->temuan_klinis) || empty($rekamMedis->diagnosa)) {
-            return redirect()->route('dokter.rekammedis.edit', $idrekam_medis)
+            return redirect()->route('dokter.rekammedis.show', $idrekam_medis)
                 ->with('error', 'Mohon lengkapi data rekam medis terlebih dahulu (Anamnesa, Temuan Klinis, Diagnosa).');
         }
 
@@ -61,35 +61,54 @@ class DetailRekamMedisController extends Controller
             'detail' => 'nullable|string|max:1000'
         ]);
 
-        $idDokter = Auth::user()->iduser;
+        DB::beginTransaction();
         
-        $roleUser = DB::table('role_user')
-            ->where('iduser', $idDokter)
-            ->where('idrole', 2)
-            ->first();
+        try {
+            $idDokter = Auth::user()->iduser;
+            
+            $roleUser = DB::table('role_user')
+                ->where('iduser', $idDokter)
+                ->where('idrole', 2)
+                ->first();
 
-        if (!$roleUser) {
-            abort(403, 'Anda tidak memiliki akses sebagai dokter');
+            if (!$roleUser) {
+                abort(403, 'Anda tidak memiliki akses sebagai dokter');
+            }
+
+            // ✅ CEK APAKAH REKAM MEDIS INI MILIK DOKTER YANG LOGIN
+            $rekamMedis = DB::table('rekam_medis')
+                ->where('idrekam_medis', $idrekam_medis)
+                ->where('dokter_pemeriksa', $roleUser->idrole_user)
+                ->first();
+
+            if (!$rekamMedis) {
+                abort(403, 'Anda tidak memiliki akses untuk menambahkan detail rekam medis ini');
+            }
+
+            // ✅ TAMBAH DETAIL TINDAKAN
+            DB::table('detail_rekam_medis')->insert([
+                'idrekam_medis' => $idrekam_medis,
+                'idkode_tindakan_terapi' => $request->idkode_tindakan_terapi,
+                'detail' => $request->detail
+            ]);
+
+            // 🔥 PENTING: UPDATE STATUS TEMU_DOKTER JADI 'S' (SELESAI)
+            // Karena dokter sudah mengisi anamnesa, diagnosa, temuan klinis, DAN minimal 1 tindakan
+            DB::table('temu_dokter')
+                ->where('idreservasi_dokter', $rekamMedis->idreservasi_dokter)
+                ->update([
+                    'status' => 'S'  // ✅ UPDATE STATUS JADI SELESAI
+                ]);
+
+            DB::commit();
+
+            return redirect()->route('dokter.rekammedis.show', $idrekam_medis)
+                ->with('success', 'Detail tindakan/terapi berhasil ditambahkan. Status pemeriksaan diubah menjadi Selesai.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-
-        // ✅ CEK APAKAH REKAM MEDIS INI MILIK DOKTER YANG LOGIN
-        $rekamMedis = DB::table('rekam_medis')
-            ->where('idrekam_medis', $idrekam_medis)
-            ->where('dokter_pemeriksa', $roleUser->idrole_user)
-            ->first();
-
-        if (!$rekamMedis) {
-            abort(403, 'Anda tidak memiliki akses untuk menambahkan detail rekam medis ini');
-        }
-
-        DB::table('detail_rekam_medis')->insert([
-            'idrekam_medis' => $idrekam_medis,
-            'idkode_tindakan_terapi' => $request->idkode_tindakan_terapi,
-            'detail' => $request->detail
-        ]);
-
-        return redirect()->route('dokter.rekammedis.show', $idrekam_medis)
-            ->with('success', 'Detail tindakan/terapi berhasil ditambahkan.');
     }
 
     /**
@@ -181,33 +200,57 @@ class DetailRekamMedisController extends Controller
      */
     public function destroy($idrekam_medis, $iddetail)
     {
-        $idDokter = Auth::user()->iduser;
+        DB::beginTransaction();
         
-        $roleUser = DB::table('role_user')
-            ->where('iduser', $idDokter)
-            ->where('idrole', 2)
-            ->first();
+        try {
+            $idDokter = Auth::user()->iduser;
+            
+            $roleUser = DB::table('role_user')
+                ->where('iduser', $idDokter)
+                ->where('idrole', 2)
+                ->first();
 
-        if (!$roleUser) {
-            abort(403, 'Anda tidak memiliki akses sebagai dokter');
+            if (!$roleUser) {
+                abort(403, 'Anda tidak memiliki akses sebagai dokter');
+            }
+
+            // ✅ CEK APAKAH REKAM MEDIS INI MILIK DOKTER YANG LOGIN
+            $rekamMedis = DB::table('rekam_medis')
+                ->where('idrekam_medis', $idrekam_medis)
+                ->where('dokter_pemeriksa', $roleUser->idrole_user)
+                ->first();
+
+            if (!$rekamMedis) {
+                abort(403, 'Anda tidak memiliki akses untuk menghapus detail rekam medis ini');
+            }
+
+            // ✅ HAPUS DETAIL
+            DB::table('detail_rekam_medis')
+                ->where('iddetail_rekam_medis', $iddetail)
+                ->where('idrekam_medis', $idrekam_medis)
+                ->delete();
+
+            // 🔥 CEK: JIKA TIDAK ADA DETAIL LAGI, KEMBALIKAN STATUS KE 'P'
+            $jumlahDetail = DB::table('detail_rekam_medis')
+                ->where('idrekam_medis', $idrekam_medis)
+                ->count();
+
+            if ($jumlahDetail == 0) {
+                DB::table('temu_dokter')
+                    ->where('idreservasi_dokter', $rekamMedis->idreservasi_dokter)
+                    ->update([
+                        'status' => 'P'  // ✅ KEMBALI KE STATUS PROSES
+                    ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('dokter.rekammedis.show', $idrekam_medis)
+                ->with('success', 'Detail tindakan/terapi berhasil dihapus.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-
-        // ✅ CEK APAKAH REKAM MEDIS INI MILIK DOKTER YANG LOGIN
-        $rekamMedis = DB::table('rekam_medis')
-            ->where('idrekam_medis', $idrekam_medis)
-            ->where('dokter_pemeriksa', $roleUser->idrole_user)
-            ->first();
-
-        if (!$rekamMedis) {
-            abort(403, 'Anda tidak memiliki akses untuk menghapus detail rekam medis ini');
-        }
-
-        DB::table('detail_rekam_medis')
-            ->where('iddetail_rekam_medis', $iddetail)
-            ->where('idrekam_medis', $idrekam_medis)
-            ->delete();
-
-        return redirect()->route('dokter.rekammedis.show', $idrekam_medis)
-            ->with('success', 'Detail tindakan/terapi berhasil dihapus.');
     }
 }
