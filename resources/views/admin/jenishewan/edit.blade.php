@@ -1,6 +1,5 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Edit Jenis Hewan')
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
     <li class="breadcrumb-item"><a href="{{ route('admin.jenishewan.index') }}">Jenis Hewan</a></li>

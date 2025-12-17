@@ -127,7 +127,7 @@ class RekamMedisController extends Controller
         $temuDokter = DB::table('temu_dokter')
             ->join('pet', 'temu_dokter.idpet', '=', 'pet.idpet')
             ->join('pemilik', 'pet.idpemilik', '=', 'pemilik.idpemilik')
-            ->join('user', 'pemilik.iduser', '=', 'user.iduser')
+            ->join('user as pemilik_user', 'pemilik.iduser', '=', 'pemilik_user.iduser')
             ->join('ras_hewan', 'pet.idras_hewan', '=', 'ras_hewan.idras_hewan')
             ->join('jenis_hewan', 'ras_hewan.idjenis_hewan', '=', 'jenis_hewan.idjenis_hewan')
             ->select(
@@ -138,8 +138,8 @@ class RekamMedisController extends Controller
                 'pet.warna_tanda',
                 'pemilik.no_wa',
                 'pemilik.alamat',
-                'user.email',
-                'user.nama as nama_pemilik',
+                'pemilik_user.email',
+                'pemilik_user.nama as nama_pemilik',
                 'jenis_hewan.nama_jenis_hewan',
                 'ras_hewan.nama_ras'
             )
@@ -163,6 +163,85 @@ class RekamMedisController extends Controller
             ->get();
 
         return view('dokter.rekammedis.show', compact('rekamMedis', 'temuDokter', 'detailRekamMedis'));
+    }
+
+    /**
+     * ✅ FORM EDIT REKAM MEDIS (TAMBAHAN METHOD INI)
+     */
+    public function edit($id)
+    {
+        $idUser = Auth::user()->iduser;
+
+        $roleUser = DB::table('role_user')
+            ->where('iduser', $idUser)
+            ->where('idrole', 2)
+            ->first();
+
+        if (!$roleUser) {
+            abort(403, 'Akses ditolak');
+        }
+
+        $rekamMedis = DB::table('rekam_medis')
+            ->where('idrekam_medis', $id)
+            ->first();
+
+        if (!$rekamMedis) {
+            abort(404, 'Rekam medis tidak ditemukan');
+        }
+
+        // ✅ CEK STATUS TEMU DOKTER
+        $temuDokter = DB::table('temu_dokter')
+            ->where('idreservasi_dokter', $rekamMedis->idreservasi_dokter)
+            ->first();
+
+        if (!$temuDokter) {
+            abort(404, 'Data temu dokter tidak ditemukan');
+        }
+
+        // ✅ HANYA BOLEH EDIT JIKA STATUS MASIH 'P' (PROSES)
+        if ($temuDokter->status === 'S') {
+            return redirect()->route('dokter.rekammedis.show', $id)
+                ->with('error', 'Rekam medis sudah selesai, tidak dapat diedit.');
+        }
+
+        // ✅ CEK APAKAH DOKTER INI YANG PERIKSA (jika sudah ada dokter_pemeriksa)
+        if ($rekamMedis->dokter_pemeriksa && $rekamMedis->dokter_pemeriksa != $roleUser->idrole_user) {
+            abort(403, 'Rekam medis ini sedang ditangani oleh dokter lain');
+        }
+
+        // ✅ Claim dokter_pemeriksa jika belum ada
+        if (!$rekamMedis->dokter_pemeriksa) {
+            DB::table('rekam_medis')
+                ->where('idrekam_medis', $id)
+                ->update(['dokter_pemeriksa' => $roleUser->idrole_user]);
+            
+            $rekamMedis->dokter_pemeriksa = $roleUser->idrole_user;
+        }
+
+        // ✅ AMBIL DATA LENGKAP
+        $temuDokter = DB::table('temu_dokter')
+            ->join('pet', 'temu_dokter.idpet', '=', 'pet.idpet')
+            ->join('pemilik', 'pet.idpemilik', '=', 'pemilik.idpemilik')
+            ->join('user', 'pemilik.iduser', '=', 'user.iduser')
+            ->join('ras_hewan', 'pet.idras_hewan', '=', 'ras_hewan.idras_hewan')
+            ->join('jenis_hewan', 'ras_hewan.idjenis_hewan', '=', 'jenis_hewan.idjenis_hewan')
+            ->select(
+                'temu_dokter.*',
+                'pet.nama as nama_pet',
+                'pet.tanggal_lahir',
+                'pet.jenis_kelamin',
+                'pet.warna_tanda',
+                'pemilik.no_wa',
+                'pemilik.alamat',
+                'user.email',
+                'user.nama as nama_pemilik',
+                'jenis_hewan.nama_jenis_hewan',
+                'ras_hewan.nama_ras'
+            )
+            ->where('temu_dokter.idreservasi_dokter', $rekamMedis->idreservasi_dokter)
+            ->first();
+
+        return view('dokter.rekammedis.edit', compact('rekamMedis', 'temuDokter'));
     }
 
     /**

@@ -29,6 +29,7 @@ class RoleUserController extends Controller
                     'role.nama_role',
                     'role_user.status'
                 )
+                ->orderBy('role_user.status', 'DESC') // Aktif ditampilkan pertama
                 ->get();
             
             $user->roles = $userRoles;
@@ -63,6 +64,7 @@ class RoleUserController extends Controller
 
     // ===============================
     // STORE - Simpan role baru untuk user
+    // OTOMATIS NONAKTIFKAN SEMUA ROLE LAMA
     // ===============================
     public function store(Request $request, $iduser)
     {
@@ -81,14 +83,20 @@ class RoleUserController extends Controller
                            ->with('error', 'User sudah memiliki role ini.');
         }
 
+        // LANGKAH 1: Nonaktifkan semua role user yang ada
+        DB::table('role_user')
+            ->where('iduser', $iduser)
+            ->update(['status' => 0]);
+
+        // LANGKAH 2: Tambahkan role baru dengan status AKTIF
         DB::table('role_user')->insert([
             'iduser' => $iduser,
             'idrole' => $request->idrole,
-            'status' => 1, // default aktif
+            'status' => 1, // Role baru otomatis aktif
         ]);
 
         return redirect()->route('admin.roleuser.index')
-                       ->with('success', 'Role berhasil ditambahkan!');
+                       ->with('success', 'Role berhasil ditambahkan dan diaktifkan! Role lama telah dinonaktifkan.');
     }
 
     // ===============================
@@ -101,6 +109,7 @@ class RoleUserController extends Controller
             ->join('role', 'role_user.idrole', '=', 'role.idrole')
             ->select(
                 'role_user.idrole_user',
+                'role_user.iduser',
                 'role_user.status',
                 'user.nama as nama_user',
                 'role.nama_role'
@@ -118,6 +127,7 @@ class RoleUserController extends Controller
 
     // ===============================
     // UPDATE - Update status role user
+    // JIKA DIAKTIFKAN, NONAKTIFKAN ROLE LAIN
     // ===============================
     public function update(Request $request, $idrole_user)
     {
@@ -132,16 +142,35 @@ class RoleUserController extends Controller
                            ->with('error', 'Data tidak ditemukan.');
         }
 
-        DB::table('role_user')
-            ->where('idrole_user', $idrole_user)
-            ->update(['status' => (int) $request->status]);
+        // Jika mengaktifkan role ini
+        if ($request->status == 1) {
+            // LANGKAH 1: Nonaktifkan semua role user lainnya
+            DB::table('role_user')
+                ->where('iduser', $roleUser->iduser)
+                ->update(['status' => 0]);
+            
+            // LANGKAH 2: Aktifkan role yang dipilih
+            DB::table('role_user')
+                ->where('idrole_user', $idrole_user)
+                ->update(['status' => 1]);
+            
+            $message = 'Role berhasil diaktifkan! Role lain telah dinonaktifkan.';
+        } else {
+            // Jika menonaktifkan
+            DB::table('role_user')
+                ->where('idrole_user', $idrole_user)
+                ->update(['status' => 0]);
+            
+            $message = 'Role berhasil dinonaktifkan.';
+        }
 
         return redirect()->route('admin.roleuser.index')
-                       ->with('success', 'Status role berhasil diperbarui.');
+                       ->with('success', $message);
     }
 
     // ===============================
     // TOGGLE STATUS - Aktifkan/Nonaktifkan role user
+    // JIKA DIAKTIFKAN, NONAKTIFKAN ROLE LAIN
     // ===============================
     public function toggleStatus($idrole_user)
     {
@@ -155,11 +184,22 @@ class RoleUserController extends Controller
         // Toggle status (1 -> 0, 0 -> 1)
         $newStatus = $roleUser->status == 1 ? 0 : 1;
 
+        // Jika akan mengaktifkan
+        if ($newStatus == 1) {
+            // Nonaktifkan semua role user lainnya
+            DB::table('role_user')
+                ->where('iduser', $roleUser->iduser)
+                ->update(['status' => 0]);
+        }
+
+        // Update status role ini
         DB::table('role_user')
             ->where('idrole_user', $idrole_user)
             ->update(['status' => $newStatus]);
 
-        $statusText = $newStatus == 1 ? 'diaktifkan' : 'dinonaktifkan';
+        $statusText = $newStatus == 1 
+            ? 'diaktifkan. Role lain telah dinonaktifkan' 
+            : 'dinonaktifkan';
 
         return redirect()->route('admin.roleuser.index')
                        ->with('success', "Role berhasil {$statusText}.");
@@ -184,17 +224,4 @@ class RoleUserController extends Controller
         return redirect()->route('admin.roleuser.index')
             ->with('success', 'Role berhasil dihapus dari user.');
     }
-
-
-    // ===============================
-    // FUNGSI LAMA (bisa dihapus atau di-comment jika tidak dipakai)
-    // ===============================
-    
-    /*
-    public function create() { ... }
-    public function store() { ... }
-    public function edit() { ... }
-    public function update() { ... }
-    public function destroy() { ... }
-    */
 }

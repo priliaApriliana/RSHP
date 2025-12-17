@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 class PetController extends Controller
 {
     /**
-     * Tampilkan daftar semua pet
+     * Tampilkan daftar semua pet (TERBARU DI ATAS)
      */
     public function index()
     {
@@ -27,6 +27,7 @@ class PetController extends Controller
                 'ras_hewan.nama_ras',
                 'jenis_hewan.nama_jenis_hewan'
             )
+            ->orderBy('pet.idpet', 'DESC')  // ✅ TERBARU DI ATAS (berdasarkan ID)
             ->paginate(10);
 
         return view('resepsionis.pet.index', compact('pet'));

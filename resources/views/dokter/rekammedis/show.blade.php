@@ -195,10 +195,12 @@
                 {{ \Carbon\Carbon::parse($rekamMedis->created_at)->format('d M Y, H:i') }}
             </span>
             {{--  TAMBAH TOMBOL EDIT --}}
-            <a href="{{ route('dokter.rekammedis.edit', $rekamMedis->idrekam_medis) }}" 
+            @if($temuDokter->status === 'P')
+            <a href="{{ route('dokter.rekammedis.edit', $rekamMedis->idrekam_medis) }}"
                class="btn btn-sm btn-light">
                 <i class="bi bi-pencil-square me-1"></i> Edit Rekam Medis
             </a>
+            @endif
         </div>
     </div>
 </div>

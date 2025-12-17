@@ -1,7 +1,5 @@
 @extends('layouts.lte.main')
 
-
-
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('resepsionis.dashboard') }}">Dashboard</a></li>
     <li class="breadcrumb-item"><a href="{{ route('resepsionis.pet.index') }}">Pet</a></li>
@@ -328,7 +326,7 @@
                         <input type="date" 
                                name="tanggal_lahir" 
                                class="form-control @error('tanggal_lahir') is-invalid @enderror" 
-                               value="{{ old('tanggal_lahir', $pet->tanggal_lahir) }}" 
+                               value="{{ old('tanggal_lahir', \Carbon\Carbon::parse($pet->tanggal_lahir)->format('Y-m-d')) }}" 
                                required>
                         @error('tanggal_lahir')
                             <span class="invalid-feedback">{{ $message }}</span>

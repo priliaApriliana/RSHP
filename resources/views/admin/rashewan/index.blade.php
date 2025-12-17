@@ -228,6 +228,71 @@
         font-size: 0.875rem;
         margin: 0;
     }
+
+    .table-container {
+    overflow-x: auto;
+    }
+
+    .data-table {
+        width: 100%;
+        margin: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .data-table thead {
+        background: linear-gradient(to right, #F0F3FA 0%, #F8FAFC 100%);
+        border-bottom: 2px solid #D5DEEF;
+    }
+
+    .data-table thead th {
+        padding: 1.125rem 1.5rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #395886;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        border: 1px solid #D5DEEF;
+        border-bottom: 2px solid #D5DEEF;
+    }
+
+    .data-table thead th:first-child {
+        border-left: 2px solid #D5DEEF;
+    }
+
+    .data-table thead th:last-child {
+        border-right: 2px solid #D5DEEF;
+    }
+
+    .data-table tbody td {
+        padding: 1.25rem 1.5rem;
+        vertical-align: middle;
+        border: 1px solid #E8EEF7;
+        font-size: 0.875rem;
+        color: #395886;
+    }
+
+    .data-table tbody td:first-child {
+        border-left: 2px solid #D5DEEF;
+    }
+
+    .data-table tbody td:last-child {
+        border-right: 2px solid #D5DEEF;
+    }
+
+    .data-table tbody tr:last-child td {
+        border-bottom: 2px solid #D5DEEF;
+    }
+
+    .data-table tbody tr {
+        transition: all 0.2s ease;
+        background: #ffffff;
+    }
+
+    .data-table tbody tr:hover {
+        background: linear-gradient(to right, #F8FAFC 0%, #F0F3FA 100%);
+        transform: scale(1.001);
+    }
 </style>
 
 <div class="container-fluid px-4">

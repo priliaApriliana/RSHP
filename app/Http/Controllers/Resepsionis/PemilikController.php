@@ -16,6 +16,7 @@ class PemilikController extends Controller
         $pemilik = DB::table('pemilik')
             ->join('user', 'pemilik.iduser', '=', 'user.iduser')
             ->select('pemilik.*', 'user.nama', 'user.email')
+            ->orderBy('pemilik.idpemilik', 'DESC')  // ✅ TERBARU DI ATAS
             ->paginate(10);
         
         return view('resepsionis.pemilik.index', compact('pemilik'));

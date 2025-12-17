@@ -278,21 +278,21 @@
                         </a>
                     </li>
 
-                    <!-- Pet -->
-                    <li class="nav-item">
-                        <a href="{{ route('resepsionis.pet.index') }}" 
-                           class="nav-link {{ request()->routeIs('resepsionis.pet.*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-heart-fill"></i>
-                            <p>Pet</p>
-                        </a>
-                    </li>
-
                     <!-- Pemilik -->
                     <li class="nav-item">
                         <a href="{{ route('resepsionis.pemilik.index') }}" 
                            class="nav-link {{ request()->routeIs('resepsionis.pemilik.*') ? 'active' : '' }}">
                             <i class="nav-icon bi bi-people-fill"></i>
                             <p>Pemilik</p>
+                        </a>
+                    </li>
+
+                    <!-- Pet -->
+                    <li class="nav-item">
+                        <a href="{{ route('resepsionis.pet.index') }}" 
+                           class="nav-link {{ request()->routeIs('resepsionis.pet.*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-heart-fill"></i>
+                            <p>Pet</p>
                         </a>
                     </li>
 

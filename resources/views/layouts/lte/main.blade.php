@@ -383,6 +383,7 @@
         <!--! — begin::Footer — -->
         @include('layouts.lte.footer')
         <!--! — end::Footer — -->
+        
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
