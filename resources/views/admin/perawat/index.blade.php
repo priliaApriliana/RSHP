@@ -23,8 +23,19 @@
         </div>
     </div>
 
-    {{-- CONTENT --}}
     <div class="content-card">
+        {{-- Search Section --}}
+        <div class="search-section">
+            <div class="search-wrapper">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" 
+                       id="searchInput" 
+                       class="search-input" 
+                       placeholder="Cari berdasarkan ID atau nama dokter...">
+            </div>
+        </div>
+
+    {{-- CONTENT --}}
         <div class="table-container">
             <table class="data-table">
                 <thead>
@@ -39,7 +50,7 @@
                         <th width="140">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody  id="tableBody">
                     @forelse ($perawats as $p)
                     <tr>
                         <td class="text-center">{{ $p->id_perawat }}</td>
@@ -84,4 +95,56 @@
         </div>
     </div>
 </div>
+
+{{-- ================= SEARCH SCRIPT ================= --}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const searchInput = document.getElementById('searchInput');
+    const tableBody  = document.getElementById('tableBody');
+
+    if (!searchInput || !tableBody) return;
+
+    searchInput.addEventListener('input', function () {
+
+        const keyword = this.value.toLowerCase().trim();
+        const rows = tableBody.querySelectorAll('tr');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+
+            if (row.id === 'noResultRow') return;
+
+            const text = row.textContent.toLowerCase();
+            const match = text.includes(keyword);
+
+            row.style.display = match ? '' : 'none';
+            if (match) visibleCount++;
+        });
+
+        let noResultRow = document.getElementById('noResultRow');
+
+        if (visibleCount === 0 && keyword !== '') {
+            if (!noResultRow) {
+                noResultRow = document.createElement('tr');
+                noResultRow.id = 'noResultRow';
+                noResultRow.innerHTML = `
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="bi bi-search"></i>
+                            </div>
+                            <h5>Tidak Ada Hasil</h5>
+                            <p>Data dengan kata "<b>${keyword}</b>" tidak ditemukan</p>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(noResultRow);
+            }
+        } else {
+            if (noResultRow) noResultRow.remove();
+        }
+    });
+});
+</script>
 @endsection
