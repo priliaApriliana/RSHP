@@ -1,4 +1,4 @@
-@extends('site.main')
+@extends('layouts.main')
 
 @section('title', 'Beranda RSHP')
 

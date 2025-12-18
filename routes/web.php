@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // SITE + AUTH
-use App\Http\Controllers\Site\SiteController;
+use App\Http\Controllers\SiteController;
 use App\Http\Controllers\Auth\LoginController;
 
 // ADMIN

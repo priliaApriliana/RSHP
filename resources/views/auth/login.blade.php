@@ -9,6 +9,9 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
     <style>
         * {
             margin: 0;
@@ -90,6 +93,10 @@
             display: block;
         }
         
+        .password-wrapper {
+            position: relative;
+        }
+        
         .form-control {
             border: 2px solid #D5DEEF;
             border-radius: 12px;
@@ -98,6 +105,10 @@
             transition: all 0.3s ease;
             background-color: #F0F3FA;
             width: 100%;
+        }
+        
+        .form-control.with-icon {
+            padding-right: 45px;
         }
         
         .form-control:focus {
@@ -109,6 +120,32 @@
         
         .form-control::placeholder {
             color: #8AAEE0;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            color: #628ECB;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .password-toggle:hover {
+            color: #395886;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .password-toggle:active {
+            transform: translateY(-50%) scale(0.95);
         }
         
         .form-check {
@@ -271,13 +308,22 @@
                     <!-- Password -->
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input id="password" 
-                               type="password" 
-                               class="form-control @error('password') is-invalid @enderror" 
-                               name="password" 
-                               placeholder="Masukkan password Anda"
-                               required 
-                               autocomplete="current-password">
+                        <div class="password-wrapper">
+                            <input id="password" 
+                                   type="password" 
+                                   class="form-control with-icon @error('password') is-invalid @enderror" 
+                                   name="password" 
+                                   placeholder="Masukkan password Anda"
+                                   required 
+                                   autocomplete="current-password">
+                            
+                            <button type="button" 
+                                    class="password-toggle" 
+                                    onclick="togglePassword()"
+                                    aria-label="Toggle password visibility">
+                                <i class="bi bi-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
 
                         @error('password')
                             <span class="invalid-feedback">
@@ -318,5 +364,23 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Password Toggle Script -->
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        }
+    </script>
 </body>
 </html>
