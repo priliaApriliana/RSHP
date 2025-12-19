@@ -172,7 +172,7 @@ class TemuDokterController extends Controller
         ]);
 
         return redirect()
-            ->route('resepsionis.temudokter.show', $id)
+            ->route('resepsionis.temudokter.index', $id)
             ->with('success', 'Data temu dokter berhasil diperbarui');
     }
 

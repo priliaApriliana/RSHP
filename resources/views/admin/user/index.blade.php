@@ -12,6 +12,23 @@
 @section('content')
 
 <div class="container-fluid px-4">
+        {{-- ALERT NOTIFICATION --}}
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <strong>Berhasil!</strong>
+                <p>{{ session('success') }}</p>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Gagal!</strong>
+                <p>{{ session('error') }}</p>
+            </div>
+        @endif
+        
     {{-- Page Header --}}
     <div class="page-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
@@ -25,21 +42,6 @@
         </div>
     </div>
 
-    {{-- Success Message --}}
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Berhasil!</strong> {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
-    {{-- Error Message --}}
-    @if (session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Gagal!</strong> {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
 
     {{-- Content Card --}}
     <div class="content-card">

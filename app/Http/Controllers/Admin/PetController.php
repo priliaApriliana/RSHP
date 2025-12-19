@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-// use App\Models\Pet;
-// use App\Models\RasHewan;
-// use App\Models\Pemilik;
+use Illuminate\Database\QueryException;
 
 class PetController extends Controller
 {
@@ -164,11 +162,40 @@ class PetController extends Controller
      }
  
      // Hapus data
-     public function destroy($id)
-     {
-        DB::table('pet')->where('idpet', $id)->delete();
-        return redirect()->route('admin.pet.index')->with('success', 'Data hewan berhasil dihapus!');
-     }
+    public function destroy($id)
+    {
+        try {
+            $pet = DB::table('pet')->where('idpet', $id)->first();
+
+            if (!$pet) {
+                return redirect()->route('admin.pet.index')
+                    ->with('error', 'Data pet tidak ditemukan.');
+            }
+
+            // CEK FK (contoh: rekam medis)
+            $dipakai = DB::table('temu_dokter')
+                ->where('idpet', $id)
+                ->count();
+
+            if ($dipakai > 0) {
+                return redirect()->route('admin.pet.index')
+                    ->with(
+                        'error',
+                        "Pet <b>{$pet->nama}</b> tidak dapat dihapus karena masih digunakan pada {$dipakai} data rekam medis."
+                    );
+            }
+
+            DB::table('pet')->where('idpet', $id)->delete();
+
+            return redirect()->route('admin.pet.index')
+                ->with('success', "Pet <b>{$pet->nama}</b> berhasil dihapus.");
+
+        } catch (QueryException $e) {
+            return redirect()->route('admin.pet.index')
+                ->with('error', 'Pet tidak dapat dihapus karena masih terhubung dengan data lain.');
+        }
+    }
+
 
      // ajax buat nampilin idjenis hewan soalnya kan di tabel pemilik tidak ada kolom untuk jenis hewan
     //  public function getRasByJenis($id)

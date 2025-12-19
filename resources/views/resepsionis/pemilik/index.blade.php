@@ -1,7 +1,5 @@
 @extends('layouts.lte.main')
 
-
-
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('resepsionis.dashboard') }}">Dashboard</a></li>
     <li class="breadcrumb-item active">Pemilik</li>

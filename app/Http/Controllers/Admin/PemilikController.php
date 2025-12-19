@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Pemilik;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 
 class PemilikController extends Controller
 {
@@ -132,9 +133,41 @@ class PemilikController extends Controller
     }
 
     // Hapus data
-    public function destroy($id)
+public function destroy($id)
     {
-        Pemilik::findOrFail($id)->delete();
-        return redirect()->route('admin.pemilik.index')->with('success', 'Data pemilik berhasil dihapus!');
+        try {
+            $pemilik = DB::table('pemilik')
+                ->where('idpemilik', $id)
+                ->first();
+
+            if (!$pemilik) {
+                return redirect()->route('admin.pemilik.index')
+                    ->with('error', 'Data pemilik tidak ditemukan.');
+            }
+
+            // CEK apakah punya pet
+            $punyaPet = DB::table('pet')
+                ->where('idpemilik', $id)
+                ->count();
+
+            if ($punyaPet > 0) {
+                return redirect()->route('admin.pemilik.index')
+                    ->with(
+                        'error',
+                        "Pemilik tidak dapat dihapus karena masih memiliki {$punyaPet} data pet."
+                    );
+            }
+
+            DB::table('pemilik')->where('idpemilik', $id)->delete();
+
+            return redirect()->route('admin.pemilik.index')
+                ->with('success', 'Data pemilik berhasil dihapus.');
+
+        } catch (QueryException $e) {
+            return redirect()->route('admin.pemilik.index')
+                ->with('error', 'Pemilik tidak dapat dihapus karena masih terhubung dengan data lain.');
+        }
     }
+
+
 }

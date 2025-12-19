@@ -1,7 +1,5 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Tambah Tindakan Terapi')
-
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dokter.dashboard') }}">Dashboard</a></li>
     <li class="breadcrumb-item"><a href="{{ route('dokter.rekammedis.index') }}">Rekam Medis</a></li>

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use App\Models\KategoriKlinis;
+use Illuminate\Database\QueryException;
 
 class KategoriKlinisController extends Controller
 {
@@ -103,7 +103,15 @@ class KategoriKlinisController extends Controller
     // -------------------------------
     public function edit($id)
     {
-        $data = KategoriKlinis::findOrFail($id);
+        $data = DB::table('kategori_klinis')
+            ->where('idkategori_klinis', $id)
+            ->first();
+
+        if (!$data) {
+            return redirect()->route('admin.kategoriklinis.index')
+                ->with('error', 'Data kategori klinis tidak ditemukan.');
+        }
+
         return view('admin.kategoriklinis.edit', compact('data'));
     }
 
@@ -114,13 +122,16 @@ class KategoriKlinisController extends Controller
     {
         $validatedData = $this->validateKategoriKlinis($request, $id);
 
-        $data = KategoriKlinis::findOrFail($id);
-        $data->update([
-            'nama_kategori_klinis' => $this->formatNamaKategoriKlinis($validatedData['nama_kategori_klinis']),
-        ]);
+        DB::table('kategori_klinis')
+            ->where('idkategori_klinis', $id)
+            ->update([
+                'nama_kategori_klinis' => $this->formatNamaKategoriKlinis(
+                    $validatedData['nama_kategori_klinis']
+                ),
+            ]);
 
         return redirect()->route('admin.kategoriklinis.index')
-                        ->with('success', 'Kategori Klinis berhasil diperbarui.');
+            ->with('success', 'Kategori Klinis berhasil diperbarui.');
     }
 
     // -------------------------------
@@ -128,8 +139,49 @@ class KategoriKlinisController extends Controller
     // -------------------------------
     public function destroy($id)
     {
-        KategoriKlinis::findOrFail($id)->delete();
-        return redirect()->route('admin.kategoriklinis.index')
-                        ->with('success', 'Kategori Klinis berhasil dihapus.');
+        try {
+            // Ambil data kategori klinis
+            $kategori = DB::table('kategori_klinis')
+                ->where('idkategori_klinis', $id)
+                ->first();
+
+            if (!$kategori) {
+                return redirect()
+                    ->route('admin.kategoriklinis.index')
+                    ->with('error', 'Data kategori klinis tidak ditemukan.');
+            }
+
+            // CEK: apakah dipakai di kode tindakan terapi
+            $dipakai = DB::table('kode_tindakan_terapi')
+                ->where('idkategori_klinis', $id)
+                ->count();
+
+            if ($dipakai > 0) {
+                return redirect()
+                    ->route('admin.kategoriklinis.index')
+                    ->with(
+                        'error',
+                        "Kategori Klinis <b>{$kategori->nama_kategori_klinis}</b> tidak dapat dihapus karena masih digunakan oleh {$dipakai} data kode tindakan terapi."
+                    );
+            }
+
+            // Hapus aman
+            DB::table('kategori_klinis')
+                ->where('idkategori_klinis', $id)
+                ->delete();
+
+            return redirect()
+                ->route('admin.kategoriklinis.index')
+                ->with(
+                    'success',
+                    "Kategori Klinis <b>{$kategori->nama_kategori_klinis}</b> berhasil dihapus."
+                );
+
+        } catch (QueryException $e) {
+            return redirect()
+                ->route('admin.kategoriklinis.index')
+                ->with('error', 'Kategori klinis tidak dapat dihapus karena masih terhubung dengan data lain.');
+        }
     }
+
 }

@@ -131,7 +131,7 @@ class PemilikController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('resepsionis.pemilik.show', $id)
+            return redirect()->route('resepsionis.pemilik.index', $id)
                             ->with('success', 'Data pemilik berhasil diperbarui!');
 
         } catch (\Exception $e) {
@@ -142,28 +142,38 @@ class PemilikController extends Controller
 
     public function destroy($id)
     {
-        $pemilik = Pemilik::find($id);
-        
-        if (!$pemilik) {
-            return redirect()->route('resepsionis.pemilik.index')
-                            ->with('error', 'Data pemilik tidak ditemukan!');
-        }
-
         DB::beginTransaction();
         try {
-            // Hapus user terlebih dahulu
-            User::destroy($pemilik->iduser);
-            
-            // Hapus pemilik
-            $pemilik->delete();
+
+            // ambil data pemilik
+            $pemilik = DB::table('pemilik')
+                ->where('idpemilik', $id)
+                ->first();
+
+            if (!$pemilik) {
+                return redirect()->route('resepsionis.pemilik.index')
+                    ->with('error', 'Data pemilik tidak ditemukan!');
+            }
+
+            // 1️⃣ hapus pemilik dulu (child)
+            DB::table('pemilik')
+                ->where('idpemilik', $id)
+                ->delete();
+
+            // 2️⃣ baru hapus user (parent)
+            DB::table('user')
+                ->where('iduser', $pemilik->iduser)
+                ->delete();
 
             DB::commit();
+
             return redirect()->route('resepsionis.pemilik.index')
-                            ->with('success', 'Data pemilik berhasil dihapus!');
+                ->with('success', 'Data pemilik berhasil dihapus!');
 
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
         }
     }
+
 }

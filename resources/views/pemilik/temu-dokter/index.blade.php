@@ -1,7 +1,5 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Jadwal Temu Dokter')
-
 @section('content')
 
 <style>

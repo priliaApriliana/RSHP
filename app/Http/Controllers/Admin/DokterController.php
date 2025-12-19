@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Dokter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -54,7 +53,13 @@ class DokterController extends Controller
             'id_user' => 'required|exists:user,iduser',
         ]);
 
-        Dokter::create($request->all());
+        DB::table('dokter')->insert([
+            'alamat' => trim($request->alamat),
+            'no_hp' => trim($request->no_hp),
+            'bidang_dokter' => trim($request->bidang_dokter),
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'id_user' => $request->id_user,
+        ]);
 
         return redirect()->route('admin.dokter.index')
             ->with('success', 'Data dokter berhasil ditambahkan!');
@@ -65,9 +70,15 @@ class DokterController extends Controller
      */
     public function edit($id)
     {
-        $dokter = Dokter::findOrFail($id);
+        $dokter = DB::table('dokter')
+            ->where('id_dokter', $id)
+            ->first();
 
-        // AMBIL DATA USER untuk dropdown
+        if (!$dokter) {
+            return redirect()->route('admin.dokter.index')
+                ->with('error', 'Data dokter tidak ditemukan.');
+        }
+
         $user = DB::table('user')->get();
 
         return view('admin.dokter.edit', compact('dokter', 'user'));
@@ -85,7 +96,14 @@ class DokterController extends Controller
             'jenis_kelamin' => 'required|in:L,P',
         ]);
 
-        Dokter::findOrFail($id)->update($request->all());
+        DB::table('dokter')
+            ->where('id_dokter', $id)
+            ->update([
+                'alamat' => trim($request->alamat),
+                'no_hp' => trim($request->no_hp),
+                'bidang_dokter' => trim($request->bidang_dokter),
+                'jenis_kelamin' => $request->jenis_kelamin,
+            ]);
 
         return redirect()->route('admin.dokter.index')
             ->with('success', 'Data dokter berhasil diperbarui!');
@@ -96,9 +114,34 @@ class DokterController extends Controller
      */
     public function destroy($id)
     {
-        Dokter::findOrFail($id)->delete();
+        $dokter = DB::table('dokter')
+            ->where('id_dokter', $id)
+            ->first();
+
+        if (!$dokter) {
+            return redirect()->route('admin.dokter.index')
+                ->with('error', 'Data dokter tidak ditemukan.');
+        }
+
+        // CEK RELASI - PERBAIKI: Cek ke temu_dokter (bukan langsung ke rekam_medis)
+        $dipakai = DB::table('temu_dokter')  // ← UBAH KE TEMU_DOKTER
+            ->join('role_user', 'temu_dokter.idrole_user', '=', 'role_user.idrole_user')
+            ->where('role_user.iduser', $dokter->id_user)
+            ->where('role_user.idrole', 2)  // 2 = role Dokter
+            ->count();
+
+        if ($dipakai > 0) {
+            return redirect()->route('admin.dokter.index')
+                ->with('error', 'Data dokter tidak dapat dihapus karena sedang digunakan di temu dokter.');
+        }
+
+        // BARU DIHAPUS
+        DB::table('dokter')
+            ->where('id_dokter', $id)
+            ->delete();
 
         return redirect()->route('admin.dokter.index')
             ->with('success', 'Data dokter berhasil dihapus!');
     }
+
 }

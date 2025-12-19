@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use App\Models\Kategori;
+use Illuminate\Database\QueryException;
 
 class KategoriController extends Controller
 {
@@ -55,7 +55,15 @@ class KategoriController extends Controller
     // -------------------------------
     public function edit($id)
     {
-        $data = Kategori::findOrFail($id);
+        $data = DB::table('kategori')
+            ->where('idkategori', $id)
+            ->first();
+
+        if (!$data) {
+            return redirect()->route('admin.kategori.index')
+                ->with('error', 'Data kategori tidak ditemukan.');
+        }
+
         return view('admin.kategori.edit', compact('data'));
     }
 
@@ -66,24 +74,14 @@ class KategoriController extends Controller
     {
         $validatedData = $this->validateKategori($request, $id);
 
-        $data = Kategori::findOrFail($id);
-        $data->update([
-            'nama_kategori' => $this->formatNamaKategori($validatedData['nama_kategori']),
-            'deskripsi'     => $validatedData['deskripsi'] ?? null,
-        ]);
+        DB::table('kategori')
+            ->where('idkategori', $id)
+            ->update([
+                'nama_kategori' => $this->formatNamaKategori($validatedData['nama_kategori']),
+            ]);
 
         return redirect()->route('admin.kategori.index')
-                        ->with('success', 'Kategori berhasil diperbarui.');
-    }
-
-    // -------------------------------
-    // DESTROY: Hapus data
-    // -------------------------------
-    public function destroy($id)
-    {
-        Kategori::findOrFail($id)->delete();
-        return redirect()->route('admin.kategori.index')
-                        ->with('success', 'Kategori berhasil dihapus.');
+            ->with('success', 'Kategori berhasil diperbarui.');
     }
 
     // -------------------------------
@@ -98,15 +96,12 @@ class KategoriController extends Controller
 
         return $request->validate([
             'nama_kategori' => ['required', 'string', 'min:3', 'max:100', $uniqueRule],
-            'deskripsi'     => ['nullable', 'string', 'max:255'],
         ], [
             'nama_kategori.required' => 'Nama kategori wajib diisi.',
             'nama_kategori.string'   => 'Nama kategori harus berupa teks.',
             'nama_kategori.min'      => 'Nama kategori minimal 3 karakter.',
             'nama_kategori.max'      => 'Nama kategori maksimal 100 karakter.',
             'nama_kategori.unique'   => 'Nama kategori sudah terdaftar.',
-            'deskripsi.string'       => 'Deskripsi harus berupa teks.',
-            'deskripsi.max'          => 'Deskripsi maksimal 255 karakter.',
         ]);
     }
 
@@ -147,6 +142,73 @@ class KategoriController extends Controller
     protected function formatNamaKategori($nama_kategori)
     {
         return trim(ucwords(strtolower($nama_kategori)));
+    }
+
+    // -------------------------------
+    // DESTROY: Hapus data
+    // -------------------------------
+    public function destroy($id)
+    {
+        try {
+            // Ambil data kategori
+            $kategori = DB::table('kategori')
+                ->where('idkategori', $id)
+                ->first();
+
+            if (!$kategori) {
+                return redirect()
+                    ->route('admin.kategori.index')
+                    ->with('error', 'Data kategori tidak ditemukan.');
+            }
+
+            // Cek apakah kategori masih dipakai
+            $dipakai = DB::table('kode_tindakan_terapi')
+                ->where('idkategori', $id)
+                ->count();
+
+            if ($dipakai > 0) {
+                return redirect()
+                    ->route('admin.kategori.index')
+                    ->with(
+                        'error',
+                        "Kategori <b>{$kategori->nama_kategori}</b> tidak dapat dihapus karena masih digunakan oleh {$dipakai} data tindakan terapi."
+                    );
+            }
+
+            // Aman → hapus
+            DB::table('kategori')
+                ->where('idkategori', $id)
+                ->delete();
+
+            return redirect()
+                ->route('admin.kategori.index')
+                ->with(
+                    'success',
+                    "Kategori <b>{$kategori->nama_kategori}</b> berhasil dihapus."
+                );
+
+        } catch (QueryException $e) {
+
+            // Foreign key constraint
+            if ($e->getCode() == 23000) {
+                return redirect()
+                    ->route('admin.kategori.index')
+                    ->with(
+                        'error',
+                        'Kategori tidak dapat dihapus karena masih terhubung dengan data lain.'
+                    );
+            }
+
+            return redirect()
+                ->route('admin.kategori.index')
+                ->with('error', 'Terjadi kesalahan database.');
+
+        } catch (\Exception $e) {
+
+            return redirect()
+                ->route('admin.kategori.index')
+                ->with('error', 'Terjadi kesalahan yang tidak terduga.');
+        }
     }
 }
 

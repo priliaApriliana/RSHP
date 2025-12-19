@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-// use App\Models\RasHewan;
-// use App\Models\JenisHewan;
+use Illuminate\Database\QueryException;
 
 class RasHewanController extends Controller
 {
@@ -116,7 +115,62 @@ class RasHewanController extends Controller
 
     public function destroy($id)
     {
-        DB::table('ras_hewan')->where('idras_hewan', $id)->delete();
-        return redirect()->route('admin.rashewan.index')->with('success', 'Data berhasil dihapus!');
+        try {
+            // Ambil data ras
+            $ras = DB::table('ras_hewan')
+                ->where('idras_hewan', $id)
+                ->first();
+
+            if (!$ras) {
+                return redirect()
+                    ->route('admin.rashewan.index')
+                    ->with('error', 'Data ras hewan tidak ditemukan.');
+            }
+
+            // Cek apakah ras masih dipakai di tabel pet
+            $petCount = DB::table('pet')
+                ->where('idras_hewan', $id)
+                ->count();
+
+            if ($petCount > 0) {
+                return redirect()
+                    ->route('admin.rashewan.index')
+                    ->with(
+                        'error',
+                        "Ras hewan '{$ras->nama_ras}' tidak dapat dihapus karena masih digunakan oleh {$petCount} data Pet."
+                    );
+            }
+
+            // Jika aman → hapus
+            DB::table('ras_hewan')
+                ->where('idras_hewan', $id)
+                ->delete();
+
+            return redirect()
+                ->route('admin.rashewan.index')
+                ->with('success', "Ras hewan '{$ras->nama_ras}' berhasil dihapus.");
+
+        } catch (QueryException $e) {
+
+            // FK constraint (23000)
+            if ($e->getCode() == 23000) {
+                return redirect()
+                    ->route('admin.rashewan.index')
+                    ->with(
+                        'error',
+                        'Ras hewan tidak dapat dihapus karena masih terhubung dengan data lain.'
+                    );
+            }
+
+            return redirect()
+                ->route('admin.rashewan.index')
+                ->with('error', 'Terjadi kesalahan saat menghapus data.');
+
+        } catch (\Exception $e) {
+
+            return redirect()
+                ->route('admin.rashewan.index')
+                ->with('error', 'Terjadi kesalahan yang tidak terduga.');
+        }
     }
 }

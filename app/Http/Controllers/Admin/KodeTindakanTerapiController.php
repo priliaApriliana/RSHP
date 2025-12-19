@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class KodeTindakanTerapiController extends Controller
 {
@@ -129,9 +130,62 @@ class KodeTindakanTerapiController extends Controller
     // DESTROY: hapus data
     public function destroy($id)
     {
-        DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->delete();
+        try {
+            $data = DB::table('kode_tindakan_terapi')
+                ->where('idkode_tindakan_terapi', $id)
+                ->first();
 
-        return redirect()->route('admin.kodetindakanterapi.index')
-            ->with('success', 'Data berhasil dihapus.');
+            if (!$data) {
+                return redirect()
+                    ->route('admin.kodetindakanterapi.index')
+                    ->with('error', 'Data kode tindakan tidak ditemukan.');
+            }
+
+            // CEK FK (contoh: rekam medis)
+            $dipakai = DB::table('detail_rekam_medis')
+                ->where('idkode_tindakan_terapi', $id)
+                ->count();
+
+            if ($dipakai > 0) {
+                return redirect()
+                    ->route('admin.kodetindakanterapi.index')
+                    ->with(
+                        'error',
+                        "Kode tindakan <b>{$data->kode}</b> tidak dapat dihapus karena masih digunakan pada {$dipakai} detail rekam medis."
+                    );
+            }
+
+            // Aman → hapus
+            DB::table('kode_tindakan_terapi')
+                ->where('idkode_tindakan_terapi', $id)
+                ->delete();
+
+            return redirect()
+                ->route('admin.kodetindakanterapi.index')
+                ->with(
+                    'success',
+                    "Kode tindakan <b>{$data->kode}</b> berhasil dihapus."
+                );
+
+        } catch (QueryException $e) {
+            // Foreign key constraint
+            if ($e->getCode() == 23000) {
+                return redirect()
+                    ->route('admin.kodetindakanterapi.index')
+                    ->with(
+                        'error',
+                        'Kode tindakan tidak dapat dihapus karena masih terhubung dengan data lain.'
+                    );
+            }
+            return redirect()
+            ->route('admin.kodetindakanterapi.index')
+            ->with('error', 'Terjadi kesalahan database: ' . $e->getMessage());
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('admin.kodetindakanterapi.index')
+                ->with('error', 'Kode tindakan tidak dapat dihapus karena masih terhubung dengan data lain.');
+        }
     }
+
 }

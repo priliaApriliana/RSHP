@@ -133,7 +133,7 @@ class PetController extends Controller
 
         $pet->update($validated);
 
-        return redirect()->route('resepsionis.pet.show', $id)
+        return redirect()->route('resepsionis.pet.index', $id)
                         ->with('success', 'Data pet berhasil diperbarui!');
     }
 

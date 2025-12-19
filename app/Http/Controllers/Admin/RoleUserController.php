@@ -83,17 +83,20 @@ class RoleUserController extends Controller
                            ->with('error', 'User sudah memiliki role ini.');
         }
 
-        // LANGKAH 1: Nonaktifkan semua role user yang ada
-        DB::table('role_user')
-            ->where('iduser', $iduser)
-            ->update(['status' => 0]);
+        DB::transaction(function () use ($iduser, $request) {
 
-        // LANGKAH 2: Tambahkan role baru dengan status AKTIF
-        DB::table('role_user')->insert([
-            'iduser' => $iduser,
-            'idrole' => $request->idrole,
-            'status' => 1, // Role baru otomatis aktif
-        ]);
+            // LANGKAH 1: Nonaktifkan semua role lama
+            DB::table('role_user')
+                ->where('iduser', $iduser)
+                ->update(['status' => 0]);
+
+            // LANGKAH 2: Tambahkan role baru (aktif)
+            DB::table('role_user')->insert([
+                'iduser' => $iduser,
+                'idrole' => $request->idrole,
+                'status' => 1, // otomatis Aktif
+            ]);
+        });
 
         return redirect()->route('admin.roleuser.index')
                        ->with('success', 'Role berhasil ditambahkan dan diaktifkan! Role lama telah dinonaktifkan.');
@@ -144,16 +147,18 @@ class RoleUserController extends Controller
 
         // Jika mengaktifkan role ini
         if ($request->status == 1) {
-            // LANGKAH 1: Nonaktifkan semua role user lainnya
-            DB::table('role_user')
-                ->where('iduser', $roleUser->iduser)
-                ->update(['status' => 0]);
-            
-            // LANGKAH 2: Aktifkan role yang dipilih
-            DB::table('role_user')
-                ->where('idrole_user', $idrole_user)
-                ->update(['status' => 1]);
-            
+
+            DB::transaction(function () use ($roleUser, $idrole_user) {
+
+                DB::table('role_user')
+                    ->where('iduser', $roleUser->iduser)
+                    ->update(['status' => 0]);
+
+                DB::table('role_user')
+                    ->where('idrole_user', $idrole_user)
+                    ->update(['status' => 1]);
+            });
+
             $message = 'Role berhasil diaktifkan! Role lain telah dinonaktifkan.';
         } else {
             // Jika menonaktifkan
@@ -184,18 +189,18 @@ class RoleUserController extends Controller
         // Toggle status (1 -> 0, 0 -> 1)
         $newStatus = $roleUser->status == 1 ? 0 : 1;
 
-        // Jika akan mengaktifkan
-        if ($newStatus == 1) {
-            // Nonaktifkan semua role user lainnya
-            DB::table('role_user')
-                ->where('iduser', $roleUser->iduser)
-                ->update(['status' => 0]);
-        }
+        DB::transaction(function () use ($roleUser, $idrole_user, $newStatus) {
 
-        // Update status role ini
-        DB::table('role_user')
-            ->where('idrole_user', $idrole_user)
-            ->update(['status' => $newStatus]);
+            if ($newStatus == 1) {
+                DB::table('role_user')
+                    ->where('iduser', $roleUser->iduser)
+                    ->update(['status' => 0]);
+            }
+
+            DB::table('role_user')
+                ->where('idrole_user', $idrole_user)
+                ->update(['status' => $newStatus]);
+        });
 
         $statusText = $newStatus == 1 
             ? 'diaktifkan. Role lain telah dinonaktifkan' 

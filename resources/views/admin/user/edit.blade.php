@@ -6,180 +6,11 @@
     <li class="breadcrumb-item active">Edit</li>
 @endsection
 
+@section('styles')
+<link rel="stylesheet" href="{{ asset('assets/css/admin/edit.css') }}">
+@endsection
+
 @section('content')
-
-<style>
-    /* Tidak ada page header - menggunakan default dari layout */
-
-    .form-card {
-        background: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 2px 8px rgba(57, 88, 134, 0.08);
-        overflow: hidden;
-        max-width: 700px;
-        margin: 0 auto;
-    }
-
-    .form-header {
-        background: linear-gradient(to bottom, #F0F3FA 0%, #ffffff 100%);
-        padding: 1.5rem;
-        border-bottom: 2px solid #D5DEEF;
-    }
-
-    .form-header h4 {
-        color: #395886;
-        font-size: 1.125rem;
-        font-weight: 700;
-        margin: 0;
-    }
-
-    .form-body {
-        padding: 2rem;
-    }
-
-    .info-box {
-        display: flex;
-        align-items: flex-start;
-        gap: 0.75rem;
-        padding: 1rem;
-        background: #F0F3FA;
-        border-radius: 10px;
-        border-left: 4px solid #628ECB;
-        margin-bottom: 1.5rem;
-    }
-
-    .info-box i {
-        color: #628ECB;
-        font-size: 1.25rem;
-        flex-shrink: 0;
-    }
-
-    .info-box p {
-        color: #395886;
-        font-size: 0.8125rem;
-        margin: 0;
-        line-height: 1.6;
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-label {
-        display: block;
-        color: #395886;
-        font-weight: 600;
-        font-size: 0.875rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .form-label .required {
-        color: #d63031;
-        margin-left: 0.25rem;
-    }
-
-    .form-control-custom {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 2px solid #D5DEEF;
-        border-radius: 10px;
-        font-size: 0.875rem;
-        transition: all 0.3s ease;
-        background: #ffffff;
-        color: #395886;
-    }
-
-    .form-control-custom:focus {
-        border-color: #8AAEE0;
-        box-shadow: 0 0 0 4px rgba(138, 174, 224, 0.1);
-        outline: none;
-    }
-
-    .form-control-custom.is-invalid {
-        border-color: #d63031;
-    }
-
-    .form-text {
-        display: block;
-        margin-top: 0.5rem;
-        font-size: 0.75rem;
-        color: #628ECB;
-        padding: 0.5rem 0.75rem;
-        background: #F0F3FA;
-        border-radius: 6px;
-    }
-
-    .invalid-feedback {
-        display: block;
-        margin-top: 0.5rem;
-        font-size: 0.75rem;
-        color: #d63031;
-        font-weight: 600;
-    }
-
-    .form-footer {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        padding-top: 1.5rem;
-        border-top: 1px solid #D5DEEF;
-    }
-
-    .btn-custom {
-        padding: 0.75rem 2rem;
-        border-radius: 10px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        border: none;
-        transition: all 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        cursor: pointer;
-        text-decoration: none;
-    }
-
-    .btn-update {
-        background: linear-gradient(135deg, #628ECB 0%, #395886 100%);
-        color: #ffffff;
-        box-shadow: 0 2px 8px rgba(98, 142, 203, 0.3);
-    }
-
-    .btn-update:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(98, 142, 203, 0.4);
-        color: #ffffff;
-    }
-
-    .btn-cancel {
-        background: #e8edf5;
-        color: #395886;
-    }
-
-    .btn-cancel:hover {
-        background: #D5DEEF;
-        color: #395886;
-        transform: translateY(-2px);
-    }
-
-    .alert {
-        border-radius: 10px;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-        border: none;
-    }
-
-    .alert-danger {
-        background: #fff5f5;
-        color: #c53030;
-        border-left: 4px solid #d63031;
-    }
-
-    .alert ul {
-        margin: 0.5rem 0 0 0;
-        padding-left: 1.5rem;
-    }
-</style>
 
 <div class="container-fluid px-4">
     {{-- Form Card --}}
@@ -281,8 +112,8 @@
 
                 {{-- Footer --}}
                 <div class="form-footer">
-                    <button type="submit" class="btn-custom btn-update">
-                        <i class="bi bi-check-circle"></i>
+                    <button type="submit" class="btn-custom btn-update-custom">
+                        <i class="bi bi-check-circle-fill"></i>
                         Update
                     </button>
                     <a href="{{ route('admin.user.index') }}" class="btn-custom btn-cancel">

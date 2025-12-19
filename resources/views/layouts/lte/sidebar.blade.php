@@ -93,24 +93,6 @@
                         </ul>
                     </li>
 
-                    <!-- Pet -->
-                    <li class="nav-item">
-                        <a href="{{ route('admin.pet.index') }}" 
-                           class="nav-link {{ request()->routeIs('admin.pet.*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-bug"></i>
-                            <p>Data Pet</p>
-                        </a>
-                    </li>
-
-                    <!-- Pemilik -->
-                    <li class="nav-item">
-                        <a href="{{ route('admin.pemilik.index') }}" 
-                           class="nav-link {{ request()->routeIs('admin.pemilik.*') ? 'active' : '' }}">
-                            <i class="nav-icon bi bi-people-fill"></i>
-                            <p>Data Pemilik</p>
-                        </a>
-                    </li>
-
                     <!-- User Management -->
                     <li class="nav-item {{ request()->is('admin/role*') || request()->is('admin/roleuser*') ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link">
@@ -144,6 +126,25 @@
                             </li>
                         </ul>
                     </li>
+
+                    <!-- Pemilik -->
+                    <li class="nav-item">
+                        <a href="{{ route('admin.pemilik.index') }}" 
+                           class="nav-link {{ request()->routeIs('admin.pemilik.*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-people-fill"></i>
+                            <p>Data Pemilik</p>
+                        </a>
+                    </li>
+
+                    <!-- Pet -->
+                    <li class="nav-item">
+                        <a href="{{ route('admin.pet.index') }}" 
+                           class="nav-link {{ request()->routeIs('admin.pet.*') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-bug"></i>
+                            <p>Data Pet</p>
+                        </a>
+                    </li>
+
                     <li class="nav-header">TRANSAKSI</li>
 
                     <li class="nav-item">

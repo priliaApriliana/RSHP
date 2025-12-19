@@ -14,6 +14,22 @@
 @section('content')
 
 <div class="container-fluid px-4">
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show">
+            <strong>Berhasil</strong>
+            <p>{{ session('success') }}</p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show">
+            <strong>Gagal</strong>
+            <p>{{ session('error') }}</p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     {{-- Page Header --}}
     <div class="page-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">

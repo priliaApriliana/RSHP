@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-// use App\Models\Role;
+use Illuminate\Database\QueryException;
 
 class RoleController extends Controller
 {
@@ -102,9 +102,35 @@ class RoleController extends Controller
     //menghapus role dari database
     public function destroy($id)
     {
-        DB::table('role')->where('idrole', $id)->delete();
+        try {
+            $role = DB::table('role')->where('idrole', $id)->first();
 
-        return redirect()->route('admin.role.index')
-                         ->with('success', 'Role berhasil dihapus!');
+            if (!$role) {
+                return redirect()->route('admin.role.index')
+                    ->with('error', 'Role tidak ditemukan.');
+            }
+
+            $dipakai = DB::table('role_user')
+                ->where('idrole', $id)
+                ->count();
+
+            if ($dipakai > 0) {
+                return redirect()->route('admin.role.index')
+                    ->with(
+                        'error',
+                        "Role <b>{$role->nama_role}</b> tidak dapat dihapus karena masih digunakan oleh user."
+                    );
+            }
+
+            DB::table('role')->where('idrole', $id)->delete();
+
+            return redirect()->route('admin.role.index')
+                ->with('success', "Role <b>{$role->nama_role}</b> berhasil dihapus.");
+
+        } catch (QueryException $e) {
+            return redirect()->route('admin.role.index')
+                ->with('error', 'Role tidak dapat dihapus karena masih terhubung dengan data lain.');
+        }
     }
+
 }

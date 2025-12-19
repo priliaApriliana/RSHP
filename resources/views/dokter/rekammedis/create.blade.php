@@ -1,6 +1,5 @@
 @extends('layouts.lte.main')
 
-
 @section('content')
 
 <style>

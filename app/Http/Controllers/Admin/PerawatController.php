@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Perawat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -58,17 +57,18 @@ class PerawatController extends Controller
             'id_user' => 'required|exists:user,iduser',
         ]);
 
-        Perawat::create([
-            'alamat' => $request->alamat,
-            'no_hp' => $request->no_hp,
+        DB::table('perawat')->insert([
+            'alamat' => trim($request->alamat),
+            'no_hp' => trim($request->no_hp),
             'jenis_kelamin' => $request->jenis_kelamin,
-            'pendidikan' => $request->pendidikan,
+            'pendidikan' => trim($request->pendidikan),
             'id_user' => $request->id_user,
         ]);
 
         return redirect()->route('admin.perawat.index')
             ->with('success', 'Data perawat berhasil ditambahkan!');
     }
+
 
     /**
      * Show
@@ -89,27 +89,28 @@ class PerawatController extends Controller
      */
     public function edit($id)
     {
-        $data = Perawat::findOrFail($id);
-    
-        // ambil user yang punya role perawat
+        $data = DB::table('perawat')->where('id_perawat', $id)->first();
+
+        if (!$data) {
+            return redirect()->route('admin.perawat.index')
+                ->with('error', 'Data perawat tidak ditemukan.');
+        }
+
         $user = DB::table('user')
             ->join('role_user', 'user.iduser', '=', 'role_user.iduser')
             ->join('role', 'role_user.idrole', '=', 'role.idrole')
             ->where('role.nama_role', 'Perawat')
             ->select('user.iduser', 'user.nama', 'user.email')
             ->get();
-    
+
         return view('admin.perawat.edit', compact('data', 'user'));
-    }
-    
+    } 
 
     /**
      * Update
      */
     public function update(Request $request, $id)
     {
-        $perawat = Perawat::findOrFail($id);
-
         $request->validate([
             'alamat' => 'required|max:100',
             'no_hp' => 'required|max:45',
@@ -117,7 +118,14 @@ class PerawatController extends Controller
             'pendidikan' => 'required|max:100',
         ]);
 
-        $perawat->update($request->all());
+        DB::table('perawat')
+            ->where('id_perawat', $id)
+            ->update([
+                'alamat' => trim($request->alamat),
+                'no_hp' => trim($request->no_hp),
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'pendidikan' => trim($request->pendidikan),
+            ]);
 
         return redirect()->route('admin.perawat.index')
             ->with('success', 'Data perawat berhasil diperbarui!');
@@ -128,8 +136,17 @@ class PerawatController extends Controller
      */
     public function destroy($id)
     {
-        Perawat::findOrFail($id)->delete();
+        $perawat = DB::table('perawat')->where('id_perawat', $id)->first();
+
+        if (!$perawat) {
+            return redirect()->route('admin.perawat.index')
+                ->with('error', 'Data perawat tidak ditemukan.');
+        }
+
+        DB::table('perawat')->where('id_perawat', $id)->delete();
+
         return redirect()->route('admin.perawat.index')
             ->with('success', 'Data perawat berhasil dihapus!');
     }
+
 }

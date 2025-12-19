@@ -79,7 +79,7 @@
                         required>
                     @error('no_hp')
                     <div class="error-message">
-                        <i class="fas fa-exclamation-circle"></i>
+                        <i class="bi bi-exclamation-circle"></i>
                         {{ $message }}
                     </div>
                     @enderror

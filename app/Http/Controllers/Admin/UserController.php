@@ -94,17 +94,37 @@ class UserController extends Controller
     // DESTROY - Hapus user
     public function destroy($id)
     {
-        // Cek apakah user punya relasi di role_user
-        $hasRoles = DB::table('role_user')->where('iduser', $id)->exists();
+        $user = DB::table('user')->where('iduser', $id)->first();
 
-        if ($hasRoles) {
-            return back()->with('error', 'User tidak dapat dihapus karena masih memiliki role.');
+        if (!$user) {
+            return redirect()->route('admin.user.index')
+                ->with('error', 'User tidak ditemukan.');
+        }
+
+        // Cek role
+        $hasRoles = DB::table('role_user')
+            ->where('iduser', $id)
+            ->count();
+
+        if ($hasRoles > 0) {
+            return redirect()->route('admin.user.index')
+                ->with('error', 'User tidak dapat dihapus karena masih memiliki role.');
+        }
+
+        // Cek pemilik
+        $isPemilik = DB::table('pemilik')
+            ->where('iduser', $id)
+            ->count();
+
+        if ($isPemilik > 0) {
+            return redirect()->route('admin.user.index')
+                ->with('error', 'User tidak dapat dihapus karena masih terdaftar sebagai pemilik.');
         }
 
         DB::table('user')->where('iduser', $id)->delete();
 
         return redirect()->route('admin.user.index')
-            ->with('success', 'User berhasil dihapus!');
+            ->with('success', 'User berhasil dihapus.');
     }
 
     // RESET PASSWORD

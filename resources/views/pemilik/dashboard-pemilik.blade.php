@@ -1,7 +1,5 @@
 @extends('layouts.lte.main')
 
-@section('page-title', 'Dashboard Pemilik')
-
 @section('content')
 
 <style>

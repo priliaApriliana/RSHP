@@ -13,6 +13,23 @@
 
 <div class="container-fluid px-4">
 
+        {{-- ALERT NOTIFICATION --}}
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <strong>Berhasil!</strong>
+                <p>{{ session('success') }}</p>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Gagal!</strong>
+                <p>{{ session('error') }}</p>
+            </div>
+        @endif
+        
     {{-- HEADER --}}
     <div class="page-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
