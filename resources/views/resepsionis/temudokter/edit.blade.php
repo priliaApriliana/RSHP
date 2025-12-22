@@ -42,8 +42,12 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label"><i class="bi bi-calendar-fill me-2" style="color: #628ECB;"></i>Waktu Daftar</label>
-                            <input type="datetime-local" class="form-control" value="{{ $temuDokter->waktu_daftar }}" disabled style="background-color: #F0F3FA;">
+                            <label class="form-label"><i class="bi bi-calendar-fill me-2" style="color: #628ECB;"></i>Tanggal Daftar
+                            </label>
+                            <input type="date" class="form-control"
+                                value="{{ \Carbon\Carbon::parse($temuDokter->waktu_daftar)->format('Y-m-d') }}"
+                                disabled
+                                style="background-color: #F0F3FA;">
                         </div>
 
                         <div class="mb-4">

@@ -26,8 +26,10 @@
                             <td><span class="badge" style="background-color: rgba(98, 142, 203, 0.2); color: #628ECB;">{{ $temuDokter->no_urut }}</span></td>
                         </tr>
                         <tr>
-                            <th><i class="bi bi-calendar-fill me-2"></i>Waktu Daftar</th>
-                            <td>{{ \Carbon\Carbon::parse($temuDokter->waktu_daftar)->format('d/m/Y H:i') }}</td>
+                            <th><i class="bi bi-calendar-fill me-2"></i>Tanggal Daftar</th>
+                            <td>
+                                {{ \Carbon\Carbon::parse($temuDokter->waktu_daftar)->format('d/m/Y') }}
+                            </td>
                         </tr>
                         <tr>
                             <th><i class="bi bi-heart me-2"></i>Nama Hewan</th>

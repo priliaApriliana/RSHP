@@ -68,7 +68,7 @@
                                         <td>
                                             <div class="datetime-info">
                                                 <i class="far fa-clock me-2" style="color: var(--light-blue);"></i>
-                                                <span>{{ \Carbon\Carbon::parse($item->waktu_daftar)->format('d/m/Y H:i') }}</span>
+                                                <span>{{ \Carbon\Carbon::parse($item->waktu_daftar)->format('d-m-Y') }}</span>
                                             </div>
                                         </td>
                                         <td>

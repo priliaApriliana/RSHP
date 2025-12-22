@@ -102,9 +102,6 @@ class RekamMedisController extends Controller
             abort(404, 'Data temu dokter tidak ditemukan');
         }
 
-        // ✅ LOGIKA AKSES YANG BENAR:
-        // 1. Jika status 'P' (Proses) → SEMUA DOKTER BOLEH AKSES
-        // 2. Jika status 'S' (Selesai) → HANYA DOKTER YANG SUDAH INPUT DETAIL YANG BISA AKSES
 
         if ($temuDokter->status === 'P') {
             // ✅ STATUS PROSES → CLAIM OTOMATIS
@@ -117,19 +114,19 @@ class RekamMedisController extends Controller
             $rekamMedis->dokter_pemeriksa = $roleUser->idrole_user;
 
         } elseif ($temuDokter->status === 'S') {
-            // ✅ STATUS SELESAI → CEK APAKAH DOKTER INI YANG PERIKSA
+            // STATUS SELESAI → CEK APAKAH DOKTER INI YANG PERIKSA
             if ($rekamMedis->dokter_pemeriksa != $roleUser->idrole_user) {
                 abort(403, 'Rekam medis ini telah diperiksa oleh dokter lain');
             }
         }
 
-        // ✅ AMBIL DATA LENGKAP
+        // AMBIL DATA LENGKAP
         $temuDokter = DB::table('temu_dokter')
             ->join('pet', 'temu_dokter.idpet', '=', 'pet.idpet')
             ->join('pemilik', 'pet.idpemilik', '=', 'pemilik.idpemilik')
             ->join('user as pemilik_user', 'pemilik.iduser', '=', 'pemilik_user.iduser')
-            ->join('ras_hewan', 'pet.idras_hewan', '=', 'ras_hewan.idras_hewan')
-            ->join('jenis_hewan', 'ras_hewan.idjenis_hewan', '=', 'jenis_hewan.idjenis_hewan')
+            ->leftJoin('ras_hewan', 'pet.idras_hewan', '=', 'ras_hewan.idras_hewan')
+            ->leftJoin('jenis_hewan', 'ras_hewan.idjenis_hewan', '=', 'jenis_hewan.idjenis_hewan')
             ->select(
                 'temu_dokter.*',
                 'pet.nama as nama_pet',
@@ -145,6 +142,7 @@ class RekamMedisController extends Controller
             )
             ->where('temu_dokter.idreservasi_dokter', $rekamMedis->idreservasi_dokter)
             ->first();
+
 
         // Ambil detail rekam medis dengan kode tindakan
         $detailRekamMedis = DB::table('detail_rekam_medis')
@@ -165,9 +163,6 @@ class RekamMedisController extends Controller
         return view('dokter.rekammedis.show', compact('rekamMedis', 'temuDokter', 'detailRekamMedis'));
     }
 
-    /**
-     * ✅ FORM EDIT REKAM MEDIS (TAMBAHAN METHOD INI)
-     */
     public function edit($id)
     {
         $idUser = Auth::user()->iduser;
@@ -189,7 +184,7 @@ class RekamMedisController extends Controller
             abort(404, 'Rekam medis tidak ditemukan');
         }
 
-        // ✅ CEK STATUS TEMU DOKTER
+        //CEK STATUS TEMU DOKTER
         $temuDokter = DB::table('temu_dokter')
             ->where('idreservasi_dokter', $rekamMedis->idreservasi_dokter)
             ->first();
@@ -198,18 +193,18 @@ class RekamMedisController extends Controller
             abort(404, 'Data temu dokter tidak ditemukan');
         }
 
-        // ✅ HANYA BOLEH EDIT JIKA STATUS MASIH 'P' (PROSES)
+        //HANYA BOLEH EDIT JIKA STATUS MASIH 'P' (PROSES)
         if ($temuDokter->status === 'S') {
             return redirect()->route('dokter.rekammedis.show', $id)
                 ->with('error', 'Rekam medis sudah selesai, tidak dapat diedit.');
         }
 
-        // ✅ CEK APAKAH DOKTER INI YANG PERIKSA (jika sudah ada dokter_pemeriksa)
+        //CEK APAKAH DOKTER INI YANG PERIKSA (jika sudah ada dokter_pemeriksa)
         if ($rekamMedis->dokter_pemeriksa && $rekamMedis->dokter_pemeriksa != $roleUser->idrole_user) {
             abort(403, 'Rekam medis ini sedang ditangani oleh dokter lain');
         }
 
-        // ✅ Claim dokter_pemeriksa jika belum ada
+        // Claim dokter_pemeriksa jika belum ada
         if (!$rekamMedis->dokter_pemeriksa) {
             DB::table('rekam_medis')
                 ->where('idrekam_medis', $id)
@@ -218,7 +213,7 @@ class RekamMedisController extends Controller
             $rekamMedis->dokter_pemeriksa = $roleUser->idrole_user;
         }
 
-        // ✅ AMBIL DATA LENGKAP
+        //AMBIL DATA LENGKAP
         $temuDokter = DB::table('temu_dokter')
             ->join('pet', 'temu_dokter.idpet', '=', 'pet.idpet')
             ->join('pemilik', 'pet.idpemilik', '=', 'pemilik.idpemilik')
@@ -244,9 +239,6 @@ class RekamMedisController extends Controller
         return view('dokter.rekammedis.edit', compact('rekamMedis', 'temuDokter'));
     }
 
-    /**
-     * UPDATE REKAM MEDIS (OPSIONAL - JIKA DOKTER BISA EDIT)
-     */
     public function update(Request $request, $id)
     {
         $request->validate([

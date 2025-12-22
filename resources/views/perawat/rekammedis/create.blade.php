@@ -321,7 +321,7 @@
 
             <div class="alert alert-info mt-3">
                 <i class="fas fa-info-circle"></i> <strong>Informasi Penting:</strong> 
-                Setelah menyimpan rekam medis ini, Anda dapat menambahkan detail tindakan/terapi yang diberikan kepada pasien. Status pasien akan otomatis berubah menjadi "Selesai" setelah rekam medis disimpan.
+                Setelah menyimpan rekam medis ini,dokter dapat menginputkan detail rekam medis. Status pasien akan otomatis berubah menjadi "Selesai" setelah rekam medis dan detail rekam medis disimpan.
             </div>
 
             <div class="d-flex gap-2 justify-content-between">
