@@ -1,31 +1,16 @@
 @extends('layouts.lte.main')
 
-
-
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('resepsionis.dashboard') }}">Dashboard</a></li>
     <li class="breadcrumb-item"><a href="{{ route('resepsionis.temudokter.index') }}">Temu Dokter</a></li>
     <li class="breadcrumb-item active">Detail</li>
 @endsection
 
-@section('content')
+@section('styles')
+<link rel="stylesheet" href="{{ asset('assets/css/resepsionis/show.css') }}">
+@endsection
 
-<style>
-    :root {
-        --primary-blue: #628ECB;
-        --light-blue: #8AAEE0;
-        --lighter-blue: #B1C9EF;
-        --lightest-blue: #D5DEEF;
-        --very-light-blue: #F0F3FA;
-        --dark-blue: #395686;
-    }
-    
-    .detail-table th {
-        color: #628ECB;
-        font-weight: 600;
-        background-color: #F0F3FA;
-    }
-</style>
+@section('content')
 
 <div class="container-fluid">
     <div class="row">

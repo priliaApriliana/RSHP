@@ -239,7 +239,7 @@
                 <!-- Button -->
                 <div class="col-md-3 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-filter"></i> Filter
+                        <i class="bi bi-filter"></i> Filter
                     </button>
                 </div>
             </div>
@@ -290,7 +290,7 @@
                             </span>
                         @else
                             <span class="badge bg-secondary">
-                                <i class="fas fa-question-circle"></i> Tidak Diketahui
+                                <i class="bi bi-question-circle"></i> Tidak Diketahui
                             </span>
                         @endif
                     </td>

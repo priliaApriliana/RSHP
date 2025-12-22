@@ -5,10 +5,6 @@
     <li class="breadcrumb-item active">Jenis Hewan</li>
 @endsection
 
-@section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/admin/index.css') }}">
-@endsection
-
 @section('content')
 
 <div class="container-fluid px-4">

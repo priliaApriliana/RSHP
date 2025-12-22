@@ -243,7 +243,7 @@
 <!-- Info Pasien -->
 <div class="card card-primary">
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-paw"></i> Informasi Pasien</h3>
+        <h3 class="card-title"><i class="bi bi-bug"></i> Informasi Pasien</h3>
     </div>
     <div class="card-body">
         <div class="row">
@@ -284,9 +284,9 @@
                                 $jenisKelamin = strtoupper(trim($pet->jenis_kelamin ?? ''));
                             @endphp
                             @if($jenisKelamin === 'J')
-                                <span class="badge badge-primary"><i class="fas fa-mars"></i> Jantan</span>
+                                <span class="badge badge-primary"><i class="bi bi-gender-male"></i> Jantan</span>
                             @elseif($jenisKelamin === 'B')
-                                <span class="badge badge-danger"><i class="fas fa-venus"></i> Betina</span>
+                                <span class="badge badge-danger"><i class="bi bi-gender-female"></i> Betina</span>
                             @else
                                 <span class="badge badge-secondary">Tidak Diketahui</span>
                             @endif
@@ -317,7 +317,7 @@
 <!-- Riwayat Rekam Medis -->
 <div class="card card-success">
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-clipboard-list"></i> Riwayat Rekam Medis</h3>
+        <h3 class="card-title"><i class="bi bi-clipboard"></i> Riwayat Rekam Medis</h3>
     </div>
     <div class="card-body">
         @if($riwayatRekam->count() > 0)
@@ -352,7 +352,7 @@
                             <td class="text-center">
                                 <a href="{{ route('perawat.rekammedis.show', $rekam->idrekam_medis) }}" 
                                    class="btn btn-sm btn-info">
-                                    <i class="fas fa-eye"></i> Detail
+                                    <i class="bi bi-eye"></i> Detail
                                 </a>
                             </td>
                         </tr>
@@ -362,13 +362,13 @@
             </div>
         @else
             <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i> Belum ada riwayat rekam medis untuk pasien ini.
+                <i class="bi bi-info-circle"></i> Belum ada riwayat rekam medis untuk pasien ini.
             </div>
         @endif
     </div>
     <div class="card-footer">
         <a href="{{ route('perawat.pasien.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Kembali
+            <i class="bi bi-arrow-left"></i> Kembali
         </a>
     </div>
 </div>
